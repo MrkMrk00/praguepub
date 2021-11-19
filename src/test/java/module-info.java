@@ -1,0 +1,2 @@
+module hospodyTymovaSemPr.test {
+}
