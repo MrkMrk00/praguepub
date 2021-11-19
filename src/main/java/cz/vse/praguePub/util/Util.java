@@ -1,4 +1,4 @@
-package cz.vse.hospody.util;
+package cz.vse.praguePub.util;
 
 import java.nio.charset.StandardCharsets;
 

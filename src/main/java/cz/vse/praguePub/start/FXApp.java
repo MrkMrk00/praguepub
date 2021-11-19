@@ -1,11 +1,11 @@
-package cz.vse.hospody.start;
+package cz.vse.praguePub.start;
 
 import javafx.application.Application;
 import javafx.scene.control.Alert;
 import javafx.stage.Stage;
-import cz.vse.hospody.util.AlertBuilder;
+import cz.vse.praguePub.util.AlertBuilder;
 
-import static cz.vse.hospody.util.Util.utf8encode;
+import static cz.vse.praguePub.util.Util.utf8encode;
 
 public class FXApp extends Application {
 

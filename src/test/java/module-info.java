@@ -1,2 +1,2 @@
-module hospodyTymovaSemPr.test {
+module praguePub.test {
 }
