@@ -1,5 +1,5 @@
-module start {
+module cz.vse.hospody {
     requires javafx.controls;
     requires static lombok;
-    exports start;
+    exports cz.vse.hospody.start;
 }

@@ -1,4 +1,4 @@
-package util;
+package cz.vse.hospody.util;
 
 import javafx.scene.Node;
 import javafx.scene.control.Alert;

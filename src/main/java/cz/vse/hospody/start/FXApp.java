@@ -1,11 +1,11 @@
-package start;
+package cz.vse.hospody.start;
 
 import javafx.application.Application;
 import javafx.scene.control.Alert;
 import javafx.stage.Stage;
-import util.AlertBuilder;
+import cz.vse.hospody.util.AlertBuilder;
 
-import static util.Util.utf8encode;
+import static cz.vse.hospody.util.Util.utf8encode;
 
 public class FXApp extends Application {
 

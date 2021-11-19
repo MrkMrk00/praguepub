@@ -1,4 +1,4 @@
-package util;
+package cz.vse.hospody.util;
 
 import java.nio.charset.StandardCharsets;
 

@@ -3,7 +3,7 @@ plugins {
     id 'org.openjfx.javafxplugin' version '0.0.10'
 }
 
-group 'cz.vse.zs2021'
+group 'cz.vse.hospody'
 version '1.0-SNAPSHOT'
 
 repositories {
