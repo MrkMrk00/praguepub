@@ -23,6 +23,8 @@ dependencies {
 
     //mongodb driver
     implementation 'org.mongodb:mongodb-driver-sync:4.4.0'
+
+    implementation 'commons-codec:commons-codec:1.15'
 }
 
 javafx {
