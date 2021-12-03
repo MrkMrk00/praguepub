@@ -20,6 +20,11 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok:1.18.22'
     testCompileOnly 'org.projectlombok:lombok:1.18.22'
     testAnnotationProcessor 'org.projectlombok:lombok:1.18.22'
+
+    //mongodb driver
+    implementation 'org.mongodb:mongodb-driver-sync:4.4.0'
+
+    implementation 'commons-codec:commons-codec:1.15'
 }
 
 javafx {
