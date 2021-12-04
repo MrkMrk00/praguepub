@@ -1,5 +1,6 @@
 package cz.vse.praguePub.start;
 
+import cz.vse.praguePub.logic.User;
 import javafx.application.Application;
 import javafx.scene.control.Alert;
 import javafx.stage.Stage;
