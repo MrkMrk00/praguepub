@@ -5,13 +5,14 @@ import com.mongodb.MongoSecurityException;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoDatabase;
-import cz.vse.praguePub.db.AesUtil;
+import cz.vse.praguePub.util.AesUtil;
 import lombok.Getter;
 import org.bson.Document;
 
 import java.util.Map;
 
 import static com.mongodb.client.model.Filters.*;
+import static cz.vse.praguePub.util.AesUtil.fillTo16Chars;
 
 /**
  * Třída uživatele databáze.<br>
@@ -105,7 +106,7 @@ public class User {
         }
 
         if (au == null) return null;
-        return au.decrypt(dbPassword, password);
+        return au.decrypt(dbPassword, fillTo16Chars(password));
     }
 
     /**
