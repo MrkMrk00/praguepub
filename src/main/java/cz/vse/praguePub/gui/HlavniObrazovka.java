@@ -2,7 +2,10 @@ package cz.vse.praguePub.gui;
 
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
@@ -16,7 +19,10 @@ public class HlavniObrazovka {
         this.stage = new Stage();
         this.obrys();
 
-        this.scene = new Scene(this.bp);
+        bp.setStyle("-fx-background-color: #92d36e");
+
+
+        this.scene = new Scene(this.bp, 700,700);
         this.stage.setScene(this.scene);
         this.stage.show();
     }
@@ -24,6 +30,6 @@ public class HlavniObrazovka {
     private void obrys() {
         Label lab = new Label("PraguePub");
         lab.setFont(Font.font(25));
-        this.bp.getChildren().add(lab);
+        this.bp.setTop(lab);
     }
 }
