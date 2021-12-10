@@ -1,4 +1,4 @@
-package cz.vse.praguePub.logic;
+package cz.vse.praguePub.logika;
 
 import lombok.Data;
 
