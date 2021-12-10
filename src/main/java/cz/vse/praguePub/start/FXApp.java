@@ -18,7 +18,7 @@ public class FXApp extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        new HlavniObrazovka(new BorderPane());
+        new HlavniObrazovka();
         new AlertBuilder(Alert.AlertType.INFORMATION)
                 .setHeaderText(utf8encode("Zdar!"))
                 .setContent(utf8encode("Týmová semestrální práce"))
