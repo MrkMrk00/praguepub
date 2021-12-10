@@ -1,0 +1,8 @@
+.background{
+    -fx-background-color: #92d36e;
+}
+.vrchniPanel{
+    -fx-border-style: hidden hidden solid hidden;
+    -fx-border-color: #aedd94;
+    -fx-border-width: 2.5;
+}
