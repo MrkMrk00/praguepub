@@ -4,6 +4,6 @@ import java.util.Map;
 
 public class SeznamPodniku {
     public SeznamPodniku(){
-        
+
     }
 }
