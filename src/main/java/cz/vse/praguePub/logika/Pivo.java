@@ -1,9 +1,6 @@
 package cz.vse.praguePub.logika;
 
-import lombok.Data;
-
-
-@Data public class Pivo {
+public class Pivo {
 
     private final String nazevPivovaru;
     private final double stupnovitost;
@@ -29,6 +26,30 @@ import lombok.Data;
         this.typ = typ;
         this.typKvaseni = typKvaseni;
         this.nazev = nazev;
+    }
+
+    public String getNazevPivovaru() {
+        return nazevPivovaru;
+    }
+
+    public double getStupnovitost() {
+        return stupnovitost;
+    }
+
+    public double getObsahAlkoholu() {
+        return obsahAlkoholu;
+    }
+
+    public String getTyp() {
+        return typ;
+    }
+
+    public String getTypKvaseni() {
+        return typKvaseni;
+    }
+
+    public String getNazev() {
+        return nazev;
     }
 }
 
