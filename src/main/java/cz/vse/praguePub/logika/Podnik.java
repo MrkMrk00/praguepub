@@ -8,13 +8,25 @@ public class Podnik {
     //enum lokace
     final String adresa;
     final List<Recenze> recenze;
-    final Map<String,Object> pivniListek;
+    final Map<String,Pivo> pivniListek;
 
-    public Podnik(String nazev, String adresa, List<Recenze> recenze, Map<String, Object> pivniListek) {
+    public Podnik(String nazev, String adresa, List<Recenze> recenze, Map<String, Pivo> pivniListek) {
         this.nazev = nazev;
         this.adresa = adresa;
         this.recenze = recenze;
         this.pivniListek = pivniListek;
+    }
+    public void zalozRecenzi(Recenze recenze){
+        this.recenze.add(recenze);
+    }
+    public void upravitPodnik(){
+        //udelat
+    }
+    public void pridatPivo(Pivo pivo){
+        pivniListek.put(pivo.getNazev(),pivo);
+    }
+    public void odebratPivo(Pivo pivo){
+        pivniListek.remove(pivo.getNazev());
     }
 
 
@@ -31,7 +43,7 @@ public class Podnik {
         return recenze;
     }
 
-    public Map<String, Object> getPivniListek() {
+    public Map<String, Pivo> getPivniListek() {
         return pivniListek;
     }
 }
