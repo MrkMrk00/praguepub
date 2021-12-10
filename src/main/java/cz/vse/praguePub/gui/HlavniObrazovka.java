@@ -14,6 +14,4 @@ public class HlavniObrazovka    {
 
     BorderPane borderPane = new BorderPane();
 
-
-
 }
