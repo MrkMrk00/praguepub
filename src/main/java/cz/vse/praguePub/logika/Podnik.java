@@ -5,13 +5,14 @@ import java.util.Map;
 
 public class Podnik {
     final String nazev;
-    //enum lokace
+    final Lokace lokace;
     final String adresa;
     final List<Recenze> recenze;
     final Map<String,Pivo> pivniListek;
 
-    public Podnik(String nazev, String adresa, List<Recenze> recenze, Map<String, Pivo> pivniListek) {
+    public Podnik(String nazev, Lokace lokace, String adresa, List<Recenze> recenze, Map<String, Pivo> pivniListek) {
         this.nazev = nazev;
+        this.lokace = lokace;
         this.adresa = adresa;
         this.recenze = recenze;
         this.pivniListek = pivniListek;
