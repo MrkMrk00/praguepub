@@ -25,13 +25,13 @@ import static cz.vse.praguePub.util.AesUtil.fillTo16Chars;
  * Třída zároveň řeší i speciální případ uživatele - hosta (guest). Heslo příslušného databázového uživatele
  * je uloženo v konstantě GUEST_PASSWORD. Pro přihlášení hosta se používá privátní konstruktor bez argumentů.
  */
-public class User {
+public class Uzivatel {
     @Getter private final String username;
     @Getter private final MongoClient client;
     private MongoDatabase praguePubDatabase = null;
     @Getter private boolean isLoggedIn = false;
 
-    private static User guest = null;
+    private static Uzivatel guest = null;
     private final static String GUEST_PASSWORD = "w22dY4DAJ7c2Rzf";
 
     //connection string je adresa clusteru mongoDB. V místě, kde je <> je potřeba doplnit jméno:heslo.
@@ -47,7 +47,7 @@ public class User {
      * @param username přihlašovací jméno uživatele
      * @param password heslo uživatele
      */
-    public User(String username, String password) {
+    public Uzivatel(String username, String password) {
         this.username = username;
 
         String dbPassword = this.getPasswordFromDatabase(username, password);
@@ -57,7 +57,7 @@ public class User {
     /**
      * Vytvoří instanci uživatele - guesta a přihlásí ho do databáze
      */
-    private User() {
+    private Uzivatel() {
         this.username = "guest";
         this.client = this.dbLogin(DB_USERNAMES.get("guest"), GUEST_PASSWORD);
     }
@@ -67,16 +67,16 @@ public class User {
      * Pokud je již guest vytvořen, tak pouze vrátí jeho již vytvořenou instanci, v opačném případě instanci vytvoří.
      * @return instanci uživatele - guest
      */
-    public static User guest() {
-        if (User.guest == null) {
-            User guestLogin = new User();
+    public static Uzivatel guest() {
+        if (Uzivatel.guest == null) {
+            Uzivatel guestLogin = new Uzivatel();
 
             if (!guestLogin.isLoggedIn()) {
                 return null;
             }
-            User.guest = guestLogin;
+            Uzivatel.guest = guestLogin;
         }
-        return User.guest;
+        return Uzivatel.guest;
     }
 
     /**
@@ -91,7 +91,7 @@ public class User {
         String dbPassword = null;
         AesUtil au = null;
 
-        User guestInstance = User.guest();
+        Uzivatel guestInstance = Uzivatel.guest();
         if (guestInstance == null) return null;
 
         Document userDocument = guestInstance
