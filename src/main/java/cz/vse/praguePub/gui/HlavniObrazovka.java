@@ -10,52 +10,44 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 
+import static cz.vse.praguePub.gui.Komponenty.*;
+
 public class HlavniObrazovka {
     private final Stage stage;
-    private final Scene scene;
     private final BorderPane bp;
-
-
 
     public HlavniObrazovka() {
         this.bp = new BorderPane();
         this.stage = new Stage();
 
         bp.getStyleClass().add("background");
-        bp.setTop(horniBar());
+        this.nastaveni();
 
-
-        this.scene = new Scene(bp, 700,700);
-        this.scene.getStylesheets().add("style.css");
-        this.stage.setScene(this.scene);
-        this.stage.show();
+        Scene scene = new Scene(bp, 700, 700);
+        scene.getStylesheets().add("style.css");
+        stage.setScene(scene);
+        stage.show();
     }
 
-    private HBox horniBar() {
-        Button prihlasitSe = new Button("Prihlasit se");
-        prihlasitSe.getStyleClass().add("tlacitkoAplikace");
-        prihlasitSe.setAlignment(Pos.BASELINE_RIGHT);
+    private void nastaveni() {
+        this.bp.setTop(
+                new Komponenty.HorniBar() {
+                    @Override
+                    void vlozPolozky(HBox horniPanel) {
+                        Button prihlasitSe = tlacitkoAplikace("Prihlasit se");
+                        Button oblibenePodniky = tlacitkoAplikace("Oblibene podniky");
 
-        Button oblibenePodniky = new Button("Oblibene podniky");
-        oblibenePodniky.getStyleClass().add("tlacitkoAplikace");
-        oblibenePodniky.setAlignment(Pos.BASELINE_CENTER);
+                        TextField vyhledavani = new TextField("Vyhledat");
+                        vyhledavani.getStyleClass().add("tlacitkoAplikace");
+                        vyhledavani.autosize();
 
+                        Label nazevLabel = new Label("Prague Pub");
+                        nazevLabel.setFont(Font.font("Helvetica", FontWeight.BOLD, 30));
+                        nazevLabel.setAlignment(Pos.BASELINE_LEFT);
 
-        TextField vyhledavani = new TextField("Vyhledat");
-        vyhledavani.getStyleClass().add("tlacitkoAplikace");
-        vyhledavani.autosize();
-
-
-
-        HBox hbox = new HBox();
-        Label nazevLabel = new Label("Prague Pub");
-        nazevLabel.setFont(Font.font("Helvetica", FontWeight.BOLD, 30));
-        nazevLabel.setAlignment(Pos.BASELINE_LEFT);
-        hbox.getChildren().addAll(nazevLabel, vyhledavani, oblibenePodniky, prihlasitSe);
-
-        hbox.getStyleClass().add("vrchniPanel");
-
-        return hbox;
+                        horniPanel.getChildren().addAll(nazevLabel, vyhledavani, oblibenePodniky, prihlasitSe);
+                }
+            }.getHorniPanel());
     }
 
 
