@@ -12,26 +12,22 @@ import javafx.stage.Stage;
 
 import static cz.vse.praguePub.gui.Komponenty.*;
 
-public class HlavniObrazovka {
+public class HlavniObrazovka extends Obrazovka<BorderPane> {
     private final Stage stage;
-    private final BorderPane bp;
 
     public HlavniObrazovka() {
-        this.bp = new BorderPane();
+        super(new BorderPane(), 700, 700);
         this.stage = new Stage();
 
-        bp.getStyleClass().add("background");
+        pane.getStyleClass().add("background");
         this.nastaveni();
 
-        Scene scene = new Scene(bp, 700, 700);
-        scene.getStylesheets().add("style.css");
         stage.setScene(scene);
         stage.show();
-
     }
 
     private void nastaveni() {
-        this.bp.setTop(
+        this.pane.setTop(
                 horniPanel((horniPanel) -> {
                     Button prihlasitSe = tlacitkoAplikace("Prihlasit se", (t)->{});
                     Button oblibenePodniky = tlacitkoAplikace("Oblibene podniky", (t)->{});
