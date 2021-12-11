@@ -2,6 +2,7 @@ package cz.vse.praguePub.start;
 
 import cz.vse.praguePub.gui.HlavniObrazovka;
 import cz.vse.praguePub.gui.Prihlaseni;
+import cz.vse.praguePub.gui.ZobrazitSeznamVLokaci;
 import cz.vse.praguePub.logic.User;
 import javafx.application.Application;
 import javafx.scene.control.Alert;
@@ -19,10 +20,10 @@ public class FXApp extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        new Prihlaseni(new BorderPane());
+        //new Prihlaseni(new BorderPane());
 
-        new HlavniObrazovka();
-
+        //new HlavniObrazovka();
+        new ZobrazitSeznamVLokaci();
 
     }
 }
