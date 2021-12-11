@@ -27,28 +27,25 @@ public class HlavniObrazovka {
         scene.getStylesheets().add("style.css");
         stage.setScene(scene);
         stage.show();
+
     }
 
     private void nastaveni() {
         this.bp.setTop(
-                new Komponenty.HorniBar() {
-                    @Override
-                    void vlozPolozky(HBox horniPanel) {
-                        Button prihlasitSe = tlacitkoAplikace("Prihlasit se");
-                        Button oblibenePodniky = tlacitkoAplikace("Oblibene podniky");
+                horniPanel((horniPanel) -> {
+                    Button prihlasitSe = tlacitkoAplikace("Prihlasit se", (t)->{});
+                    Button oblibenePodniky = tlacitkoAplikace("Oblibene podniky", (t)->{});
 
-                        TextField vyhledavani = new TextField("Vyhledat");
-                        vyhledavani.getStyleClass().add("tlacitkoAplikace");
-                        vyhledavani.autosize();
+                    TextField vyhledavani = new TextField("Vyhledat");
+                    vyhledavani.getStyleClass().add("tlacitkoAplikace");
+                    vyhledavani.autosize();
 
-                        Label nazevLabel = new Label("Prague Pub");
-                        nazevLabel.setFont(Font.font("Helvetica", FontWeight.BOLD, 30));
-                        nazevLabel.setAlignment(Pos.BASELINE_LEFT);
+                    Label nazevLabel = new Label("Prague Pub");
+                    nazevLabel.setFont(Font.font("Helvetica", FontWeight.BOLD, 30));
+                    nazevLabel.setAlignment(Pos.BASELINE_LEFT);
 
-                        horniPanel.getChildren().addAll(nazevLabel, vyhledavani, oblibenePodniky, prihlasitSe);
-                }
-            }.getHorniPanel());
+                    horniPanel.getChildren().addAll(nazevLabel, vyhledavani, oblibenePodniky, prihlasitSe);
+                })
+        );
     }
-
-
 }
