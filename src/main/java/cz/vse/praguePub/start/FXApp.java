@@ -25,5 +25,9 @@ public class FXApp extends Application {
                 .setContent(utf8encode("Týmová semestrální práce"))
                 .getAlert()
                 .showAndWait();
+
+        new HlavniObrazovka();
+
+
     }
 }
