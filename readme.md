@@ -14,5 +14,5 @@ Uživatel bude moct v aplikaci najít různé podniky v Praze a přečíst si je
 
 
 
-## Konfigurace:
+### Konfigurace:
 Projekt jede na **Javě 17** a používá **Gradle 7.3**
