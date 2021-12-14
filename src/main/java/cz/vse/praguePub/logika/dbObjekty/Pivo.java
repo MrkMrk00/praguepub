@@ -1,19 +1,35 @@
 package cz.vse.praguePub.logika.dbObjekty;
 
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
+import lombok.Data;
+import org.bson.Document;
 
-@EqualsAndHashCode
-@AllArgsConstructor
-public class Pivo {
-    @Getter private final String nazevPivovaru;
-    @Getter private final double stupnovitost;
-    @Getter private final double obsahAlkoholu;
-    @Getter private final String typ;
-    @Getter private final String typKvaseni;
-    @Getter private final String nazev;
+import java.util.Map;
 
-    @Getter private final double cena;
-    @Getter private final double objem;
+@Data
+public class Pivo implements DBObjekt {
+    private final String nazev;
+    private final String nazevPivovaru;
+    private final double stupnovitost;
+    private final double obsahAlkoholu;
+    private final String typ;
+    private final String typKvaseni;
+
+    private final double cena;
+    private final double objem;
+
+    @Override
+    public Document toDocument() {
+        Document pivo = new Document();
+        pivo.putAll(
+                Map.of(
+                        "nazev", this.nazev,
+                        "nazev_pivovaru", this.nazevPivovaru,
+                        "stupnovitost", this.stupnovitost,
+                        "obsah_alkoholu", this.obsahAlkoholu,
+                        "typ", this.typ,
+                        "typ_kvaseni", this.typKvaseni
+                )
+        );
+        return pivo;
+    }
 }

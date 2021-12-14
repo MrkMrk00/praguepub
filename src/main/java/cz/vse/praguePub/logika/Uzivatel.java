@@ -25,7 +25,7 @@ import static cz.vse.praguePub.util.AesUtil.fillTo16Chars;
  * Třída zároveň řeší i speciální případ uživatele - hosta (guest). Heslo příslušného databázového uživatele
  * je uloženo v konstantě GUEST_PASSWORD. Pro přihlášení hosta se používá privátní konstruktor bez argumentů.
  */
-public class Uzivatel {
+public class Uzivatel implements IUzivatel {
     @Getter private final String username;
     @Getter private final MongoClient client;
     private MongoDatabase praguePubDatabase = null;
@@ -130,6 +130,7 @@ public class Uzivatel {
     /**
      * @return databázi <i>prague_pub</i> v db clusteru
      */
+    @Override
     public MongoDatabase getPraguePubDatabase() {
         if (this.praguePubDatabase == null) {
             this.praguePubDatabase = this.getClient().getDatabase("prague_pub");

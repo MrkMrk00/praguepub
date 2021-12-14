@@ -1,14 +1,24 @@
 package cz.vse.praguePub.logika.dbObjekty;
 
 import cz.vse.praguePub.logika.Uzivatel;
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
+import lombok.Data;
+import org.bson.Document;
 
-@EqualsAndHashCode
-@AllArgsConstructor
-public class Recenze {
-    @Getter private Uzivatel uzivatel;
-    @Getter private String text;
-    @Getter private double hodnoceni;
+@Data
+public class Recenze implements DBObjekt {
+    private final String uzivatel;
+    private final String text;
+    private final double hodnoceni;
+
+    public static Recenze getFromDocument(Document doc) {
+        return new Recenze(
+                doc.get("uzivatel", String.class),
+                doc.get("text", String.class),
+                doc.get("hodnoceni", Double.class));
+    }
+
+    @Override
+    public Document toDocument() {
+        return null;
+    }
 }
