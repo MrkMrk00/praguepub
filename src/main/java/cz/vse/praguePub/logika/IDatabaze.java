@@ -4,12 +4,13 @@ import cz.vse.praguePub.logika.dbObjekty.Pivo;
 import cz.vse.praguePub.logika.dbObjekty.Podnik;
 
 import java.util.List;
+import java.util.Set;
 
 public interface IDatabaze {
 
-    List<Podnik> getPodnikyVMestskeCasti(int mestskaCast);
+    Set<Podnik> getPodnikyVMestskeCasti(int mestskaCast);
 
-    List<Podnik> getPodnikyPodlePiva(Pivo pivo);
+    Set<Podnik> getPodnikyPodlePiva(Pivo pivo);
 
-    List<Podnik> getPodnikyPodleNazvu(String nazev);
+    Set<Podnik> getPodnikyPodleNazvu(String nazev);
 }

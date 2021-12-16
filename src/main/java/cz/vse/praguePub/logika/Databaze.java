@@ -1,13 +1,12 @@
 package cz.vse.praguePub.logika;
 
+
 import com.mongodb.client.MongoDatabase;
 import cz.vse.praguePub.logika.dbObjekty.Pivo;
 import cz.vse.praguePub.logika.dbObjekty.Podnik;
 import org.bson.Document;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static com.mongodb.client.model.Filters.*;
 
@@ -20,27 +19,29 @@ public class Databaze implements IDatabaze {
         this.db = uzivatel.getPraguePubDatabase();
     }
 
-    @Override
-    public List<Podnik> getPodnikyVMestskeCasti(int mestskaCast) {
-        var podnikyDB = this.db.getCollection("podniky")
-                .find(eq("adresa.mc_cislo", mestskaCast));
-
-        List<Podnik> podnikyKVraceni = new ArrayList<>();
-        for (Document podnik : podnikyDB) {
-            Document adresa = podnik.get("adresa", Document.class);
-            podnikyKVraceni.add(Podnik.getFromDocument(podnik)
-            );
-        }
-        return podnikyKVraceni;
+    private Set<Podnik> prevedNalezeneNaInstance(Iterable<Document> nalezenePodniky) {
+        Set<Podnik> vratit = new HashSet<>();
+        nalezenePodniky.forEach(podnikDoc ->
+                vratit.add(Podnik.inicializujZDokumentu(podnikDoc, this.db.getCollection("piva")))
+        );
+        return vratit;
     }
 
     @Override
-    public List<Podnik> getPodnikyPodlePiva(Pivo pivo) {
+    public Set<Podnik> getPodnikyVMestskeCasti(int mestskaCast) {
+        var podnikyDB = this.db.getCollection("podniky")
+                .find(eq("adresa.mc_cislo", mestskaCast));
+
+        return this.prevedNalezeneNaInstance(podnikyDB);
+    }
+
+    @Override
+    public Set<Podnik> getPodnikyPodlePiva(Pivo pivo) {
         return null;
     }
 
     @Override
-    public List<Podnik> getPodnikyPodleNazvu(String nazev) {
+    public Set<Podnik> getPodnikyPodleNazvu(String nazev) {
         return null;
     }
 }

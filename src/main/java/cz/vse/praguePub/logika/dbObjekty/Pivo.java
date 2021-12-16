@@ -17,8 +17,21 @@ public class Pivo implements DBObjekt {
     private final double cena;
     private final double objem;
 
+    public static Pivo inicializujZDokumentu(Document pivo, double cena, double objem) {
+        return new Pivo(
+                pivo.get("nazev", String.class),
+                pivo.get("pivovar", String.class),
+                pivo.get("stupnovitost", Double.class),
+                pivo.get("obsah_alkoholu", Double.class),
+                pivo.get("typ", String.class),
+                pivo.get("typ_kvaseni", String.class),
+                cena,
+                objem
+        );
+    }
+
     @Override
-    public Document toDocument() {
+    public Document getDocument() {
         Document pivo = new Document();
         pivo.putAll(
                 Map.of(
