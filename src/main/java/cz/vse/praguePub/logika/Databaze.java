@@ -1,10 +1,10 @@
 package cz.vse.praguePub.logika;
 
-
 import com.mongodb.client.MongoDatabase;
 import cz.vse.praguePub.logika.dbObjekty.Pivo;
 import cz.vse.praguePub.logika.dbObjekty.Podnik;
 import org.bson.Document;
+import org.bson.types.ObjectId;
 
 import java.util.*;
 
@@ -37,11 +37,33 @@ public class Databaze implements IDatabaze {
 
     @Override
     public Set<Podnik> getPodnikyPodlePiva(Pivo pivo) {
-        return null;
+        Document pivoDB = this.db.getCollection("piva").find(pivo.getDocument()).first();
+        if (pivoDB == null) return null;
+        return this.getPodnikyPodleIDPiva(pivoDB.getObjectId("_id"));
+    }
+
+    @Override
+    public Set<Podnik> getPodnikyPodleIDPiva(ObjectId pivoID) {
+        Set<Podnik> vratit = new HashSet<>();
+        Document query = new Document("piva", new Document("$in", List.of(pivoID)));
+
+        this.db.getCollection("podniky").find(query)
+                .forEach(doc -> vratit.add(
+                            Podnik.inicializujZDokumentu(doc, this.db.getCollection("piva")
+                        )
+                ));
+        return vratit;
     }
 
     @Override
     public Set<Podnik> getPodnikyPodleNazvu(String nazev) {
-        return null;
+        Set<Podnik> vratit = new HashSet<>();
+        var podnikyDB = this.db.getCollection("podniky")
+                .find(new Document("jmeno", nazev));
+
+        for (Document podnikDoc : podnikyDB)
+            vratit.add(Podnik.inicializujZDokumentu(podnikDoc, this.db.getCollection("piva")));
+
+        return vratit;
     }
 }
