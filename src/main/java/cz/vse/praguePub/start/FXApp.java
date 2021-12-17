@@ -1,11 +1,21 @@
 package cz.vse.praguePub.start;
 
+
 import cz.vse.praguePub.logika.Databaze;
 import cz.vse.praguePub.logika.Uzivatel;
+
+import cz.vse.praguePub.gui.HlavniObrazovka;
+import cz.vse.praguePub.gui.ZobrazitSeznamVLokaci;
+import cz.vse.praguePub.gui.komponenty.Tabulka;
+import cz.vse.praguePub.logika.dbObjekty.Pivo;
+
 import javafx.application.Application;
-import javafx.scene.control.Alert;
+import javafx.scene.Scene;
+import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
-import cz.vse.praguePub.util.AlertBuilder;
+
+import java.util.List;
+import java.util.Map;
 
 public class FXApp extends Application {
 
@@ -16,10 +26,20 @@ public class FXApp extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        new AlertBuilder(Alert.AlertType.INFORMATION)
-                .setHeaderText("Zdar!")
-                .setContent("Týmová semestrální práce")
-                .getAlert()
-                .showAndWait();
+        var bp = new BorderPane();
+        Tabulka<Pivo> tab = new Tabulka<>(Map.of("nazev", "nazev"));
+        tab.setRadky(List.of(new Pivo("abc","asd", 6, 6, "Asd", "asd", 6, 6)));
+        bp.setCenter(tab.getTableView());
+        var st = new Stage();
+        st.setScene(new Scene(bp, 400, 400));
+        st.show();
+
+
+        List.of(new HlavniObrazovka().getScene(), new ZobrazitSeznamVLokaci().getScene()).forEach(
+                (scene) -> {
+                    Stage newStage = new Stage();
+                    newStage.setScene(scene);
+                    newStage.show();
+                });
     }
 }

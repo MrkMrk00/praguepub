@@ -1,4 +1,10 @@
 package cz.vse.praguePub.gui;
 
-public class Prihlaseni {
+import javafx.scene.layout.BorderPane;
+
+public class Prihlaseni extends Obrazovka<BorderPane> {
+
+    public Prihlaseni() {
+        super(new BorderPane(), 400, 400, "background");
+    }
 }
