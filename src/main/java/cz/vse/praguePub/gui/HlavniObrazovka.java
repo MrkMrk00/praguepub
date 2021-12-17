@@ -8,7 +8,7 @@ import javafx.scene.layout.*;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 
-import static cz.vse.praguePub.gui.Komponenty.*;
+import static cz.vse.praguePub.gui.komponenty.Komponenty.*;
 
 public class HlavniObrazovka extends Obrazovka<BorderPane> {
 

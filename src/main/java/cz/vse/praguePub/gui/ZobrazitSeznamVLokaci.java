@@ -7,8 +7,8 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 
-import static cz.vse.praguePub.gui.Komponenty.HorniPanel;
-import static cz.vse.praguePub.gui.Komponenty.TlacitkoAplikace;
+import static cz.vse.praguePub.gui.komponenty.Komponenty.HorniPanel;
+import static cz.vse.praguePub.gui.komponenty.Komponenty.TlacitkoAplikace;
 
 public class ZobrazitSeznamVLokaci extends Obrazovka<BorderPane> {
 

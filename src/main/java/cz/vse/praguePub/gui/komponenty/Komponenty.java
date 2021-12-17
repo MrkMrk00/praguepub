@@ -1,4 +1,4 @@
-package cz.vse.praguePub.gui;
+package cz.vse.praguePub.gui.komponenty;
 
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;

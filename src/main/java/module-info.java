@@ -10,4 +10,5 @@ module praguePub.main {
     requires org.apache.commons.codec;
 
     exports cz.vse.praguePub.start;
+    opens cz.vse.praguePub.logika.dbObjekty;
 }
