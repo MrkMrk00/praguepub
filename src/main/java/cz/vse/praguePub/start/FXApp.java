@@ -1,10 +1,11 @@
 package cz.vse.praguePub.start;
 
+import cz.vse.praguePub.gui.HlavniObrazovka;
 import cz.vse.praguePub.gui.ZobrazitSeznamVLokaci;
 import javafx.application.Application;
-import javafx.scene.control.Alert;
 import javafx.stage.Stage;
-import cz.vse.praguePub.util.AlertBuilder;
+
+import java.util.List;
 
 public class FXApp extends Application {
 
@@ -14,15 +15,11 @@ public class FXApp extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        //new Prihlaseni(new BorderPane());
-
-        //new HlavniObrazovka();
-        new ZobrazitSeznamVLokaci();
-
-        new AlertBuilder(Alert.AlertType.INFORMATION)
-                .setHeaderText("Zdar!")
-                .setContent("Týmová semestrální práce")
-                .getAlert()
-                .showAndWait();
+        List.of(new HlavniObrazovka().getScene(), new ZobrazitSeznamVLokaci().getScene()).forEach(
+                (scene) -> {
+                    Stage newStage = new Stage();
+                    newStage.setScene(scene);
+                    newStage.show();
+                });
     }
 }

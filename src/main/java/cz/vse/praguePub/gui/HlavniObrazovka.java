@@ -1,36 +1,27 @@
 package cz.vse.praguePub.gui;
 
 import javafx.geometry.Pos;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.*;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
-import javafx.stage.Stage;
 
 import static cz.vse.praguePub.gui.Komponenty.*;
 
 public class HlavniObrazovka extends Obrazovka<BorderPane> {
-    private final Stage stage;
 
     public HlavniObrazovka() {
-        super(new BorderPane(), 700, 700);
-        this.stage = new Stage();
-
-        pane.getStyleClass().add("background");
+        super(new BorderPane(), 700, 700, "background");
         this.nastaveni();
-
-        stage.setScene(scene);
-        stage.show();
     }
 
     private void nastaveni() {
-        this.pane.setTop(
-                horniPanel((horniPanel) -> {
-                    Button prihlasitSe = tlacitkoAplikace("Prihlasit se", (t)->{});
-                    Button oblibenePodniky = tlacitkoAplikace("Oblibene podniky", (t)->{});
+        this.getPane().setTop(
+                HorniPanel((horniPanel) -> {
+                    Button prihlasitSe = TlacitkoAplikace("Prihlasit se", (t)->{});
+                    Button oblibenePodniky = TlacitkoAplikace("Oblibene podniky", (t)->{});
 
                     TextField vyhledavani = new TextField("Vyhledat");
                     vyhledavani.getStyleClass().add("tlacitkoAplikace");
