@@ -25,11 +25,11 @@ import static cz.vse.praguePub.util.AesUtil.fillTo16Chars;
  * Třída zároveň řeší i speciální případ uživatele - hosta (guest). Heslo příslušného databázového uživatele
  * je uloženo v konstantě GUEST_PASSWORD. Pro přihlášení hosta se používá privátní konstruktor bez argumentů.
  */
-public class Uzivatel implements IUzivatel {
+public class Uzivatel {
     @Getter private final String username;
     @Getter private final MongoClient client;
-    private MongoDatabase praguePubDatabase = null;
-    @Getter private boolean isLoggedIn = false;
+    private MongoDatabase praguePubDatabaze = null;
+    @Getter private boolean prihlasen = false;
 
     private static Uzivatel guest = null;
     private final static String GUEST_PASSWORD = "w22dY4DAJ7c2Rzf";
@@ -44,13 +44,13 @@ public class Uzivatel implements IUzivatel {
 
     /**
      * Konstruktor uživatele aplikace, přihlašuje uživatele zároveň do databáze
-     * @param username přihlašovací jméno uživatele
-     * @param password heslo uživatele
+     * @param prihlasovaciJmeno přihlašovací jméno uživatele
+     * @param heslo heslo uživatele
      */
-    public Uzivatel(String username, String password) {
-        this.username = username;
+    public Uzivatel(String prihlasovaciJmeno, String heslo) {
+        this.username = prihlasovaciJmeno;
 
-        String dbPassword = this.getPasswordFromDatabase(username, password);
+        String dbPassword = this.getPasswordFromDatabase(username, heslo);
         this.client = this.dbLogin(DB_USERNAMES.get("regular"), dbPassword);
     }
 
@@ -71,7 +71,7 @@ public class Uzivatel implements IUzivatel {
         if (Uzivatel.guest == null) {
             Uzivatel guestLogin = new Uzivatel();
 
-            if (!guestLogin.isLoggedIn()) {
+            if (!guestLogin.isPrihlasen()) {
                 return null;
             }
             Uzivatel.guest = guestLogin;
@@ -95,7 +95,7 @@ public class Uzivatel implements IUzivatel {
         if (guestInstance == null) return null;
 
         Document userDocument = guestInstance
-                .getPraguePubDatabase()
+                .getPraguePubDatabaze()
                 .getCollection("users")
                 .find(eq("username", username))
                 .first();
@@ -119,10 +119,10 @@ public class Uzivatel implements IUzivatel {
         MongoClient mongoClient = MongoClients.create(fillConString(username, password));
         try {
             mongoClient.listDatabaseNames().first();
-            this.isLoggedIn = true;
+            this.prihlasen = true;
         } catch ( MongoCommandException | MongoSecurityException e) {
             mongoClient.close();
-            this.isLoggedIn = false;
+            this.prihlasen = false;
         }
         return mongoClient;
     }
@@ -130,12 +130,11 @@ public class Uzivatel implements IUzivatel {
     /**
      * @return databázi <i>prague_pub</i> v db clusteru
      */
-    @Override
-    public MongoDatabase getPraguePubDatabase() {
-        if (this.praguePubDatabase == null) {
-            this.praguePubDatabase = this.getClient().getDatabase("prague_pub");
+    public MongoDatabase getPraguePubDatabaze() {
+        if (this.praguePubDatabaze == null) {
+            this.praguePubDatabaze = this.getClient().getDatabase("prague_pub");
         }
-        return this.praguePubDatabase;
+        return this.praguePubDatabaze;
     }
 
     /**

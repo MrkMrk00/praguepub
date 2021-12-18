@@ -11,12 +11,12 @@ import java.util.*;
 import static com.mongodb.client.model.Filters.*;
 
 public class Databaze implements IDatabaze {
-    private final IUzivatel uzivatel;
+    private final Uzivatel uzivatel;
     private final MongoDatabase db;
 
-    public Databaze(IUzivatel uzivatel) {
+    public Databaze(Uzivatel uzivatel) {
         this.uzivatel = uzivatel;
-        this.db = uzivatel.getPraguePubDatabase();
+        this.db = uzivatel.getPraguePubDatabaze();
     }
 
     private Set<Podnik> prevedNalezeneNaInstance(Iterable<Document> nalezenePodniky) {

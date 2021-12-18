@@ -10,15 +10,65 @@ import java.util.*;
 @Data
 public class Podnik implements DBObjekt {
     private final String nazev;
-
     private final int adresa_mc_cislo;
     private final String adresa_mc_nazev;
-    private final String adresa_psc;
     private final String adresa_ulice;
+    private final String adresa_psc;
     private final Integer adresa_cp;
-
     private final Set<Recenze> recenze;
     private final Map<ObjectId, Pivo> pivniListek;
+
+    //levý sloupec: názvy, co se zobrazí v tabulce jako nadpisy sloupců; pravý sloupec: názvy atributů instance)
+    //(logika tabulky bere atribut instance přes getter, tudíž atribut musí být v camelCase a metoda musí začínat "get")
+    public static final String[][] PRO_TABULKU = {
+            { "Název",          "nazev"            },
+            { "Adresa",         "adresaProTabulku" },
+            { "Nabízená piva",  "pivaProTabulku"   }
+    };
+
+    /**
+     * Naformátuje adresu pro výpis v tabulce podniků
+     * @return formátovaný string
+     */
+    public String getAdresaProTabulku() {
+        return this.adresa_ulice + " " + this.adresa_cp + ", " + this.adresa_mc_nazev;
+    }
+
+    /**
+     * Vrátí string, který se zobrazí v tabulce jako krátký popis toho, co podnik nabízí
+     * @return formátovaný string
+     */
+    public String getPivaProTabulku() {
+        StringBuilder sb = new StringBuilder();
+
+        this.getPivniListek().forEach(
+                (objID, pivo) -> sb.append(pivo.getNazev())
+                        .append(" à ")
+                        .append(pivo.getCena())
+                        .append(" Kč")
+                        .append(",\n")
+        );
+
+        int start = (sb.length() < 3) ? 0 : sb.length() - 2;
+        int end   = (sb.length() < 3) ? 0 : sb.length() - 1;
+        return sb.delete(start, end).toString();
+    }
+
+    /**
+     * Getter pro recenze u podniku
+     * @return kopii setu s recenzemi
+     */
+    public Set<Recenze> getRecenze() {
+        return Collections.unmodifiableSet(this.recenze);
+    }
+
+    /**
+     * Getter pro nabízená piva podnikem
+     * @return kopii mapy s nabízenými pivy
+     */
+    public Map<ObjectId, Pivo> getPivniListek() {
+        return Collections.unmodifiableMap(this.pivniListek);
+    }
 
     /**
      * Vytvoří instanci podniku z databázového dokumentu. <br>
@@ -29,16 +79,14 @@ public class Podnik implements DBObjekt {
      */
     public static Podnik inicializujZDokumentu(Document doc, MongoCollection<Document> kolekcePiv) {
         Set<Recenze> recenzeLst = new HashSet<>();
-        doc.get("recenze", Document.class).forEach(
-                (key, recenze) -> recenzeLst.add(Recenze.inicializujZDokumentu((Document)recenze))
+        doc.getList("recenze", Document.class).forEach(
+                (recenze) -> recenzeLst.add(Recenze.inicializujZDokumentu(recenze))
         );
 
         Map<ObjectId, Pivo> pivniListek = new HashMap<>();
-        doc.get("piva", Document.class).forEach(
-                (key, pivoDocRaw) -> {
-                    Document pivoDoc = (Document)pivoDocRaw;
-
-                    ObjectId pivoID = pivoDoc.get("_id", ObjectId.class);
+        doc.getList("piva", Document.class).forEach(
+                (pivoDoc) -> {
+                    ObjectId pivoID = pivoDoc.get("pivo", ObjectId.class);
                     Document naleznutePivo = kolekcePiv.find(new Document("_id", pivoID)).first();
 
                     if (naleznutePivo != null) pivniListek.put(
@@ -63,14 +111,6 @@ public class Podnik implements DBObjekt {
                 recenzeLst,
                 pivniListek
         );
-    }
-
-    public Set<Recenze> getRecenze() {
-        return Collections.unmodifiableSet(this.recenze);
-    }
-
-    public Map<ObjectId, Pivo> getPivniListek() {
-        return Collections.unmodifiableMap(this.pivniListek);
     }
 
     /**

@@ -13,10 +13,29 @@ public class Pivo implements DBObjekt {
     private final double obsahAlkoholu;
     private final String typ;
     private final String typKvaseni;
-
     private final double cena;
     private final double objem;
 
+    //levý sloupec: názvy, co se zobrazí v tabulce jako nadpisy sloupců; pravý sloupec: názvy atributů instance
+    //(logika tabulky bere atribut instance přes getter, tudíž atribut musí být v camelCase a metoda musí začínat "get")
+    public static final String[][] PRO_TABULKU = {
+            { "Název",          "nazev"         },
+            { "Název pivovaru", "nazevPivovaru" },
+            { "Stupňovitost",   "stupnovitost"  },
+            { "Obsah alkoholu", "obsahAlkoholu" },
+            { "Typ",            "typ"           },
+            { "Typ kvašení",    "typKvaseni"    },
+            { "Cena",           "cena"          },
+            { "Objem",          "objem"         }
+    };
+
+    /**
+     * Vytvoří instanci podniku z databázového dokumentu. <br>
+     * @param pivo databázový dokument
+     * @param cena cena piva, za kterou podnik pivo nabízí
+     * @param objem objem piva který podnik nabízí
+     * @return instanci podniku
+     */
     public static Pivo inicializujZDokumentu(Document pivo, double cena, double objem) {
         return new Pivo(
                 pivo.get("nazev", String.class),
