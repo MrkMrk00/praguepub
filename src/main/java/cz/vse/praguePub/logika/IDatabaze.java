@@ -28,6 +28,14 @@ public interface IDatabaze {
     Set<Podnik> getPodnikyPodlePiva(Pivo pivo);
 
     /**
+     * Vyhledá podniky podle ceny piva. V případě, že nic nenajde, vrátí prázdný Set
+     * @param min nejnižší hodnota ceny
+     * @param max nejvyšší hodnota ceny
+     * @return Set s podniky, kde je cena piva v daném intervalu
+     */
+    Set<Podnik> getPodnikyPodleCenyPiva(double min, double max);
+
+    /**
      * Vrátí všechny podniky, které nabízí pivo s daným ID.
      * <p>
      * @param pivoID ObjectID piva, které je nabízeno hledanými podniky

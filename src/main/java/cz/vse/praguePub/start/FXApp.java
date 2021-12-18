@@ -18,7 +18,7 @@ import java.util.List;
 public class FXApp extends Application {
 
     public static void main(String[] args) {
-        new Databaze(Uzivatel.guest()).getPodnikyVMestskeCasti(6).forEach(it -> System.out.println(it.getNazev()));
+        new Databaze(Uzivatel.guest()).getPodnikyPodleCenyPiva(0, 30).forEach(it -> System.out.println(it.toString()));
         Application.launch(args);
     }
 

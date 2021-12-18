@@ -43,6 +43,15 @@ public class Databaze implements IDatabaze {
     }
 
     @Override
+    public Set<Podnik> getPodnikyPodleCenyPiva(double min, double max) {
+        var podnikyDB = this.db.getCollection("podniky").find(
+                and(lt("piva.cena", max), gt("piva.cena", min))
+        );
+
+        return this.prevedNalezeneNaInstance(podnikyDB);
+    }
+
+    @Override
     public Set<Podnik> getPodnikyPodleIDPiva(ObjectId pivoID) {
         Set<Podnik> vratit = new HashSet<>();
         Document query = new Document("piva", new Document("$in", List.of(pivoID)));
