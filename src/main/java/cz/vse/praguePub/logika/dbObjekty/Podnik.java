@@ -1,5 +1,6 @@
 package cz.vse.praguePub.logika.dbObjekty;
 
+import com.mongodb.BasicDBObject;
 import com.mongodb.client.MongoCollection;
 import lombok.Data;
 import org.bson.Document;
@@ -113,13 +114,32 @@ public class Podnik implements DBObjekt {
         );
     }
 
-    /**
-     * nefunguje<br>
-     * TODO!!!!
-     * @return null
-     */
     @Override
     public Document getDocument() {
-        return null;
+        List<BasicDBObject> recenzeList = new ArrayList<>();
+        this.getRecenze().forEach(rec -> recenzeList.add(new BasicDBObject(rec.getDocument())));
+
+        List<BasicDBObject> pivoList = new ArrayList<>();
+        this.getPivniListek().forEach(
+                (id, pivo) -> pivoList.add(
+                        new BasicDBObject(Map.of(
+                        "pivo", id,
+                        "cena", pivo.getCena(),
+                        "objem", pivo.getObjem()
+                )))
+        );
+
+        return new Document(Map.of(
+                "jmeno", this.nazev,
+                "adresa", Map.of(
+                        "mc_cislo", this.adresa_mc_cislo,
+                        "mc_nazev", this.adresa_mc_nazev,
+                        "psc", this.adresa_psc,
+                        "ulice", this.adresa_ulice,
+                        "cp", this.adresa_cp
+                ),
+                "recenze", recenzeList,
+                "piva", pivoList
+        ));
     }
 }

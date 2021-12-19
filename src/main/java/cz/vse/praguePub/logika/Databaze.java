@@ -1,78 +1,68 @@
 package cz.vse.praguePub.logika;
 
-import com.mongodb.client.MongoDatabase;
 import cz.vse.praguePub.logika.dbObjekty.Pivo;
 import cz.vse.praguePub.logika.dbObjekty.Podnik;
-import org.bson.Document;
 import org.bson.types.ObjectId;
 
-import java.util.*;
+import java.util.Set;
 
-import static com.mongodb.client.model.Filters.*;
+public interface Databaze {
 
-public class Databaze implements IDatabaze {
-    private final Uzivatel uzivatel;
-    private final MongoDatabase db;
-
-    public Databaze(Uzivatel uzivatel) {
-        this.uzivatel = uzivatel;
-        this.db = uzivatel.getPraguePubDatabaze();
+    /**
+     * Připojení k MongoDB databázi
+     * @param uzivatel instance uživatele, který se k databázi chce připojit
+     * @return instanci databáze
+     */
+    static DatabazeImpl get(Uzivatel uzivatel) {
+        return new DatabazeImpl(uzivatel);
     }
 
-    private Set<Podnik> prevedNalezeneNaInstance(Iterable<Document> nalezenePodniky) {
-        Set<Podnik> vratit = new HashSet<>();
-        nalezenePodniky.forEach(podnikDoc ->
-                vratit.add(Podnik.inicializujZDokumentu(podnikDoc, this.db.getCollection("piva")))
-        );
-        return vratit;
-    }
+    /**
+     * Vratí všechny podniky, které se nachází v dané městské části.
+     * <p>
+     * <strong>Vrací null v případě špatných vstupních parametrů! (např. městská část neexistuje)</strong>
+     * @param mestskaCast číslo městské části ze které vrátí podniky
+     * @return Set s podniky v městské části nebo <strong>null</strong>
+     */
+    Set<Podnik> getPodnikyVMestskeCasti(int mestskaCast);
 
-    @Override
-    public Set<Podnik> getPodnikyVMestskeCasti(int mestskaCast) {
-        var podnikyDB = this.db.getCollection("podniky")
-                .find(eq("adresa.mc_cislo", mestskaCast));
+    /**
+     * Vratí všechny podniky, které nabízí dané pivo.
+     * Instance piva je vyhledávána v databázi - pokud možno, použij metodu <strong>getPodnikyPodleIDPiva(ObjectId pivoID)</strong>
+     * <p>
+     * <strong>Vrací null v případě špatných vstupních parametrů! (např. pivo neexistuje v databázi)</strong>
+     * @param pivo instance piva, podle které vyhledá v databázi podnik
+     * @return Set s podniky, které nabízí dané pivo nebo <strong>null</strong>
+     */
+    Set<Podnik> getPodnikyPodlePiva(Pivo pivo);
 
-        return this.prevedNalezeneNaInstance(podnikyDB);
-    }
+    /**
+     * Vyhledá podniky podle ceny piva. V případě, že nic nenajde, vrátí prázdný Set
+     * @param min nejnižší hodnota ceny
+     * @param max nejvyšší hodnota ceny
+     * @return Set s podniky, kde je cena piva v daném intervalu
+     */
+    Set<Podnik> getPodnikyPodleCenyPiva(double min, double max);
 
-    @Override
-    public Set<Podnik> getPodnikyPodlePiva(Pivo pivo) {
-        Document pivoDB = this.db.getCollection("piva").find(pivo.getDocument()).first();
-        if (pivoDB == null) return null;
-        return this.getPodnikyPodleIDPiva(pivoDB.getObjectId("_id"));
-    }
+    /**
+     * Vrátí všechny podniky, které nabízí pivo s daným ID.
+     * @param pivoID ObjectID piva, které je nabízeno hledanými podniky
+     * @return Set s podniky, které nabízí dané pivo
+     */
+    Set<Podnik> getPodnikyPodleIDPiva(ObjectId pivoID);
 
-    @Override
-    public Set<Podnik> getPodnikyPodleCenyPiva(double min, double max) {
-        var podnikyDB = this.db.getCollection("podniky").find(
-                and(lt("piva.cena", max), gt("piva.cena", min))
-        );
+    /**
+     * Vyhledá podniky podle jejich názvu.
+     * @param nazev název hledaného/hledaných podniků
+     * @return Set s podniky s hledaným jménem
+     */
+    Set<Podnik> getPodnikyPodleNazvu(String nazev);
 
-        return this.prevedNalezeneNaInstance(podnikyDB);
-    }
-
-    @Override
-    public Set<Podnik> getPodnikyPodleIDPiva(ObjectId pivoID) {
-        Set<Podnik> vratit = new HashSet<>();
-        Document query = new Document("piva", new Document("$in", List.of(pivoID)));
-
-        this.db.getCollection("podniky").find(query)
-                .forEach(doc -> vratit.add(
-                            Podnik.inicializujZDokumentu(doc, this.db.getCollection("piva")
-                        )
-                ));
-        return vratit;
-    }
-
-    @Override
-    public Set<Podnik> getPodnikyPodleNazvu(String nazev) {
-        Set<Podnik> vratit = new HashSet<>();
-        var podnikyDB = this.db.getCollection("podniky")
-                .find(new Document("jmeno", nazev));
-
-        for (Document podnikDoc : podnikyDB)
-            vratit.add(Podnik.inicializujZDokumentu(podnikDoc, this.db.getCollection("piva")));
-
-        return vratit;
-    }
+    /**
+     * Metoda s logikou založení nového podniku. Vrací výsledek, který může znamenat, že podnik byl úspěšně vytvořen, nebo
+     * že založení potřebuje další vstup uživatele. (více v třídě {@link cz.vse.praguePub.logika.Vysledek Vysledek})
+     * @param novyPodnik instance podniku, který se má založit
+     * @return výsledek s možností dalšího vstupu nebo s informací o úspěšném vložení
+     */
+    Vysledek<Podnik> zalozNovyPodnik(Podnik novyPodnik);
 }

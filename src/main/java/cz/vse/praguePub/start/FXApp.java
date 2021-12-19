@@ -18,7 +18,7 @@ import java.util.List;
 public class FXApp extends Application {
 
     public static void main(String[] args) {
-        new Databaze(Uzivatel.guest()).getPodnikyPodleCenyPiva(0, 30).forEach(it -> System.out.println(it.toString()));
+        Databaze.get(Uzivatel.guest()).getPodnikyPodleCenyPiva(0, 30).forEach(it -> System.out.println(it.toString()));
         Application.launch(args);
     }
 
@@ -35,7 +35,7 @@ public class FXApp extends Application {
 
         var bp2 = new BorderPane();
         Tabulka<Podnik> tab2 = new Tabulka<>(Podnik.PRO_TABULKU);
-        tab2.setRadky(new Databaze(Uzivatel.guest()).getPodnikyVMestskeCasti(6).stream().toList());
+        tab2.setRadky(Databaze.get(Uzivatel.guest()).getPodnikyVMestskeCasti(6).stream().toList());
         bp2.setCenter(tab2.getTableView());
         var st2 = new Stage();
         st2.setScene(new Scene(bp2, 900, 400));
