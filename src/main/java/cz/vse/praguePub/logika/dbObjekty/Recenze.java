@@ -1,17 +1,25 @@
 package cz.vse.praguePub.logika.dbObjekty;
 
-import com.mongodb.client.MongoCollection;
+import cz.vse.praguePub.logika.Uzivatel;
+import lombok.AccessLevel;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.bson.Document;
 import org.bson.types.ObjectId;
 
 import java.util.Map;
+
+import static com.mongodb.client.model.Filters.eq;
 
 @Data
 public class Recenze implements DBObjekt {
     private final ObjectId uzivatel;
     private final String text;
     private final double hodnoceni;
+
+    @Setter(AccessLevel.NONE) @Getter(AccessLevel.NONE)
+    private String uzivatelskeJmeno = null;
 
     /**
      * Vytvoří instanci recenze z databázového dokumentu
@@ -27,14 +35,23 @@ public class Recenze implements DBObjekt {
 
     /**
      * V recenzi je uložené pouze ID uživatele, který recenzi vytvořil. Pro doptání se na jméno uživatele je potřeba ho najít v databázi.
-     * @param uzivatele MongoCollection s uživateli
      * @return jméno uživatele
      */
-    public String getUzivatelskeJmeno(MongoCollection<Document> uzivatele) {
-        Document uzivatelDoc = uzivatele.find(new Document("_id", this.uzivatel)).first();
+    public String getUzivatelskeJmeno() {
+        if (this.uzivatelskeJmeno != null) return this.uzivatelskeJmeno;
+
+        Uzivatel guest = Uzivatel.guest();
+        if (guest == null || !guest.isPrihlasen()) return null;
+
+        Document uzivatelDoc = guest
+                .getPraguePubDatabaze()
+                .getCollection("uzivatele")
+                .find(eq("_id", this.uzivatel))
+                .first();
 
         if (uzivatelDoc == null) return null;
-        return uzivatelDoc.getString("jmeno");
+        this.uzivatelskeJmeno = uzivatelDoc.getString("jmeno");
+        return this.uzivatelskeJmeno;
     }
 
     @Override
