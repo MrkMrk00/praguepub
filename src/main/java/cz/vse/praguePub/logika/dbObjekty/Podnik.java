@@ -79,6 +79,8 @@ public class Podnik implements DBObjekt {
      * @return instanci podniku
      */
     public static Podnik inicializujZDokumentu(Document doc, MongoCollection<Document> kolekcePiv) {
+        if (doc == null || kolekcePiv == null) return null;
+
         Set<Recenze> recenzeLst = new HashSet<>();
         doc.getList("recenze", Document.class).forEach(
                 (recenze) -> recenzeLst.add(Recenze.inicializujZDokumentu(recenze))

@@ -5,6 +5,7 @@ import cz.vse.praguePub.logika.dbObjekty.DBObjekt;
 import cz.vse.praguePub.logika.dbObjekty.Pivo;
 import cz.vse.praguePub.logika.dbObjekty.Podnik;
 import org.bson.Document;
+import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
 
 import java.util.*;
@@ -28,52 +29,8 @@ public class DatabazeImpl implements Databaze {
      */
 
     @Override
-    public Set<Podnik> getPodnikyVMestskeCasti(int mestskaCast) {
-        var podnikyDB = this.db.getCollection("podniky")
-                .find(eq("adresa.mc_cislo", mestskaCast));
-
-        return this.prevedNalezeneNaInstance(podnikyDB);
-    }
-
-    @Override
-    public Set<Podnik> getPodnikyPodlePiva(Pivo pivo) {
-        Document pivoDB = this.db.getCollection("piva").find(pivo.getDocument()).first();
-        if (pivoDB == null) return null;
-        return this.getPodnikyPodleIDPiva(pivoDB.getObjectId("_id"));
-    }
-
-    @Override
-    public Set<Podnik> getPodnikyPodleCenyPiva(double min, double max) {
-        var podnikyDB = this.db.getCollection("podniky").find(
-                and(lt("piva.cena", max), gt("piva.cena", min))
-        );
-
-        return this.prevedNalezeneNaInstance(podnikyDB);
-    }
-
-    @Override
-    public Set<Podnik> getPodnikyPodleIDPiva(ObjectId pivoID) {
-        Set<Podnik> vratit = new HashSet<>();
-        Document query = new Document("piva", new Document("$in", List.of(pivoID)));
-
-        this.db.getCollection("podniky").find(query)
-                .forEach(doc -> vratit.add(
-                            Podnik.inicializujZDokumentu(doc, this.db.getCollection("piva")
-                        )
-                ));
-        return vratit;
-    }
-
-    @Override
-    public Set<Podnik> getPodnikyPodleNazvu(String nazev) {
-        Set<Podnik> vratit = new HashSet<>();
-        var podnikyDB = this.db.getCollection("podniky")
-                .find(new Document("jmeno", nazev));
-
-        for (Document podnikDoc : podnikyDB)
-            vratit.add(Podnik.inicializujZDokumentu(podnikDoc, this.db.getCollection("piva")));
-
-        return vratit;
+    public Set<Podnik> getPodniky(Bson filter) {
+        return this.prevedNalezeneNaInstance(this.db.getCollection("podniky").find(filter));
     }
 
     private Set<Podnik> prevedNalezeneNaInstance(Iterable<Document> nalezenePodniky) {
