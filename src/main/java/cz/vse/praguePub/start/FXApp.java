@@ -1,5 +1,6 @@
 package cz.vse.praguePub.start;
 
+import cz.vse.praguePub.gui.Filtr;
 import cz.vse.praguePub.gui.HlavniObrazovka;
 import cz.vse.praguePub.gui.ZobrazitSeznamVLokaci;
 import cz.vse.praguePub.gui.komponenty.Tabulka;
@@ -29,7 +30,7 @@ public class FXApp extends Application {
         st.show();
 
 
-        List.of(new HlavniObrazovka().getScene(), new ZobrazitSeznamVLokaci().getScene()).forEach(
+        List.of(new HlavniObrazovka().getScene(),new Filtr().getScene(), new ZobrazitSeznamVLokaci().getScene()).forEach(
                 (scene) -> {
                     Stage newStage = new Stage();
                     newStage.setScene(scene);
