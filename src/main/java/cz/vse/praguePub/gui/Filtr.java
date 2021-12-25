@@ -4,6 +4,8 @@ package cz.vse.praguePub.gui;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
@@ -21,11 +23,15 @@ public class Filtr extends Obrazovka <BorderPane>{
     private void nastaveni() {
         this.getPane().setTop(
                 HorniPanel((horniPanel) -> {
+
+                    ImageView filterImageView = new ImageView(new Image(Filtr.class.getResourceAsStream
+                            ("/filtr.png"),40,40  ,false, false));
+
                     Label nazevLabel = new Label("Filtr");
                     nazevLabel.setFont(Font.font("Helvetica", FontWeight.BOLD, 30));
                     nazevLabel.setAlignment(Pos.BASELINE_LEFT);
 
-                    horniPanel.getChildren().addAll(nazevLabel);
+                    horniPanel.getChildren().addAll(filterImageView,nazevLabel);
                 })
         );
 
