@@ -6,7 +6,6 @@ import cz.vse.praguePub.logika.dbObjekty.Pivo;
 import cz.vse.praguePub.logika.dbObjekty.Podnik;
 import org.bson.Document;
 import org.bson.conversions.Bson;
-import org.bson.types.ObjectId;
 
 import java.util.*;
 import java.util.function.Supplier;
@@ -30,10 +29,10 @@ public class DatabazeImpl implements Databaze {
 
     @Override
     public Set<Podnik> getPodniky(Bson filter) {
-        return this.prevedNalezeneNaInstance(this.db.getCollection("podniky").find(filter));
+        return this.prevedNalezenePodnikyNaInstance(this.db.getCollection("podniky").find(filter));
     }
 
-    private Set<Podnik> prevedNalezeneNaInstance(Iterable<Document> nalezenePodniky) {
+    private Set<Podnik> prevedNalezenePodnikyNaInstance(Iterable<Document> nalezenePodniky) {
         Set<Podnik> vratit = new HashSet<>();
         nalezenePodniky.forEach(podnikDoc ->
                 vratit.add(Podnik.inicializujZDokumentu(podnikDoc, this.db.getCollection("piva")))
@@ -41,9 +40,18 @@ public class DatabazeImpl implements Databaze {
         return vratit;
     }
 
+    private Set<Pivo> prevedNalezenaPivaNaInstance(Iterable<Document> nalezenaPiva) {
+        Set<Pivo> vratit = new HashSet<>();
+        nalezenaPiva.forEach(pivoDoc ->
+                vratit.add(Pivo.inicializujZDokumentu(pivoDoc, null, null))
+        );
+        return vratit;
+    }
+
+
     /*
      * ========================================================================
-     *                   Část se "insert" dotazy.
+     *                   Část s "insert" dotazy.
      * ========================================================================
      */
 
@@ -56,7 +64,7 @@ public class DatabazeImpl implements Databaze {
                         eq("adresa.mc_cislo", novyPodnik.getAdresa_mc_cislo())
                 )
         );
-        List<Podnik> seStejnymNazvem = List.copyOf(this.prevedNalezeneNaInstance(dbQueryVysledekJmeno));
+        List<Podnik> seStejnymNazvem = List.copyOf(this.prevedNalezenePodnikyNaInstance(dbQueryVysledekJmeno));
 
         //Vyhledá podniky podle ulice a čísla popisného
         var dbQueryVysledekAdresa = this.db.getCollection("podniky").find(
@@ -66,17 +74,45 @@ public class DatabazeImpl implements Databaze {
                         eq("adresa.mc_cislo", novyPodnik.getAdresa_mc_cislo())
                 )
         );
-        List<Podnik> seStejnouAdresou = List.copyOf(this.prevedNalezeneNaInstance(dbQueryVysledekAdresa));
+        List<Podnik> seStejnouAdresou = List.copyOf(this.prevedNalezenePodnikyNaInstance(dbQueryVysledekAdresa));
 
 
         if (!seStejnymNazvem.isEmpty())
-            return this.nalezenPodobnyObjekt(novyPodnik, seStejnymNazvem.get(0), TypVysledku.STEJNY_NAZEV_A_MC);
+            return this.PODOBNY_OBJEKT(novyPodnik, seStejnymNazvem.get(0), TypVysledku.STEJNY_NAZEV, null);
 
         else if (!seStejnouAdresou.isEmpty())
-            return this.nalezenPodobnyObjekt(novyPodnik, seStejnouAdresou.get(0), TypVysledku.STEJNA_ADRESA);
+            return this.PODOBNY_OBJEKT(novyPodnik, seStejnouAdresou.get(0), TypVysledku.STEJNA_ADRESA, null);
 
         else return (this.uploadni(novyPodnik) ? this.OK(novyPodnik) : this.CHYBA(novyPodnik));
     }
+
+    @Override
+    public Vysledek<Pivo> vytvorNovePivo(Pivo pivo) {
+        var dbQuery = this.db.getCollection("piva").find(
+                and(
+                        eq("nazev", pivo.getNazev()),
+                        eq("stupnovitost", pivo.getStupnovitost())
+                )
+        );
+        List<Pivo> nalezene = List.copyOf(this.prevedNalezenaPivaNaInstance(dbQuery));
+        if (nalezene != null && !nalezene.isEmpty()) return
+                this.PODOBNY_OBJEKT(
+                        pivo,
+                        nalezene.get(0),
+                        TypVysledku.STEJNY_NAZEV,
+                        "Bylo nalezeno pivo se stejným názevem a stejnou stupňovitostí"
+                );
+
+        return (this.uploadni(pivo)) ? this.OK(pivo) : this.CHYBA(pivo);
+    }
+
+    /*
+     * ========================================================================
+     *                   Část s "update" dotazy.
+     * ========================================================================
+     */
+
+
 
     /**
      * Metoda nahraje objekt do databáze (finální krok)
@@ -104,18 +140,20 @@ public class DatabazeImpl implements Databaze {
      * @param <T> typ DBObjektu
      * @return výsledek s {@link cz.vse.praguePub.logika.TypVysledku#OK OK} nebo {@link cz.vse.praguePub.logika.TypVysledku#DB_CHYBA DB_CHYBA}
      */
-    private <T extends DBObjekt> Vysledek<T> nalezenPodobnyObjekt(T objektDotazovany, T objektNajity, TypVysledku typVysledku) {
+    private <T extends DBObjekt> Vysledek<T> PODOBNY_OBJEKT(T objektDotazovany, T objektNajity, TypVysledku typVysledku, String zprava) {
         Supplier<Vysledek<T>> nahraj = () -> {
             boolean byloPrijato = this.uploadni(objektDotazovany);
 
             if (byloPrijato) return this.OK(objektDotazovany);
             return this.CHYBA(objektDotazovany);
         };
+        String zpravaDoVysledku = (zprava == null) ? "Nalezen podobný objekt" : zprava;
 
         return new Vysledek<>(
                 objektDotazovany,
                 objektNajity,
                 typVysledku,
+                zpravaDoVysledku,
                 nahraj
         );
     }
@@ -127,7 +165,7 @@ public class DatabazeImpl implements Databaze {
      */
     private <T extends DBObjekt> Vysledek<T> OK(T dotazovany) {
         return new Vysledek<>(
-                dotazovany, null, TypVysledku.OK, null
+                dotazovany, null, TypVysledku.OK,"OK", null
         );
     }
 
@@ -138,7 +176,7 @@ public class DatabazeImpl implements Databaze {
      */
     private <T extends DBObjekt> Vysledek<T> CHYBA(T dotazovany) {
         return new Vysledek<>(
-                dotazovany, null, TypVysledku.DB_CHYBA, null
+                dotazovany, null, TypVysledku.DB_CHYBA, "Chyba databáze", null
         );
     }
 }

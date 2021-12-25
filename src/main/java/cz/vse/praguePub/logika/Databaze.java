@@ -14,10 +14,15 @@ public interface Databaze {
      * @param uzivatel instance uživatele, který se k databázi chce připojit
      * @return instanci databáze
      */
-    static DatabazeImpl get(Uzivatel uzivatel) {
+    static Databaze get(Uzivatel uzivatel) {
         return new DatabazeImpl(uzivatel);
     }
 
+    /**
+     * Metoda pro vyfiltrování a hledání podniků z databáze.
+     * @param filter {@link com.mongodb.client.model.Filters BSON filter}, podle kterého se podniky vyhledávají
+     * @return množinu nalezených podniků podle filtru
+     */
     Set<Podnik> getPodniky(Bson filter);
 
     /**
@@ -27,4 +32,12 @@ public interface Databaze {
      * @return výsledek s možností dalšího vstupu nebo s informací o úspěšném vložení
      */
     Vysledek<Podnik> zalozNovyPodnik(Podnik novyPodnik);
+
+    /**
+     * Metoda pro založení nového piva do databáze. Vrací výsledek, který může znamenat, že podnik byl úspěšně vytvořen, nebo
+     * že vytvoření potřebuje další vstup uživatele. (více v třídě {@link cz.vse.praguePub.logika.Vysledek Vysledek})
+     * @param pivo pivo, které se vloží do databáze
+     * @return výsledek s možností dalšího vstupu nebo s informací o úspěšném vložení
+     */
+    Vysledek<Pivo> vytvorNovePivo(Pivo pivo);
 }

@@ -19,6 +19,7 @@ public class Vysledek<T extends DBObjekt> {
     @Getter private final T dotazovany;
     @Getter private final T najity;
     @Getter private final TypVysledku typVysledku;
+    @Getter private final String zprava;
     private final Supplier<Vysledek<T>> pokracovat;
 
     /**

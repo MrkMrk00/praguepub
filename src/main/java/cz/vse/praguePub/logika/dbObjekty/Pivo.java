@@ -13,8 +13,8 @@ public class Pivo implements DBObjekt {
     private final double obsahAlkoholu;
     private final String typ;
     private final String typKvaseni;
-    private final double cena;
-    private final double objem;
+    private final Double cena;
+    private final Double objem;
 
     //levý sloupec: názvy, co se zobrazí v tabulce jako nadpisy sloupců; pravý sloupec: názvy atributů instance
     //(logika tabulky bere atribut instance přes getter, tudíž atribut musí být v camelCase a metoda musí začínat "get")
@@ -36,7 +36,7 @@ public class Pivo implements DBObjekt {
      * @param objem objem piva který podnik nabízí
      * @return instanci podniku
      */
-    public static Pivo inicializujZDokumentu(Document pivo, double cena, double objem) {
+    public static Pivo inicializujZDokumentu(Document pivo, Double cena, Double objem) {
         return new Pivo(
                 pivo.get("nazev", String.class),
                 pivo.get("pivovar", String.class),
