@@ -1,12 +1,15 @@
 module praguePub.main {
-    requires javafx.controls;
-
     requires static lombok;
 
+    requires org.slf4j;
+    requires org.apache.logging.log4j;
+    requires org.apache.logging.log4j.slf4j;
+    requires java.scripting;
+
+    requires javafx.controls;
     requires org.mongodb.driver.sync.client;
     requires org.mongodb.driver.core;
     requires org.mongodb.bson;
-
     requires org.apache.commons.codec;
 
     exports cz.vse.praguePub.start;

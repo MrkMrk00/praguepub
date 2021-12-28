@@ -6,6 +6,8 @@ import cz.vse.praguePub.logika.dbObjekty.Pivo;
 import cz.vse.praguePub.logika.dbObjekty.Podnik;
 import org.bson.Document;
 import org.bson.conversions.Bson;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 import java.util.function.Supplier;
@@ -13,8 +15,11 @@ import java.util.function.Supplier;
 import static com.mongodb.client.model.Filters.*;
 
 public class DatabazeImpl implements Databaze {
+    private static final Logger LOGGER = LoggerFactory.getLogger(DatabazeImpl.class);
+
     private final Uzivatel uzivatel;
     private final MongoDatabase db;
+
 
     DatabazeImpl(Uzivatel uzivatel) {
         this.uzivatel = uzivatel;
@@ -149,13 +154,17 @@ public class DatabazeImpl implements Databaze {
         };
         String zpravaDoVysledku = (zprava == null) ? "Nalezen podobný objekt" : zprava;
 
-        return new Vysledek<>(
+        Vysledek<T> kVraceni = new Vysledek<>(
                 objektDotazovany,
                 objektNajity,
                 typVysledku,
                 zpravaDoVysledku,
                 nahraj
         );
+
+        LOGGER.debug(kVraceni.toString());
+
+        return kVraceni;
     }
 
     /**
