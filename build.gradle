@@ -40,6 +40,16 @@ javafx {
     modules = [ 'javafx.controls' ]
 }
 
+application {
+    mainClassName = 'cz.vse.praguePub.start.FXApp'
+}
+
+jar {
+    manifest {
+        attributes 'Main-Class': 'cz.vse.praguePub.start.FXApp'
+    }
+}
+
 test {
     useJUnitPlatform()
 }
