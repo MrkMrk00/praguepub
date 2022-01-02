@@ -24,6 +24,7 @@ public class Tabulka<T> {
                 (vals) -> {
                     TableColumn<T, String> tableColumn = new TableColumn<>(vals[0]);
                     tableColumn.setCellValueFactory(new PropertyValueFactory<>(vals[1]));
+                    tableColumn.prefWidthProperty().bind(this.tableView.widthProperty().divide(sloupce.length));
                     sloupceKVlozeni.add(tableColumn);
                 }
         );

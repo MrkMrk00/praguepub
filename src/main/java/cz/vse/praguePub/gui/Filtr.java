@@ -1,25 +1,32 @@
 package cz.vse.praguePub.gui;
 
 
+import com.mongodb.client.model.Filters;
 import javafx.geometry.Insets;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
+import org.bson.Document;
+import org.bson.conversions.Bson;
 
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
+
 
 import static cz.vse.praguePub.gui.komponenty.Komponenty.*;
 
-public class Filtr extends Obrazovka <BorderPane>{
+public class Filtr extends Obrazovka <BorderPane> {
     private final Map<String, TextField> mapaInputu;
+    private final Consumer<Bson> vysledek;
 
-    public Filtr() {
+    public Filtr(Consumer<Bson> vysledek) {
         super(new BorderPane(), 350,200 , "background");
         this.mapaInputu = new HashMap<>();
+        this.vysledek = vysledek;
 
         this.registrujInputy();
         this.vytvorGUI();
@@ -69,6 +76,14 @@ public class Filtr extends Obrazovka <BorderPane>{
                         Radek(
                                 LabelAplikace("Značka piva:\t", l -> {}),
                                 this.mapaInputu.get("znacka_piva")
+                        ),
+
+                        TlacitkoAplikace("Odeslat",
+                                tlacitko -> tlacitko.setOnMouseClicked(
+                                        onClickEvent -> {
+                                            this.vysledek.accept(new Document());
+                                        }
+                                )
                         )
                     ),
                     sloupec -> {

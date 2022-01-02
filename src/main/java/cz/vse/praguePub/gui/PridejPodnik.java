@@ -1,23 +1,38 @@
 package cz.vse.praguePub.gui;
 
+import cz.vse.praguePub.gui.komponenty.Tabulka;
+import cz.vse.praguePub.logika.Databaze;
+import cz.vse.praguePub.logika.Uzivatel;
+import cz.vse.praguePub.logika.dbObjekty.Pivo;
 import cz.vse.praguePub.logika.dbObjekty.Podnik;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
+import lombok.Data;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.*;
+import java.util.function.Consumer;
 
 import static cz.vse.praguePub.gui.komponenty.Komponenty.*;
 
 public class PridejPodnik extends Obrazovka<BorderPane> {
-
     private final static Logger log = LoggerFactory.getLogger(PridejPodnik.class);
 
+    private final ObservableList<Pivo> pivaUPodniku;
+    private final Stage oknoProVyberPiva;
+
     public PridejPodnik() {
-        super(new BorderPane(), 400, 600, "background");
+        super(new BorderPane(), 900, 600, "background");
+
+        this.oknoProVyberPiva = new Stage();
+        this.pivaUPodniku = FXCollections.observableArrayList();
+
         this.registrujInputy();
         this.vytvorGUI();
     }
@@ -73,7 +88,10 @@ public class PridejPodnik extends Obrazovka<BorderPane> {
                 ),
                 Radek(TlacitkoAplikace("Parsuj", t -> {
                     t.setOnAction(event -> this.parsuj());
-                }))
+                })),
+                Radek(
+                        TlacitkoAplikace("+ Vlož pivo", tlacitko -> tlacitko.setOnMouseClicked(event -> this.vyberPivo()))
+                )
                 ),
                 inputySloupec -> {
                     inputySloupec.setPadding(new Insets(20));
@@ -81,6 +99,35 @@ public class PridejPodnik extends Obrazovka<BorderPane> {
                 }
         );
 
-        this.getPane().setCenter(inputy);
+
+        this.getPane().setCenter(
+                Radek(List.of(inputy), radek -> {
+                    radek.widthProperty().add(this.getPane().widthProperty());
+                    radek.setAlignment(Pos.CENTER);
+        }));
+
+        Tabulka<Pivo> tabulkaPivaUNovehoPodniku = new Tabulka<>(Pivo.PRO_TABULKU);
+        tabulkaPivaUNovehoPodniku.getTableView().setItems(this.pivaUPodniku);
+
+        this.getPane().setBottom(
+                Sloupec(
+                        List.of(
+                                LabelAplikace("Piva:"),
+                                tabulkaPivaUNovehoPodniku.getTableView()
+                        ),
+                        sloupec -> {
+                            sloupec.setAlignment(Pos.TOP_LEFT);
+                        }
+                )
+        );
+    }
+
+    private void vyberPivo() {
+        Consumer<Pivo> pridejPivo = pivo -> {
+            this.pivaUPodniku.add(pivo);
+            this.oknoProVyberPiva.hide();
+        };
+        this.oknoProVyberPiva.setScene(new VyberPivo(Databaze.get(Uzivatel.guest()), pridejPivo).getScene());
+        this.oknoProVyberPiva.showAndWait();
     }
 }

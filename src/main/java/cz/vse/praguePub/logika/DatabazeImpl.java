@@ -37,6 +37,13 @@ public class DatabazeImpl implements Databaze {
         return this.prevedNalezenePodnikyNaInstance(this.db.getCollection("podniky").find(filter));
     }
 
+    @Override
+    public Set<Pivo> getPiva(Bson filter) {
+        var vysl = this.prevedNalezenaPivaNaInstance(this.db.getCollection("piva").find(filter));
+        vysl.forEach(it -> LOGGER.info(it.toString()));
+        return vysl;
+    }
+
     private Set<Podnik> prevedNalezenePodnikyNaInstance(Iterable<Document> nalezenePodniky) {
         Set<Podnik> vratit = new HashSet<>();
         nalezenePodniky.forEach(podnikDoc ->

@@ -48,12 +48,12 @@ public class FXApp extends Application {
 
 
         List.of(
-                new HlavniObrazovka().getScene(),
+                /*new HlavniObrazovka().getScene(),
                 new Filtr().getScene(),
                 new ZobrazitSeznamVLokaci().getScene(),
                 new Prihlaseni().getScene(),
                 new Scene(bp, 900, 400),
-                new Scene(bp2, 900, 400),
+                new Scene(bp2, 900, 400),*/
                 new PridejPodnik().getScene()
 
         ).forEach(
