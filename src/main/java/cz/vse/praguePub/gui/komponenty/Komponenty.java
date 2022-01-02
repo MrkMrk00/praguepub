@@ -3,6 +3,7 @@ package cz.vse.praguePub.gui.komponenty;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.scene.shape.SVGPath;
 
 import java.io.InputStream;
@@ -23,5 +24,11 @@ public final class Komponenty {
         hbox.getStyleClass().add("vrchniPanel");
         styluj.accept(hbox);
         return hbox;
+    }
+    public static VBox vBox(Consumer<VBox> styluj){
+        VBox vBox= new VBox(10);
+        vBox.getStyleClass().add("vBox");
+        styluj.accept(vBox);
+        return vBox;
     }
 }

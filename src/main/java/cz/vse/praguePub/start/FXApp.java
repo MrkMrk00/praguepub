@@ -1,10 +1,12 @@
 package cz.vse.praguePub.start;
 
-
 import cz.vse.praguePub.logika.Databaze;
 import cz.vse.praguePub.logika.Filtry;
 import cz.vse.praguePub.logika.Uzivatel;
 
+import cz.vse.praguePub.gui.Filtr;
+import cz.vse.praguePub.gui.HlavniObrazovka;
+import cz.vse.praguePub.gui.ZobrazitSeznamVLokaci;
 import cz.vse.praguePub.gui.komponenty.Tabulka;
 import cz.vse.praguePub.logika.dbObjekty.Pivo;
 
@@ -14,8 +16,6 @@ import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import org.bson.Document;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
@@ -30,6 +30,7 @@ public class FXApp extends Application {
 
     @Override
     public void start(Stage primaryStage) {
+
         var bp = new BorderPane();
         Tabulka<Pivo> tab = new Tabulka<>(Pivo.PRO_TABULKU);
         Document found = Uzivatel.guest()
@@ -40,26 +41,26 @@ public class FXApp extends Application {
                         .pridejFilter(podnik_mestskaCast(6))
                         .finalizuj()
                 ).first();
-
         bp.setCenter(tab.getTableView());
-        var st = new Stage();
-        st.setScene(new Scene(bp, 900, 400));
-        st.show();
 
         var bp2 = new BorderPane();
         Tabulka<Podnik> tab2 = new Tabulka<>(Podnik.PRO_TABULKU);
         tab2.setRadky(List.of(Podnik.inicializujZDokumentu(found, Uzivatel.guest().getPraguePubDatabaze().getCollection("piva"))));
         bp2.setCenter(tab2.getTableView());
-        var st2 = new Stage();
-        st2.setScene(new Scene(bp2, 900, 400));
-        st2.show();
 
 
-        /*List.of(new HlavniObrazovka().getScene(), new ZobrazitSeznamVLokaci().getScene()).forEach(
+        List.of(
+                new HlavniObrazovka().getScene(),
+                new Filtr().getScene(),
+                new ZobrazitSeznamVLokaci().getScene(),
+                new Scene(bp, 900, 400),
+                new Scene(bp2, 900, 400)
+
+        ).forEach(
                 (scene) -> {
                     Stage newStage = new Stage();
                     newStage.setScene(scene);
                     newStage.show();
-                });*/
+                });
     }
 }
