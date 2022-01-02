@@ -1,5 +1,6 @@
 package cz.vse.praguePub.start;
 
+import cz.vse.praguePub.gui.Prihlaseni;
 import cz.vse.praguePub.logika.Databaze;
 import cz.vse.praguePub.logika.Filtry;
 import cz.vse.praguePub.logika.Uzivatel;
@@ -53,6 +54,7 @@ public class FXApp extends Application {
                 new HlavniObrazovka().getScene(),
                 new Filtr().getScene(),
                 new ZobrazitSeznamVLokaci().getScene(),
+                new Prihlaseni().getScene(),
                 new Scene(bp, 900, 400),
                 new Scene(bp2, 900, 400)
 

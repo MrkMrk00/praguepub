@@ -2,12 +2,10 @@ package cz.vse.praguePub.gui;
 
 
 import javafx.geometry.Insets;
-import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.text.Font;
 
 import java.io.InputStream;
 import java.util.HashMap;
@@ -20,7 +18,7 @@ public class Filtr extends Obrazovka <BorderPane>{
     private final Map<String, TextField> mapaInputu;
 
     public Filtr() {
-        super(new BorderPane(), 320,200 , "background");
+        super(new BorderPane(), 350,200 , "background");
         this.mapaInputu = new HashMap<>();
 
         this.registrujInputy();
@@ -39,26 +37,21 @@ public class Filtr extends Obrazovka <BorderPane>{
 
     private void vytvorGUI() {
         InputStream obrazekIS = this.getClass().getResourceAsStream("/filtr.png");
-        Label hlavniNadpisOkna = LabelAplikace("Filtr: ", l -> l.setFont(Font.font(30)));
+        ImageView obrazekFiltru =
+                (obrazekIS != null) ?
+                        new ImageView(
+                            new Image(obrazekIS, 40, 40, true, false)
+                        )
+                        : null;
+
 
         this.getPane().setTop(
-                HorniPanel((horniPanel) -> {
-                    horniPanel.getChildren().add(hlavniNadpisOkna);
-
-                    if (obrazekIS != null) {
-                        horniPanel.getChildren().add(
-                                new ImageView(
-                                        new Image(
-                                                obrazekIS,
-                                                40,
-                                                40,
-                                                true,
-                                                false
-                                        )
-                                )
-                        );
-                    }
-                })
+                HorniPanel(
+                        (horniPanel) -> {
+                            if (obrazekFiltru != null) horniPanel.getChildren().add(obrazekFiltru);
+                            horniPanel.getChildren().add(NadpisOknaLabel("Filtr"));
+                        }
+                )
         );
 
         this.getPane().setCenter(
@@ -78,8 +71,8 @@ public class Filtr extends Obrazovka <BorderPane>{
                                 this.mapaInputu.get("znacka_piva")
                         )
                     ),
-                    s -> {
-                        s.setPadding(new Insets(15));
+                    sloupec -> {
+                        sloupec.setPadding(new Insets(15));
                     }
                 )
         );

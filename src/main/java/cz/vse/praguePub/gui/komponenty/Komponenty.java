@@ -77,14 +77,21 @@ public final class Komponenty {
 
     public static Label LabelAplikace(String defaultText) {
         Label label = new Label(defaultText);
-        label.getStyleClass().add("tlacitkoAplikace labelAplikace");
-        label.setMaxWidth(150.0);
+        label.getStyleClass().addAll("tlacitkoAplikace", "labelAplikace");
+        //label.setMaxWidth(150.0);
         return label;
     }
 
     public static Label LabelAplikace(String defaultText, Consumer<Label> styluj) {
         Label label = LabelAplikace(defaultText);
         styluj.accept(label);
+        return label;
+    }
+
+    public static Label NadpisOknaLabel(String text) {
+        Label label = new Label(text);
+        label.getStyleClass().add("nadpisLabel");
+
         return label;
     }
 
