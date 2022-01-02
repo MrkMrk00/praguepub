@@ -15,5 +15,16 @@
     -fx-border-color: black;
     -fx-border-radius: 13;
     -fx-padding: 5 10 5 10;
+    -fx-alignment: baseline-center;
 
+}
+
+.labelAplikace {
+    -fx-font-family: "Helvetica";
+    -fx-font-weight: bold;
+    -fx-font-size: 12;
+}
+
+.radek {
+    -fx-alignment: baseline-left;
 }

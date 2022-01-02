@@ -1,76 +1,88 @@
 package cz.vse.praguePub.gui;
 
 
-import javafx.geometry.Pos;
+import javafx.geometry.Insets;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
+
+import java.io.InputStream;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static cz.vse.praguePub.gui.komponenty.Komponenty.*;
 
 public class Filtr extends Obrazovka <BorderPane>{
-
+    private final Map<String, TextField> mapaInputu;
 
     public Filtr() {
-        super(new BorderPane(), 300,175 , "background");
-        this.nastaveni();
+        super(new BorderPane(), 320,200 , "background");
+        this.mapaInputu = new HashMap<>();
+
+        this.registrujInputy();
+        this.vytvorGUI();
     }
 
-    private void nastaveni() {
+    private void registrujInputy() {
+        this.mapaInputu.putAll(
+                Map.of(
+                        "hodnoceni", TextFieldAplikace("Zadejte hodnocení", n -> {}),
+                        "cena_piva", TextFieldAplikace("Zadejte cenu piva", n -> {}),
+                        "znacka_piva", TextFieldAplikace("Zadejte značku Piva", n -> {})
+                )
+        );
+    }
+
+    private void vytvorGUI() {
+        InputStream obrazekIS = this.getClass().getResourceAsStream("/filtr.png");
+        Label hlavniNadpisOkna = LabelAplikace("Filtr: ", l -> l.setFont(Font.font(30)));
+
         this.getPane().setTop(
                 HorniPanel((horniPanel) -> {
+                    horniPanel.getChildren().add(hlavniNadpisOkna);
 
-                    ImageView filterImageView = new ImageView(new Image(Filtr.class.getResourceAsStream
-                            ("/filtr.png"),40,40  ,false, false));
-
-                    Label nazevLabel = new Label("Filtr");
-                    nazevLabel.setFont(Font.font("Helvetica", FontWeight.BOLD, 30));
-                    nazevLabel.setAlignment(Pos.BASELINE_LEFT);
-
-                    horniPanel.getChildren().addAll(filterImageView,nazevLabel);
+                    if (obrazekIS != null) {
+                        horniPanel.getChildren().add(
+                                new ImageView(
+                                        new Image(
+                                                obrazekIS,
+                                                40,
+                                                40,
+                                                true,
+                                                false
+                                        )
+                                )
+                        );
+                    }
                 })
         );
 
-        this.getPane().setRight(
-                vBox((textFieldVBox)-> {
-                    TextField zadejteHodnoceni = new TextField("Zadejte hodnocení");
-                    zadejteHodnoceni.getStyleClass().add("tlacitkoAplikace");
-                    zadejteHodnoceni.autosize();
+        this.getPane().setCenter(
+                Sloupec(List.of(
+                        Radek(
+                                LabelAplikace("Hodnocení:\t", l -> {}),
+                                this.mapaInputu.get("hodnoceni")
+                        ),
 
-                    TextField zadejteCenuPiva = new TextField("Zadejte cenu piva");
-                    zadejteCenuPiva.getStyleClass().add("tlacitkoAplikace");
-                    zadejteCenuPiva.autosize();
+                        Radek(
+                                LabelAplikace("Cena piva:\t", l -> {}),
+                                this.mapaInputu.get("cena_piva")
+                        ),
 
-                    TextField zadejteZnackuPiva = new TextField("Zadejte značku Piva");
-                    zadejteZnackuPiva.getStyleClass().add("tlacitkoAplikace");
-                    zadejteZnackuPiva.autosize();
-
-                    textFieldVBox.getChildren().addAll(zadejteHodnoceni, zadejteCenuPiva, zadejteZnackuPiva);
-                })
+                        Radek(
+                                LabelAplikace("Značka piva:\t", l -> {}),
+                                this.mapaInputu.get("znacka_piva")
+                        )
+                    ),
+                    s -> {
+                        s.setPadding(new Insets(15));
+                    }
+                )
         );
-        this.getPane().setLeft(
-                vBox((textFieldVBox)-> {
-                    Label hodnoceni = new Label("Hodnocení: ");
-                    hodnoceni.setFont(Font.font("Helvetica", FontWeight.BOLD,12));
-                    hodnoceni.setAlignment(Pos.BASELINE_LEFT);
-                    hodnoceni.getStyleClass().add("tlacitkoAplikace");
 
-                    Label cenaPiva = new Label("Cena piva: ");
-                    cenaPiva.setFont(Font.font("Helvetica", FontWeight.BOLD,12));
-                    cenaPiva.setAlignment(Pos.BASELINE_LEFT);
-                    cenaPiva.getStyleClass().add("tlacitkoAplikace");
-
-                    Label znackaPiva = new Label("Značka piva: ");
-                    znackaPiva.setFont(Font.font("Helvetica", FontWeight.BOLD,12));
-                    znackaPiva.setAlignment(Pos.BASELINE_LEFT);
-                    znackaPiva.getStyleClass().add("tlacitkoAplikace");
-
-                    textFieldVBox.getChildren().addAll(hodnoceni, cenaPiva, znackaPiva);
-                })
-        );
     }
 }

@@ -2,13 +2,11 @@ package cz.vse.praguePub.gui;
 
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 
@@ -22,8 +20,8 @@ public class Prihlaseni extends Obrazovka<BorderPane> {
     }
 
     private void nastaveni() {
-        this.getPane().setTop(
-                vBox((textFieldVBox) -> {
+        /*this.getPane().setTop(
+                Sloupec((textFieldVBox) -> {
         Button prihlasitSe = TlacitkoAplikace("Prihlasit se", (t)->{});
 
         TextField login = new TextField("Jméno");
@@ -48,7 +46,7 @@ public class Prihlaseni extends Obrazovka<BorderPane> {
                     textFieldVBox.setSpacing(20);
                     textFieldVBox.setPadding(new Insets(60,0,20,0));
                 })
-        );
+        );*/
     }
 }
 
