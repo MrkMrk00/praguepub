@@ -60,7 +60,12 @@ public final class Komponenty {
     public static TextField TextFieldAplikace(String defaultText, Consumer<TextField> styluj) {
         TextField textField = new TextField(defaultText);
         textField.getStyleClass().add("tlacitkoAplikace");
-        textField.setOnMouseClicked(event -> textField.clear());
+        textField.setOnMouseClicked(
+                event -> {
+                    textField.clear();
+                    textField.setOnMouseClicked(e -> {});
+                }
+        );
 
         styluj.accept(textField);
         return textField;
@@ -78,7 +83,7 @@ public final class Komponenty {
     public static Label LabelAplikace(String defaultText) {
         Label label = new Label(defaultText);
         label.getStyleClass().addAll("tlacitkoAplikace", "labelAplikace");
-        //label.setMaxWidth(150.0);
+        label.setPrefWidth(150);
         return label;
     }
 

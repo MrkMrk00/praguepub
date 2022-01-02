@@ -1,13 +1,10 @@
 package cz.vse.praguePub.start;
 
-import cz.vse.praguePub.gui.Prihlaseni;
+import cz.vse.praguePub.gui.*;
 import cz.vse.praguePub.logika.Databaze;
 import cz.vse.praguePub.logika.Filtry;
 import cz.vse.praguePub.logika.Uzivatel;
 
-import cz.vse.praguePub.gui.Filtr;
-import cz.vse.praguePub.gui.HlavniObrazovka;
-import cz.vse.praguePub.gui.ZobrazitSeznamVLokaci;
 import cz.vse.praguePub.gui.komponenty.Tabulka;
 import cz.vse.praguePub.logika.dbObjekty.Pivo;
 
@@ -56,7 +53,8 @@ public class FXApp extends Application {
                 new ZobrazitSeznamVLokaci().getScene(),
                 new Prihlaseni().getScene(),
                 new Scene(bp, 900, 400),
-                new Scene(bp2, 900, 400)
+                new Scene(bp2, 900, 400),
+                new PridejPodnik().getScene()
 
         ).forEach(
                 (scene) -> {
