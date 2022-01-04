@@ -1,9 +1,11 @@
 package cz.vse.praguePub.logika;
 
+import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import cz.vse.praguePub.logika.dbObjekty.DBObjekt;
 import cz.vse.praguePub.logika.dbObjekty.Pivo;
 import cz.vse.praguePub.logika.dbObjekty.Podnik;
+import cz.vse.praguePub.logika.dbObjekty.Recenze;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 import org.slf4j.Logger;
@@ -11,6 +13,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.*;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 import static com.mongodb.client.model.Filters.*;
 
@@ -34,14 +37,23 @@ public class DatabazeImpl implements Databaze {
 
     @Override
     public Set<Podnik> getPodniky(Bson filter) {
-        return this.prevedNalezenePodnikyNaInstance(this.db.getCollection("podniky").find(filter));
+        Iterable<Document> agregovano = this.db.getCollection("podniky")
+                .find(filter);
+        return this.prevedNalezenePodnikyNaInstance(agregovano);
+    }
+
+    public Set<Podnik> filtrujPodnikyPodleHodnoceni(Set<Podnik> podniky, double hodnoceni) {
+        return podniky.stream().filter(podnik -> podnik.getPrumerneHodnoceni() >= hodnoceni).collect(Collectors.toSet());
     }
 
     @Override
     public Set<Pivo> getPiva(Bson filter) {
-        var vysl = this.prevedNalezenaPivaNaInstance(this.db.getCollection("piva").find(filter));
-        vysl.forEach(it -> LOGGER.info(it.toString()));
-        return vysl;
+        return this.prevedNalezenaPivaNaInstance(this.db.getCollection("piva").find(filter));
+    }
+
+    @Override
+    public MongoCollection<Document> getPivaCollection() {
+        return this.db.getCollection("piva");
     }
 
     private Set<Podnik> prevedNalezenePodnikyNaInstance(Iterable<Document> nalezenePodniky) {

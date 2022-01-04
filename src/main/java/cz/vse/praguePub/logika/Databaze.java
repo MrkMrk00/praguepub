@@ -1,7 +1,9 @@
 package cz.vse.praguePub.logika;
 
+import com.mongodb.client.MongoCollection;
 import cz.vse.praguePub.logika.dbObjekty.Pivo;
 import cz.vse.praguePub.logika.dbObjekty.Podnik;
+import org.bson.Document;
 import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
 
@@ -25,12 +27,16 @@ public interface Databaze {
      */
     Set<Podnik> getPodniky(Bson filter);
 
+    Set<Podnik> filtrujPodnikyPodleHodnoceni(Set<Podnik> podniky, double hodnoceni);
+
     /**
      * Metoda pro vyfiltrování a hledání piv z databáze.
      * @param filter {@link com.mongodb.client.model.Filters BSON filter}, podle kterého se piva vyhledávají
      * @return množinu nalezených piv podle filtru
      */
     Set<Pivo> getPiva(Bson filter);
+
+    MongoCollection<Document> getPivaCollection();
 
     /**
      * Metoda s logikou založení nového podniku. Vrací výsledek, který může znamenat, že podnik byl úspěšně vytvořen, nebo

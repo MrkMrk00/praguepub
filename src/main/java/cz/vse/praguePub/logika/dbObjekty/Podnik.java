@@ -56,6 +56,16 @@ public class Podnik implements DBObjekt {
     }
 
     /**
+     * @return průměrné hodnocení
+     */
+    public double getPrumerneHodnoceni() {
+        double prumerneHodnoceni = 0d;
+
+        for (Recenze r : this.recenze) prumerneHodnoceni += r.getHodnoceni();
+        return (prumerneHodnoceni / this.recenze.size());
+    }
+
+    /**
      * Getter pro recenze u podniku
      * @return kopii setu s recenzemi
      */
