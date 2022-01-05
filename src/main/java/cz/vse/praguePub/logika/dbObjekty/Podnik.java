@@ -14,8 +14,8 @@ public class Podnik implements DBObjekt {
     private final int adresa_mc_cislo;
     private final String adresa_mc_nazev;
     private final String adresa_ulice;
-    private final String adresa_psc;
-    private final Integer adresa_cp;
+    private final Integer adresa_psc;
+    private final String adresa_cp;
     private final Set<Recenze> recenze;
     private final Map<ObjectId, Pivo> pivniListek;
 
@@ -119,8 +119,8 @@ public class Podnik implements DBObjekt {
                 adresa.get("mc_cislo", Integer.class),
                 adresa.get("mc_nazev", String.class),
                 adresa.get("ulice", String.class),
-                adresa.get("psc", String.class),
-                adresa.get("cp", Integer.class),
+                adresa.get("psc", Integer.class),
+                adresa.get("cp", String.class),
                 recenzeLst,
                 pivniListek
         );

@@ -9,12 +9,10 @@ import javafx.stage.Stage;
 
 import java.util.List;
 
-import static cz.vse.praguePub.logika.Filtry.*;
 
 public class FXApp extends Application {
 
     public static void main(String[] args) {
-        Databaze.get(Uzivatel.guest()).getPodniky(podnik_mestskaCast(6)).forEach(System.out::println);
         Application.launch(args);
     }
 

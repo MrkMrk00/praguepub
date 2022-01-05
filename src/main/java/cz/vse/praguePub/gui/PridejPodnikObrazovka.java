@@ -55,6 +55,20 @@ public class PridejPodnikObrazovka extends Obrazovka<BorderPane> {
         );
     }
 
+
+    private void parsuj() {
+        log.debug(new Podnik(
+                this.getMapaInputu().get("nazev").getText(),
+                Integer.parseInt(this.getMapaInputu().get("mc_cislo").getText()),
+                this.getMapaInputu().get("mc_nazev").getText(),
+                this.getMapaInputu().get("ulice").getText(),
+                Integer.parseInt(this.getMapaInputu().get("psc").getText()),
+                this.getMapaInputu().get("cp").getText(),
+                new HashSet<>(),
+                new HashMap<>()
+        ).toString());
+    }
+
     private void vytvorGUI() {
         this.getPane().setTop(
                 HorniPanel(
@@ -130,18 +144,5 @@ public class PridejPodnikObrazovka extends Obrazovka<BorderPane> {
                 ).getScene()
         );
         this.oknoProVyberPiva.showAndWait();
-    }
-
-    private void parsuj() {
-        log.debug(new Podnik(
-                this.getMapaInputu().get("nazev").getText(),
-                Integer.parseInt(this.getMapaInputu().get("mc_cislo").getText()),
-                this.getMapaInputu().get("mc_nazev").getText(),
-                this.getMapaInputu().get("ulice").getText(),
-                this.getMapaInputu().get("psc").getText(),
-                Integer.parseInt(this.getMapaInputu().get("cp").getText()),
-                new HashSet<>(),
-                new HashMap<>()
-        ).toString());
     }
 }
