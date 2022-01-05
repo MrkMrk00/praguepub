@@ -40,7 +40,6 @@ public class VyberPivo extends Obrazovka<BorderPane> {
     private void zahajFiltrovani() {
         Consumer<Bson> konzumujFiltr = bsonFilter -> {
             this.pivaZDatabaze.addAll(this.najdiVDatabazi(bsonFilter));
-            this.pivaZDatabaze.forEach(it -> LOGGER.info(it.toString()));
             this.oknoProFilter.hide();
         };
 
@@ -49,7 +48,6 @@ public class VyberPivo extends Obrazovka<BorderPane> {
     }
 
     private Set<Pivo> najdiVDatabazi(Bson filter) {
-        LOGGER.debug("dostalo se to do #najdiVDatabazi()");
         return this.databaze.getPiva(filter);
     }
 

@@ -15,10 +15,8 @@ public class HlavniObrazovka extends Obrazovka<BorderPane> {
     }
 
     private void registrujInputy() {
-        this.getMapaInputu().putAll(
-                Map.of(
-                        "vyhledat", TextFieldAplikace("Vyhledat", t -> {})
-                )
+        this.getMapaInputu().put(
+                "vyhledat", TextFieldAplikace("Vyhledat", t -> {})
         );
     }
 

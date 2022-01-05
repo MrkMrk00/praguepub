@@ -6,7 +6,6 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import lombok.Getter;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class Tabulka<T> {
@@ -20,14 +19,14 @@ public class Tabulka<T> {
     private void vlozSloupce(String[][] sloupce) {
         List<TableColumn<T, String>> sloupceKVlozeni = new ArrayList<>();
 
-        Arrays.stream(sloupce).forEach(
-                (vals) -> {
-                    TableColumn<T, String> tableColumn = new TableColumn<>(vals[0]);
-                    tableColumn.setCellValueFactory(new PropertyValueFactory<>(vals[1]));
-                    tableColumn.prefWidthProperty().bind(this.tableView.widthProperty().divide(sloupce.length));
-                    sloupceKVlozeni.add(tableColumn);
-                }
-        );
+        for (String[] vals : sloupce) {
+            TableColumn<T, String> tableColumn = new TableColumn<>(vals[0]);
+            tableColumn.setCellValueFactory(new PropertyValueFactory<>(vals[1]));
+            tableColumn.prefWidthProperty().bind(this.tableView.widthProperty().divide(sloupce.length));
+
+            sloupceKVlozeni.add(tableColumn);
+        }
+
         this.tableView.getColumns().addAll(sloupceKVlozeni);
     }
 
