@@ -38,6 +38,8 @@ public interface Databaze {
 
     MongoCollection<Document> getPivaCollection();
 
+    MongoCollection<Document> getPodnikyCollection();
+
     /**
      * Metoda s logikou založení nového podniku. Vrací výsledek, který může znamenat, že podnik byl úspěšně vytvořen, nebo
      * že založení potřebuje další vstup uživatele. (více v třídě {@link cz.vse.praguePub.logika.Vysledek Vysledek})

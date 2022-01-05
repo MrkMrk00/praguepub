@@ -12,24 +12,23 @@ import java.util.List;
 import static com.mongodb.client.model.Filters.*;
 
 public class PivoFiltrBuilder extends FiltrBuilder {
+
     public PivoFiltrBuilder(MongoCollection<Document> kolekce) {
         super(kolekce);
     }
 
     public List<Pivo> finalizuj() {
-        List<Bson> listAgregatu = new ArrayList<>();
-        this.listFiltru.forEach(filtr -> listAgregatu.add(Aggregates.match(filtr)));
+        for (Bson filter : this.listFiltru) this.listAgregatu.add(Aggregates.match(filter));
 
-        List<Pivo> vratit = new ArrayList<>();
-        this.kolekce.aggregate(listAgregatu).forEach(
-                pivoDoc -> vratit.add(Pivo.inicializujZDokumentu(pivoDoc, null, null))
-        );
+        List<Pivo> kVraceni = new ArrayList<>();
+        for (Document pivoDoc : this.kolekce.aggregate(this.listAgregatu))
+            kVraceni.add(Pivo.inicializujZDokumentu(pivoDoc, null, null));
 
-        return vratit;
+        return kVraceni;
     }
 
     public PivoFiltrBuilder pivovar(String nazevPivovaru) {
-        this.pridejCustom(eq("pivovar", "nazevPivovaru"));
+        this.pridejCustom(regex("pivovar", nazevPivovaru ));
         return this;
     }
 
@@ -49,7 +48,7 @@ public class PivoFiltrBuilder extends FiltrBuilder {
     }
 
     public PivoFiltrBuilder nazev(String nazev) {
-        this.pridejCustom(eq("nazev", nazev));
+        this.pridejCustom(regex("nazev", nazev));
         return this;
     }
 
@@ -69,12 +68,12 @@ public class PivoFiltrBuilder extends FiltrBuilder {
     }
 
     public PivoFiltrBuilder typ(String nazevTypu) {
-        this.pridejCustom(eq("typ", nazevTypu));
+        this.pridejCustom(regex("typ", nazevTypu));
         return this;
     }
 
     public PivoFiltrBuilder typKvaseni(String nazevTypuKvaseni) {
-        this.pridejCustom(eq("typ", nazevTypuKvaseni));
+        this.pridejCustom(regex("typ", nazevTypuKvaseni));
         return this;
     }
 }

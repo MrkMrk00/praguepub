@@ -58,14 +58,15 @@ public class PridejPodnikObrazovka extends Obrazovka<BorderPane> {
 
     private void parsuj() {
         log.debug(new Podnik(
+                null,
                 this.getMapaInputu().get("nazev").getText(),
                 Integer.parseInt(this.getMapaInputu().get("mc_cislo").getText()),
                 this.getMapaInputu().get("mc_nazev").getText(),
                 this.getMapaInputu().get("ulice").getText(),
                 Integer.parseInt(this.getMapaInputu().get("psc").getText()),
                 this.getMapaInputu().get("cp").getText(),
-                new HashSet<>(),
-                new HashMap<>()
+                new ArrayList<>(),
+                new ArrayList<>()
         ).toString());
     }
 

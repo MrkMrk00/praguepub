@@ -56,6 +56,11 @@ public class DatabazeImpl implements Databaze {
         return this.db.getCollection("piva");
     }
 
+    @Override
+    public MongoCollection<Document> getPodnikyCollection() {
+        return this.db.getCollection("podniky");
+    }
+
     private Set<Podnik> prevedNalezenePodnikyNaInstance(Iterable<Document> nalezenePodniky) {
         Set<Podnik> vratit = new HashSet<>();
         nalezenePodniky.forEach(podnikDoc ->
