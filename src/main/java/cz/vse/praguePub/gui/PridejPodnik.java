@@ -56,8 +56,8 @@ public class PridejPodnik extends Obrazovka<BorderPane> {
                 Integer.parseInt(this.getMapaInputu().get("mc_cislo").getText()),
                 this.getMapaInputu().get("mc_nazev").getText(),
                 this.getMapaInputu().get("ulice").getText(),
-                this.getMapaInputu().get("psc").getText(),
-                Integer.parseInt(this.getMapaInputu().get("cp").getText()),
+                Integer.parseInt(this.getMapaInputu().get("psc").getText()),
+                this.getMapaInputu().get("cp").getText(),
                 new HashSet<>(),
                 new HashMap<>()
         ).toString());
