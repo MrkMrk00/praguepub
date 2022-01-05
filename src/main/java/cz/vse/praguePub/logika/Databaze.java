@@ -20,21 +20,9 @@ public interface Databaze {
         return new DatabazeImpl(uzivatel);
     }
 
-    /**
-     * Metoda pro vyfiltrování a hledání podniků z databáze.
-     * @param filter {@link com.mongodb.client.model.Filters BSON filter}, podle kterého se podniky vyhledávají
-     * @return množinu nalezených podniků podle filtru
-     */
-    Set<Podnik> getPodniky(Bson filter);
+    PivoFiltrBuilder getPivoFilterBuilder();
 
-    Set<Podnik> filtrujPodnikyPodleHodnoceni(Set<Podnik> podniky, double hodnoceni);
-
-    /**
-     * Metoda pro vyfiltrování a hledání piv z databáze.
-     * @param filter {@link com.mongodb.client.model.Filters BSON filter}, podle kterého se piva vyhledávají
-     * @return množinu nalezených piv podle filtru
-     */
-    Set<Pivo> getPiva(Bson filter);
+    PodnikFiltrBuilder getPodnikFiltrBuilder();
 
     MongoCollection<Document> getPivaCollection();
 

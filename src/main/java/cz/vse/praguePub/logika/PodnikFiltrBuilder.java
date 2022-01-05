@@ -15,10 +15,12 @@ import static com.mongodb.client.model.Filters.*;
 public class PodnikFiltrBuilder extends FiltrBuilder {
 
     private final AggregateIterable<Document> hodnoceniLookup;
+    private final MongoCollection<Document> piva;
 
-    public PodnikFiltrBuilder(MongoCollection<Document> kolekceSPodniky) {
+    public PodnikFiltrBuilder(MongoCollection<Document> kolekceSPodniky, MongoCollection<Document> kolekceSPivy) {
         super(kolekceSPodniky);
 
+        this.piva = kolekceSPivy;
         this.hodnoceniLookup = kolekceSPodniky.aggregate(
                 List.of(
                         Document.parse("{ $unwind: '$recenze' }"),
@@ -37,9 +39,9 @@ public class PodnikFiltrBuilder extends FiltrBuilder {
 
     }
 
-    public List<Podnik> finalizuj(MongoCollection<Document> kolekcePiv) {
+    public List<Podnik> finalizuj() {
         List<Podnik> kVraceni = new ArrayList<>();
-        for (Document doc : this.finalizujDokumenty()) kVraceni.add(Podnik.inicializujZDokumentu(doc, kolekcePiv));
+        for (Document doc : this.finalizujDokumenty()) kVraceni.add(Podnik.inicializujZDokumentu(doc, this.piva));
         return kVraceni;
     }
 
@@ -97,5 +99,4 @@ public class PodnikFiltrBuilder extends FiltrBuilder {
         this.pridejCustom(elemMatch("piva", lte("cena", max)));
         return this;
     }
-
 }

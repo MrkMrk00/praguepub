@@ -23,32 +23,9 @@ public class DatabazeImpl implements Databaze {
     private final Uzivatel uzivatel;
     private final MongoDatabase db;
 
-
     DatabazeImpl(Uzivatel uzivatel) {
         this.uzivatel = uzivatel;
         this.db = uzivatel.getPraguePubDatabaze();
-    }
-
-    /*
-    * ========================================================================
-    *                   Část se "select" dotazy.
-    * ========================================================================
-     */
-
-    @Override
-    public Set<Podnik> getPodniky(Bson filter) {
-        Iterable<Document> agregovano = this.db.getCollection("podniky")
-                .find(filter);
-        return this.prevedNalezenePodnikyNaInstance(agregovano);
-    }
-
-    public Set<Podnik> filtrujPodnikyPodleHodnoceni(Set<Podnik> podniky, double hodnoceni) {
-        return podniky.stream().filter(podnik -> podnik.getPrumerneHodnoceni() >= hodnoceni).collect(Collectors.toSet());
-    }
-
-    @Override
-    public Set<Pivo> getPiva(Bson filter) {
-        return this.prevedNalezenaPivaNaInstance(this.db.getCollection("piva").find(filter));
     }
 
     @Override
@@ -59,6 +36,16 @@ public class DatabazeImpl implements Databaze {
     @Override
     public MongoCollection<Document> getPodnikyCollection() {
         return this.db.getCollection("podniky");
+    }
+
+    @Override
+    public PivoFiltrBuilder getPivoFilterBuilder() {
+        return new PivoFiltrBuilder(this.getPivaCollection());
+    }
+
+    @Override
+    public PodnikFiltrBuilder getPodnikFiltrBuilder() {
+        return new PodnikFiltrBuilder(this.getPodnikyCollection(), this.getPivaCollection());
     }
 
     private Set<Podnik> prevedNalezenePodnikyNaInstance(Iterable<Document> nalezenePodniky) {
@@ -77,12 +64,6 @@ public class DatabazeImpl implements Databaze {
         return vratit;
     }
 
-
-    /*
-     * ========================================================================
-     *                   Část s "insert" dotazy.
-     * ========================================================================
-     */
 
     @Override
     public Vysledek<Podnik> zalozNovyPodnik(Podnik novyPodnik) {
@@ -134,14 +115,6 @@ public class DatabazeImpl implements Databaze {
 
         return (this.uploadni(pivo)) ? this.OK(pivo) : this.CHYBA(pivo);
     }
-
-    /*
-     * ========================================================================
-     *                   Část s "update" dotazy.
-     * ========================================================================
-     */
-
-
 
     /**
      * Metoda nahraje objekt do databáze (finální krok)

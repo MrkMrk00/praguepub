@@ -22,23 +22,15 @@ public class FXApp extends Application {
     private static final Logger log = LoggerFactory.getLogger(FXApp.class);
 
     public static void main(String[] args) {
+
         Databaze db = Databaze.get(Uzivatel.guest());
-
-        MongoCollection<Document> pivaKolekce = db.getPivaCollection();
-        Pivo pivo = new PivoFiltrBuilder(pivaKolekce)
-                .pivovar("Staropramen")
-                .nazev("Staropra")
-                .finalizuj().get(0);
-        log.info(pivo.toString());
-
-        MongoCollection<Document> kolekcePodniku = db.getPodnikyCollection();
-        Podnik podnik = new PodnikFiltrBuilder(kolekcePodniku)
-                .cenaPiva(5, 30)
+        log.info(db.getPodnikFiltrBuilder()
                 .cisloMestskeCasti(6)
-                .prumerneHodnoceni(3, 5)
-                .finalizuj(pivaKolekce)
-                .get(0);
-        log.info(podnik.toString());
+                .cenaPiva(50)
+                .finalizuj()
+                .get(0)
+                .toString()
+        );
 
         Application.launch(args);
 
