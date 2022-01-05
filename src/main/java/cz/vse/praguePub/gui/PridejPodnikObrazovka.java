@@ -12,7 +12,6 @@ import javafx.geometry.Pos;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import lombok.Data;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,13 +20,16 @@ import java.util.function.Consumer;
 
 import static cz.vse.praguePub.gui.komponenty.Komponenty.*;
 
-public class PridejPodnik extends Obrazovka<BorderPane> {
-    private final static Logger log = LoggerFactory.getLogger(PridejPodnik.class);
+/**
+ * Třída reprezentuje GUI přidání nového podniku do databáze.
+ */
+public class PridejPodnikObrazovka extends Obrazovka<BorderPane> {
+    private final static Logger log = LoggerFactory.getLogger(PridejPodnikObrazovka.class);
 
     private final ObservableList<Pivo> pivaUPodniku;
     private final Stage oknoProVyberPiva;
 
-    public PridejPodnik() {
+    public PridejPodnikObrazovka() {
         super(new BorderPane(), 900, 600, "background");
 
         this.oknoProVyberPiva = new Stage();
@@ -37,6 +39,9 @@ public class PridejPodnik extends Obrazovka<BorderPane> {
         this.vytvorGUI();
     }
 
+    /**
+     * Metoda přidá všechny inputy do jedné mapy pro snažší přístup k vkládaným datům.
+     */
     private void registrujInputy() {
         this.getMapaInputu().putAll(
                 Map.of(
@@ -50,16 +55,18 @@ public class PridejPodnik extends Obrazovka<BorderPane> {
         );
     }
 
+
     private void parsuj() {
         log.debug(new Podnik(
+                null,
                 this.getMapaInputu().get("nazev").getText(),
                 Integer.parseInt(this.getMapaInputu().get("mc_cislo").getText()),
                 this.getMapaInputu().get("mc_nazev").getText(),
                 this.getMapaInputu().get("ulice").getText(),
                 Integer.parseInt(this.getMapaInputu().get("psc").getText()),
                 this.getMapaInputu().get("cp").getText(),
-                new HashSet<>(),
-                new HashMap<>()
+                new ArrayList<>(),
+                new ArrayList<>()
         ).toString());
     }
 
@@ -122,12 +129,21 @@ public class PridejPodnik extends Obrazovka<BorderPane> {
         );
     }
 
+    /**
+     * Metoda zobrazí dialog pro vybrání piva z databáze, které se do nového podniku přidá.
+     */
     private void vyberPivo() {
-        Consumer<Pivo> pridejPivo = pivo -> {
+        Consumer<Pivo> callbackPoVyberuPiva = pivo -> {
             this.pivaUPodniku.add(pivo);
             this.oknoProVyberPiva.hide();
         };
-        this.oknoProVyberPiva.setScene(new VyberPivo(Databaze.get(Uzivatel.guest()), pridejPivo).getScene());
+
+        this.oknoProVyberPiva.setScene(
+                new VyberPivoDialog(
+                        Databaze.get(Uzivatel.guest()).getPivaCollection(),
+                        callbackPoVyberuPiva
+                ).getScene()
+        );
         this.oknoProVyberPiva.showAndWait();
     }
 }

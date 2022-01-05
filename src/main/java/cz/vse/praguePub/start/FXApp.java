@@ -1,60 +1,58 @@
 package cz.vse.praguePub.start;
 
+import com.mongodb.client.MongoCollection;
 import cz.vse.praguePub.gui.*;
 import cz.vse.praguePub.logika.Databaze;
-import cz.vse.praguePub.logika.Filtry;
+import cz.vse.praguePub.logika.PivoFiltrBuilder;
+import cz.vse.praguePub.logika.PodnikFiltrBuilder;
 import cz.vse.praguePub.logika.Uzivatel;
 
-import cz.vse.praguePub.gui.komponenty.Tabulka;
 import cz.vse.praguePub.logika.dbObjekty.Pivo;
-
 import cz.vse.praguePub.logika.dbObjekty.Podnik;
 import javafx.application.Application;
-import javafx.scene.Scene;
-import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import org.bson.Document;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
-import static cz.vse.praguePub.logika.Filtry.*;
 
 public class FXApp extends Application {
+    private static final Logger log = LoggerFactory.getLogger(FXApp.class);
 
     public static void main(String[] args) {
-        Databaze.get(Uzivatel.guest()).getPodniky(podnik_mestskaCast(6)).forEach(System.out::println);
+        Databaze db = Databaze.get(Uzivatel.guest());
+
+        MongoCollection<Document> pivaKolekce = db.getPivaCollection();
+        Pivo pivo = new PivoFiltrBuilder(pivaKolekce)
+                .pivovar("Staropramen")
+                .nazev("Staropra")
+                .finalizuj().get(0);
+        log.info(pivo.toString());
+
+        MongoCollection<Document> kolekcePodniku = db.getPodnikyCollection();
+        Podnik podnik = new PodnikFiltrBuilder(kolekcePodniku)
+                .cenaPiva(5, 30)
+                .cisloMestskeCasti(6)
+                .prumerneHodnoceni(3, 5)
+                .finalizuj(pivaKolekce)
+                .get(0);
+        log.info(podnik.toString());
+
         Application.launch(args);
+
     }
 
     @Override
     public void start(Stage primaryStage) {
 
-        var bp = new BorderPane();
-        Tabulka<Pivo> tab = new Tabulka<>(Pivo.PRO_TABULKU);
-        Document found = Uzivatel.guest()
-                .getPraguePubDatabaze()
-                .getCollection("podniky")
-                .find(new Filtry()
-                        .pridejFilter(podnik_cenaPiva(20, 30))
-                        .pridejFilter(podnik_mestskaCast(6))
-                        .finalizuj()
-                ).first();
-        bp.setCenter(tab.getTableView());
-
-        var bp2 = new BorderPane();
-        Tabulka<Podnik> tab2 = new Tabulka<>(Podnik.PRO_TABULKU);
-        tab2.setRadky(List.of(Podnik.inicializujZDokumentu(found, Uzivatel.guest().getPraguePubDatabaze().getCollection("piva"))));
-        bp2.setCenter(tab2.getTableView());
-
-
         List.of(
                 /*new HlavniObrazovka().getScene(),
                 new Filtr().getScene(),
-                new ZobrazitSeznamVLokaci().getScene(),
+                new ZobrazitSeznamVLokaci().getScene(),*/
                 new Prihlaseni().getScene(),
-                new Scene(bp, 900, 400),
-                new Scene(bp2, 900, 400),*/
-                new PridejPodnik().getScene()
+                new PridejPodnikObrazovka().getScene()
 
         ).forEach(
                 (scene) -> {

@@ -1,9 +1,7 @@
 package cz.vse.praguePub.gui;
 
-
-import com.mongodb.client.model.Filters;
+import cz.vse.praguePub.logika.PivoFiltrBuilder;
 import javafx.geometry.Insets;
-import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
@@ -11,33 +9,32 @@ import org.bson.Document;
 import org.bson.conversions.Bson;
 
 import java.io.InputStream;
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
 
+import static com.mongodb.client.model.Filters.*;
 import static cz.vse.praguePub.gui.komponenty.Komponenty.*;
 
 public class Filtr extends Obrazovka <BorderPane> {
-    private final Map<String, TextField> mapaInputu;
-    private final Consumer<Bson> vysledek;
+    private final Consumer<Map<String, Object>> callbackSVysledkem;
 
-    public Filtr(Consumer<Bson> vysledek) {
+    public Filtr(Consumer<Map<String, Object>> callbackSVysledkem) {
         super(new BorderPane(), 350,200 , "background");
-        this.mapaInputu = new HashMap<>();
-        this.vysledek = vysledek;
+        this.callbackSVysledkem = callbackSVysledkem;
 
         this.registrujInputy();
         this.vytvorGUI();
     }
 
     private void registrujInputy() {
-        this.mapaInputu.putAll(
+        this.getMapaInputu().putAll(
                 Map.of(
-                        "hodnoceni", TextFieldAplikace("Zadejte hodnocení", n -> {}),
-                        "cena_piva", TextFieldAplikace("Zadejte cenu piva", n -> {}),
-                        "znacka_piva", TextFieldAplikace("Zadejte značku Piva", n -> {})
+                        "hodnoceni",    TextFieldAplikace("", n -> {}),
+                        "cena_piva",    TextFieldAplikace("", n -> {}),
+                        "znacka_piva",  TextFieldAplikace("", n -> {})
                 )
         );
     }
@@ -65,24 +62,22 @@ public class Filtr extends Obrazovka <BorderPane> {
                 Sloupec(List.of(
                         Radek(
                                 LabelAplikace("Hodnocení:\t", l -> {}),
-                                this.mapaInputu.get("hodnoceni")
+                                this.getMapaInputu().get("hodnoceni")
                         ),
 
                         Radek(
                                 LabelAplikace("Cena piva:\t", l -> {}),
-                                this.mapaInputu.get("cena_piva")
+                                this.getMapaInputu().get("cena_piva")
                         ),
 
                         Radek(
                                 LabelAplikace("Značka piva:\t", l -> {}),
-                                this.mapaInputu.get("znacka_piva")
+                                this.getMapaInputu().get("znacka_piva")
                         ),
 
                         TlacitkoAplikace("Odeslat",
                                 tlacitko -> tlacitko.setOnMouseClicked(
-                                        onClickEvent -> {
-                                            this.vysledek.accept(new Document());
-                                        }
+                                        onClickEvent -> this.callbackSVysledkem.accept(new Document()) //zde přijde výsledny Bson filter (filter požadován uživatelem)
                                 )
                         )
                     ),
@@ -91,6 +86,18 @@ public class Filtr extends Obrazovka <BorderPane> {
                     }
                 )
         );
+    }
 
+    private Map<String, Object> zpracujFiltr() {
+        String hodnoceni = this.getMapaInputu().get("hodnoceni").getText();
+        String cenaPiva = this.getMapaInputu().get("cena_piva").getText();
+        String nazevPivovaru = this.getMapaInputu().get("znacka_piva").getText();
+
+
+        return Map.of(
+                "hodnoceni", hodnoceni,
+                "cena_piva", cenaPiva,
+                "nazev_pivovaru", nazevPivovaru
+        );
     }
 }

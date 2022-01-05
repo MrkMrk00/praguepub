@@ -1,23 +1,25 @@
 package cz.vse.praguePub.logika.dbObjekty;
 
-import com.mongodb.BasicDBObject;
 import com.mongodb.client.MongoCollection;
+import com.mongodb.client.model.Filters;
 import lombok.Data;
 import org.bson.Document;
 import org.bson.types.ObjectId;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Data
 public class Podnik implements DBObjekt {
+    private final ObjectId _id;
     private final String nazev;
     private final int adresa_mc_cislo;
     private final String adresa_mc_nazev;
     private final String adresa_ulice;
     private final Integer adresa_psc;
     private final String adresa_cp;
-    private final Set<Recenze> recenze;
-    private final Map<ObjectId, Pivo> pivniListek;
+    private final List<Recenze> recenze;
+    private final List<Pivo> pivniListek;
 
     //levý sloupec: názvy, co se zobrazí v tabulce jako nadpisy sloupců; pravý sloupec: názvy atributů instance)
     //(logika tabulky bere atribut instance přes getter, tudíž atribut musí být v camelCase a metoda musí začínat "get")
@@ -43,7 +45,7 @@ public class Podnik implements DBObjekt {
         StringBuilder sb = new StringBuilder();
 
         this.getPivniListek().forEach(
-                (objID, pivo) -> sb.append(pivo.getNazev())
+                pivo -> sb.append(pivo.getNazev())
                         .append(" à ")
                         .append(pivo.getCena())
                         .append(" Kč")
@@ -56,19 +58,29 @@ public class Podnik implements DBObjekt {
     }
 
     /**
+     * @return průměrné hodnocení
+     */
+    public double getPrumerneHodnoceni() {
+        double prumerneHodnoceni = 0d;
+
+        for (Recenze r : this.recenze) prumerneHodnoceni += r.getHodnoceni();
+        return (prumerneHodnoceni / this.recenze.size());
+    }
+
+    /**
      * Getter pro recenze u podniku
      * @return kopii setu s recenzemi
      */
-    public Set<Recenze> getRecenze() {
-        return Collections.unmodifiableSet(this.recenze);
+    public List<Recenze> getRecenze() {
+        return Collections.unmodifiableList(this.recenze);
     }
 
     /**
      * Getter pro nabízená piva podnikem
      * @return kopii mapy s nabízenými pivy
      */
-    public Map<ObjectId, Pivo> getPivniListek() {
-        return Collections.unmodifiableMap(this.pivniListek);
+    public List<Pivo> getPivniListek() {
+        return Collections.unmodifiableList(this.pivniListek);
     }
 
     /**
@@ -79,32 +91,31 @@ public class Podnik implements DBObjekt {
      * @return instanci podniku
      */
     public static Podnik inicializujZDokumentu(Document doc, MongoCollection<Document> kolekcePiv) {
-        if (doc == null || kolekcePiv == null) return null;
-
-        Set<Recenze> recenzeLst = new HashSet<>();
+        List<Recenze> recenzeLst = new ArrayList<>();
         doc.getList("recenze", Document.class).forEach(
                 (recenze) -> recenzeLst.add(Recenze.inicializujZDokumentu(recenze))
         );
 
-        Map<ObjectId, Pivo> pivniListek = new HashMap<>();
+        List<Pivo> pivniListek = new ArrayList<>();
         doc.getList("piva", Document.class).forEach(
-                (pivoDoc) -> {
-                    ObjectId pivoID = pivoDoc.get("pivo", ObjectId.class);
-                    Document naleznutePivo = kolekcePiv.find(new Document("_id", pivoID)).first();
+                pivoDoc -> {
+                    Document pivoDocZKolekce = kolekcePiv.find(Filters.eq("_id", pivoDoc.get("_id"))).first();
+                    if (pivoDocZKolekce == null) return;
 
-                    if (naleznutePivo != null) pivniListek.put(
-                            pivoID,
+                    pivniListek.add(
                             Pivo.inicializujZDokumentu(
-                                    naleznutePivo,
+                                    pivoDocZKolekce,
                                     pivoDoc.getDouble("cena"),
                                     pivoDoc.getDouble("objem")
                             )
                     );
-                });
+                }
+        );
 
         Document adresa = doc.get("adresa", Document.class);
 
         return new Podnik(
+                doc.get("_id", ObjectId.class),
                 doc.get("jmeno", String.class),
                 adresa.get("mc_cislo", Integer.class),
                 adresa.get("mc_nazev", String.class),
@@ -118,18 +129,22 @@ public class Podnik implements DBObjekt {
 
     @Override
     public Document getDocument() {
-        List<BasicDBObject> recenzeList = new ArrayList<>();
-        this.getRecenze().forEach(rec -> recenzeList.add(new BasicDBObject(rec.getDocument())));
+        List<Document> recenzeList = this.getRecenze()
+                .stream()
+                .map(Recenze::getDocument)
+                .collect(Collectors.toList());
 
-        List<BasicDBObject> pivoList = new ArrayList<>();
-        this.getPivniListek().forEach(
-                (id, pivo) -> pivoList.add(
-                        new BasicDBObject(Map.of(
-                        "pivo", id,
-                        "cena", pivo.getCena(),
-                        "objem", pivo.getObjem()
-                )))
-        );
+
+        List<Document> pivoList = this.getPivniListek()
+                .stream()
+                .map(pivo -> new Document(
+                        Map.of(
+                                "pivo", pivo.get_id(),
+                                "cena", pivo.getCena(),
+                                "objem", pivo.getObjem()
+                        )
+                ))
+                .collect(Collectors.toList());
 
         return new Document(Map.of(
                 "jmeno", this.nazev,

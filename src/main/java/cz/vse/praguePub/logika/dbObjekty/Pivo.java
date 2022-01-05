@@ -2,11 +2,13 @@ package cz.vse.praguePub.logika.dbObjekty;
 
 import lombok.Data;
 import org.bson.Document;
+import org.bson.types.ObjectId;
 
 import java.util.Map;
 
 @Data
 public class Pivo implements DBObjekt {
+    private final ObjectId _id;
     private final String nazev;
     private final String nazevPivovaru;
     private final double stupnovitost;
@@ -38,6 +40,7 @@ public class Pivo implements DBObjekt {
      */
     public static Pivo inicializujZDokumentu(Document pivo, Double cena, Double objem) {
         return new Pivo(
+                pivo.get("_id", ObjectId.class),
                 pivo.get("nazev", String.class),
                 pivo.get("pivovar", String.class),
                 pivo.get("stupnovitost", Double.class),
@@ -54,6 +57,7 @@ public class Pivo implements DBObjekt {
         Document pivo = new Document();
         pivo.putAll(
                 Map.of(
+                        "_id", this._id,
                         "nazev", this.nazev,
                         "nazev_pivovaru", this.nazevPivovaru,
                         "stupnovitost", this.stupnovitost,
