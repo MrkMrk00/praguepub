@@ -1,8 +1,9 @@
 package cz.vse.praguePub.gui;
 
+import javafx.geometry.Pos;
 import javafx.scene.layout.*;
 
-import java.util.Map;
+import java.util.List;
 
 import static cz.vse.praguePub.gui.komponenty.Komponenty.*;
 
@@ -24,11 +25,20 @@ public class HlavniObrazovka extends Obrazovka<BorderPane> {
         this.getPane().setTop(
                 HorniPanel(
                         (horniPanel) -> horniPanel.getChildren().addAll(
-                            NadpisOknaLabel("PraguePub"),
-                            this.getMapaInputu().get("vyhledat"),
-                            TlacitkoAplikace("Oblibene podniky", (t)->{}),
-                            TlacitkoAplikace("Prihlasit se", (t)->{}))
+                                NadpisOknaLabel("PraguePub"),
+
+                            Radek(
+                                    Sloupec(List.of(), vyhl -> vyhl.setAlignment(Pos.CENTER)),
+                                    Sloupec(this.getMapaInputu().get("vyhledat")),
+                                    Sloupec(List.of(), oblAPrihl -> oblAPrihl.setAlignment(Pos.CENTER_RIGHT)),
+                                    Sloupec(
+                                            Radek(TlacitkoAplikace("Oblibene podniky", (t)->{}), TlacitkoAplikace("Prihlasit se", (t)->{})
+                                    )
+                                    )
+
+
+                        )
                 )
-        );
+        ));
     }
 }

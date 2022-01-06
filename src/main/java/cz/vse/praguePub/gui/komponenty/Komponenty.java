@@ -100,4 +100,17 @@ public final class Komponenty {
         return label;
     }
 
+    public static VBox ProstorV(Consumer<VBox> styluj) {
+        VBox vbox = new VBox();
+        vbox.getStyleClass().add("background");
+        styluj.accept(vbox);
+        return vbox;
+    }
+
+    public static HBox ProstorH(Consumer<HBox> styluj) {
+        HBox hbox = new HBox();
+        hbox.getStyleClass().add("backgroun");
+        styluj.accept(hbox);
+        return hbox;
+    }
 }
