@@ -117,7 +117,7 @@ public class Podnik implements DBObjekt {
 
         return new Podnik(
                 doc.get("_id", ObjectId.class),
-                doc.get("jmeno", String.class),
+                doc.get("nazev", String.class),
                 adresa.get("mc_cislo", Integer.class),
                 adresa.get("mc_nazev", String.class),
                 adresa.get("ulice", String.class),
