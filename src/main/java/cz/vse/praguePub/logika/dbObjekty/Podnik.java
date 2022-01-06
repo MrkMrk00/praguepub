@@ -24,9 +24,10 @@ public class Podnik implements DBObjekt {
     //levý sloupec: názvy, co se zobrazí v tabulce jako nadpisy sloupců; pravý sloupec: názvy atributů instance)
     //(logika tabulky bere atribut instance přes getter, tudíž atribut musí být v camelCase a metoda musí začínat "get")
     public static final String[][] PRO_TABULKU = {
-            { "Název",          "nazev"            },
-            { "Adresa",         "adresaProTabulku" },
-            { "Nabízená piva",  "pivaProTabulku"   }
+            { "Název",                     "nazev"            },
+            { "Adresa",                    "adresaProTabulku" },
+            { "Nabízená piva",             "pivaProTabulku"   },
+            { "Průmerné hodnocení",        "prumerneHodnoceni"}
     };
 
     /**
