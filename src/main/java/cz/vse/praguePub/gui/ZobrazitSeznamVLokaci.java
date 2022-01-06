@@ -27,7 +27,7 @@ public class ZobrazitSeznamVLokaci extends Obrazovka<BorderPane> {
                     Button pridatNovyPodnik = TlacitkoAplikace("Pridat novy podnik", (t)->{});
                     Button filtrovat = TlacitkoAplikace("Filtrovat", (t)->{});
 
-                    horniPanel.getChildren().addAll(nazevLokace, pridatNovyPodnik, filtrovat);
+;                    horniPanel.getChildren().addAll(nazevLokace, pridatNovyPodnik, filtrovat);
                 })
         );
     }
