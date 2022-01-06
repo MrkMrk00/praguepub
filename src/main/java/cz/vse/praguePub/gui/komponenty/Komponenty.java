@@ -1,6 +1,7 @@
 package cz.vse.praguePub.gui.komponenty;
 
 import javafx.event.EventHandler;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
@@ -19,6 +20,7 @@ public final class Komponenty {
         Button button = new Button(text);
         button.getStyleClass().add("tlacitkoAplikace");
         button.setAlignment(Pos.BASELINE_RIGHT);
+        HBox.setMargin(button, new Insets(6, 0,0, 5));
         styluj.accept(button);
         return button;
     }
@@ -100,17 +102,5 @@ public final class Komponenty {
         return label;
     }
 
-    public static VBox ProstorV(Consumer<VBox> styluj) {
-        VBox vbox = new VBox();
-        vbox.getStyleClass().add("background");
-        styluj.accept(vbox);
-        return vbox;
-    }
 
-    public static HBox ProstorH(Consumer<HBox> styluj) {
-        HBox hbox = new HBox();
-        hbox.getStyleClass().add("backgroun");
-        styluj.accept(hbox);
-        return hbox;
-    }
 }

@@ -45,14 +45,16 @@ public class FXApp extends Application {
                 new ZobrazitSeznamVLokaci().getScene(),*/
                 //new Prihlaseni().getScene(),
                // new PridejPodnikObrazovka().getScene(),
-                new VyberPivoDialog(Databaze.get(Uzivatel.guest()).getPivaCollection(),null).getScene(),
-                new OblibenePodniky().getScene()
+                //new VyberPivoDialog(Databaze.get(Uzivatel.guest()).getPivaCollection(),null).getScene(),
+                //new OblibenePodniky().getScene(),
+                new HlavniObrazovka().getScene()
 
         ).forEach(
                 (scene) -> {
                     Stage newStage = new Stage();
                     newStage.setScene(scene);
                     newStage.show();
+                    newStage.setResizable(false);
                 });
     }
 }

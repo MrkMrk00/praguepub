@@ -1,7 +1,10 @@
 package cz.vse.praguePub.gui;
 
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.control.Label;
 import javafx.scene.layout.*;
+import javafx.scene.shape.SVGPath;
 
 import java.util.List;
 
@@ -17,28 +20,38 @@ public class HlavniObrazovka extends Obrazovka<BorderPane> {
 
     private void registrujInputy() {
         this.getMapaInputu().put(
-                "vyhledat", TextFieldAplikace("Vyhledat", t -> {})
+                "vyhledat", TextFieldAplikace("Vyhledat", t -> {
+                    HBox.setMargin(t, new Insets(6,0,0,5));
+                })
         );
     }
 
     private void vytvorGUI() {
         this.getPane().setTop(
-                HorniPanel(
-                        (horniPanel) -> horniPanel.getChildren().addAll(
-                                NadpisOknaLabel("PraguePub"),
+                HorniPanel(hp -> {
+                    BorderPane vrchniBar = new BorderPane();
+                    vrchniBar.setLeft(
+                            Radek(NadpisOknaLabel("PraguePub"),
+                                  this.getMapaInputu().get("vyhledat"),
+                                    TlacitkoAplikace("Oblibene podniky", (t) -> {})
+                            )
+                    );
+                    vrchniBar.setRight(Radek(TlacitkoAplikace("Prihlasit se", (t) -> {HBox.setMargin(t, new Insets(6, 8, 0, 0));})));
+                    hp.getChildren().add(vrchniBar);
+                    hp.setPrefWidth(Integer.MAX_VALUE);
+                    vrchniBar.setPrefWidth(Integer.MAX_VALUE);
 
-                            Radek(
-                                    Sloupec(List.of(), vyhl -> vyhl.setAlignment(Pos.CENTER)),
-                                    Sloupec(this.getMapaInputu().get("vyhledat")),
-                                    Sloupec(List.of(), oblAPrihl -> oblAPrihl.setAlignment(Pos.CENTER_RIGHT)),
-                                    Sloupec(
-                                            Radek(TlacitkoAplikace("Oblibene podniky", (t)->{}), TlacitkoAplikace("Prihlasit se", (t)->{})
-                                    )
-                                    )
+                       }
 
-
-                        )
                 )
-        ));
+        );
+
+
+
+
+
+
+
+
     }
 }
