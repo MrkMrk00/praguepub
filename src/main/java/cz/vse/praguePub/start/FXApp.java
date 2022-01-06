@@ -3,12 +3,8 @@ package cz.vse.praguePub.start;
 import com.mongodb.client.MongoCollection;
 import cz.vse.praguePub.gui.*;
 import cz.vse.praguePub.logika.Databaze;
-import cz.vse.praguePub.logika.PivoFiltrBuilder;
-import cz.vse.praguePub.logika.PodnikFiltrBuilder;
 import cz.vse.praguePub.logika.Uzivatel;
 
-import cz.vse.praguePub.logika.dbObjekty.Pivo;
-import cz.vse.praguePub.logika.dbObjekty.Podnik;
 import javafx.application.Application;
 import javafx.stage.Stage;
 import org.bson.Document;
@@ -20,6 +16,7 @@ import java.util.List;
 
 public class FXApp extends Application {
     private static final Logger log = LoggerFactory.getLogger(FXApp.class);
+
 
     public static void main(String[] args) {
 
@@ -48,6 +45,8 @@ public class FXApp extends Application {
                 //new VyberPivoDialog(Databaze.get(Uzivatel.guest()).getPivaCollection(),null).getScene(),
                 //new OblibenePodniky().getScene(),
                 new HlavniObrazovka().getScene()
+
+
 
         ).forEach(
                 (scene) -> {
