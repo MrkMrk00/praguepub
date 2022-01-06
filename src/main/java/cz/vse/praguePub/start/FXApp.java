@@ -43,8 +43,10 @@ public class FXApp extends Application {
                 /*new HlavniObrazovka().getScene(),
                 new Filtr().getScene(),
                 new ZobrazitSeznamVLokaci().getScene(),*/
-                new Prihlaseni().getScene(),
-                new PridejPodnikObrazovka().getScene()
+                //new Prihlaseni().getScene(),
+               // new PridejPodnikObrazovka().getScene(),
+                new VyberPivoDialog(Databaze.get(Uzivatel.guest()).getPivaCollection(),null).getScene(),
+                new OblibenePodniky().getScene()
 
         ).forEach(
                 (scene) -> {
