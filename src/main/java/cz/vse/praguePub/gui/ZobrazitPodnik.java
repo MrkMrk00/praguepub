@@ -30,8 +30,8 @@ public class ZobrazitPodnik extends Obrazovka<BorderPane>{
                                             //tlačítko ve tvaru srdíčka pro přidaní do obl.
                                             TlacitkoAplikace("Upravit", (t) ->{
                                                 HBox.setMargin(t, new Insets(6,0,0,5));
-                                            }),
-                                            TlacitkoZpet((t) ->{})
+                                            })
+                                            //TlacitkoZpet((t) ->{})
                                             //tlačítko pro zpět
 
 
