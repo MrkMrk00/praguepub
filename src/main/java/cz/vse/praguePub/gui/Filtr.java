@@ -22,7 +22,7 @@ public class Filtr extends Obrazovka <BorderPane> {
     private final Consumer<Map<String, Object>> callbackSVysledkem;
 
     public Filtr(Consumer<Map<String, Object>> callbackSVysledkem) {
-        super(new BorderPane(), 350,200 , "background");
+        super(new BorderPane(), 350,250 , "background");
         this.callbackSVysledkem = callbackSVysledkem;
 
         this.registrujInputy();
