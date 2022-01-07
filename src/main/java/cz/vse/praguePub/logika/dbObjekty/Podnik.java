@@ -135,7 +135,6 @@ public class Podnik implements DBObjekt {
                         )
                 ))
                 .collect(Collectors.toList());
-        pivoList.forEach(it -> System.out.println(it.toString()));
 
         return new Document(Map.of(
                 "nazev", this.nazev,
