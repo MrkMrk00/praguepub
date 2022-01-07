@@ -2,6 +2,7 @@ package cz.vse.praguePub.logika;
 
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.result.DeleteResult;
 import com.mongodb.client.result.UpdateResult;
 import cz.vse.praguePub.logika.dbObjekty.DBObjekt;
 import cz.vse.praguePub.logika.dbObjekty.Pivo;
@@ -99,8 +100,6 @@ public class DatabazeImpl implements Databaze {
 
     @Override
     public Vysledek<Podnik> upravPodnik(Podnik upravenyPodnik) {
-
-
         UpdateResult vysledek = this.getPodnikyCollection()
                 .updateOne(
                         eq("_id", upravenyPodnik.get_id()),
@@ -110,6 +109,17 @@ public class DatabazeImpl implements Databaze {
         if (!vysledek.wasAcknowledged()) return CHYBA(upravenyPodnik);
         if (vysledek.getModifiedCount() < 1) return ZADNA_ZMENA(upravenyPodnik);
         return OK(upravenyPodnik);
+    }
+
+    @Override
+    public Vysledek<Podnik> vymazPodnik(Podnik podnikKVymazani) {
+        DeleteResult vysledek = this.getPodnikyCollection().deleteOne(
+                eq("_id", podnikKVymazani.get_id())
+        );
+
+        if (!vysledek.wasAcknowledged()) return CHYBA(podnikKVymazani);
+        if (vysledek.getDeletedCount() < 1) return ZADNA_ZMENA(podnikKVymazani);
+        return OK(podnikKVymazani);
     }
 
     @Override

@@ -54,9 +54,17 @@ public interface Databaze {
      * Metoda s logikou úpravy podniku. Instance podniku v sobě obsahuje parametr _id, tzn. porovnají objekty v databázi a
      * v argumentu funkce a podnik v databázi se přepíše úpravami podniku v argumentu.
      * @param upravenyPodnik podnik z databáze se změnami
-     * @return výsledek (OK nebo CHYBA)
+     * @return výsledek (OK, ZADNA_ZMENA, CHYBA)
      */
     Vysledek<Podnik> upravPodnik(Podnik upravenyPodnik);
+
+    /**
+     * Metoda vymaže podnik z databáze. Podnik, který se má smazat, je v databázi vyhledán podle _id. Nezáleží tedy na jiných
+     * instančních atributech argumentu podnikKVymazani.
+     * @param podnikKVymazani podnik, ze kterého se vezme _id
+     * @return výsledek (OK, ZADNA_ZMENA, CHYBA)
+     */
+    Vysledek<Podnik> vymazPodnik(Podnik podnikKVymazani);
 
     /**
      * Metoda pro založení nového piva do databáze. Vrací výsledek, který může znamenat, že podnik byl úspěšně vytvořen, nebo
