@@ -47,9 +47,6 @@ public class FXApp extends Application {
                 //new HlavniObrazovka().getScene(),
                 //new ZobrazitSeznamVLokaci().getScene(),
                 new ZobrazitPodnik().getScene()
-
-
-
         ).forEach(
                 (scene) -> {
                     Stage newStage = new Stage();
