@@ -1,8 +1,10 @@
 package cz.vse.praguePub.logika.dbObjekty;
 
 import com.mongodb.client.MongoCollection;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.bson.Document;
+import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
 
 import java.util.*;
@@ -11,14 +13,15 @@ import java.util.stream.Collectors;
 import static com.mongodb.client.model.Filters.eq;
 
 @Data
+@AllArgsConstructor
 public class Podnik implements DBObjekt {
-    private final ObjectId _id;
-    private final String nazev;
-    private final int adresa_mc_cislo;
-    private final String adresa_mc_nazev;
-    private final String adresa_ulice;
-    private final Integer adresa_psc;
-    private final String adresa_cp;
+    private ObjectId _id;
+    private String nazev;
+    private int adresa_mc_cislo;
+    private String adresa_mc_nazev;
+    private String adresa_ulice;
+    private Integer adresa_psc;
+    private String adresa_cp;
     private final List<Recenze> recenze;
     private final List<Pivo> pivniListek;
 
@@ -69,21 +72,6 @@ public class Podnik implements DBObjekt {
         return (prumerneHodnoceni / this.recenze.size());
     }
 
-    /**
-     * Getter pro recenze u podniku
-     * @return kopii setu s recenzemi
-     */
-    public List<Recenze> getRecenze() {
-        return Collections.unmodifiableList(this.recenze);
-    }
-
-    /**
-     * Getter pro nabízená piva podnikem
-     * @return kopii mapy s nabízenými pivy
-     */
-    public List<Pivo> getPivniListek() {
-        return Collections.unmodifiableList(this.pivniListek);
-    }
 
     /**
      * Vytvoří instanci podniku z databázového dokumentu. <br>
@@ -102,7 +90,7 @@ public class Podnik implements DBObjekt {
         List<Document> pivoDocList = doc.getList("piva", Document.class);
 
         for (Document pivoDoc : pivoDocList) {
-            Document nalezenePivo = kolekcePiv.find(eq("_id", pivoDoc.getObjectId("_id"))).first();
+            Document nalezenePivo = kolekcePiv.find(eq("pivo", pivoDoc.getObjectId("_id"))).first();
             if (nalezenePivo == null) continue;
 
             pivniListek.add(
@@ -147,9 +135,10 @@ public class Podnik implements DBObjekt {
                         )
                 ))
                 .collect(Collectors.toList());
+        pivoList.forEach(it -> System.out.println(it.toString()));
 
         return new Document(Map.of(
-                "jmeno", this.nazev,
+                "nazev", this.nazev,
                 "adresa", Map.of(
                         "mc_cislo", this.adresa_mc_cislo,
                         "mc_nazev", this.adresa_mc_nazev,
