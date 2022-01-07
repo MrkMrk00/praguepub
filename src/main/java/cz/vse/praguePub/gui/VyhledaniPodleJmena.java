@@ -2,49 +2,62 @@ package cz.vse.praguePub.gui;
 
 import com.mongodb.client.MongoCollection;
 import cz.vse.praguePub.gui.komponenty.Tabulka;
+import cz.vse.praguePub.logika.Databaze;
 import cz.vse.praguePub.logika.dbObjekty.Podnik;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.geometry.Insets;
+import javafx.scene.control.Button;
 import javafx.scene.control.TableView;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 import org.bson.Document;
-import java.util.ArrayList;
+
 import java.util.List;
 
 import static cz.vse.praguePub.gui.komponenty.Komponenty.*;
 
 public class VyhledaniPodleJmena extends Obrazovka<BorderPane> {
 
-    private final List<Podnik> vsechnyPodniky;
-    private final ObservableList<Podnik> vyhledanyPodnik;
-    private final MongoCollection<Document> db;
+    private final ObservableList<Podnik> seznamPodnikuProTabulku;
+    private final Databaze db;
 
 
-    public VyhledaniPodleJmena(MongoCollection<Document> kolekce) {
+    public VyhledaniPodleJmena(Databaze db) {
         super(new BorderPane(), 900,600, "background");
 
-        this.vsechnyPodniky = new ArrayList<>();
-        this.vyhledanyPodnik = FXCollections.observableArrayList();
-        this.db =kolekce;
-        this.registrujInputy();
+        this.seznamPodnikuProTabulku = FXCollections.observableArrayList();
+        this.db = db;
 
-        for(Document podniky : kolekce.find()) this.vsechnyPodniky.add(Podnik.inicializujZDokumentu(podniky,kolekce));
-        this.vyhledanyPodnik.addAll(this.vsechnyPodniky);
+        this.registrujInputy();
         this.vytvorGUI();
     }
 
     private void registrujInputy() {
         this.getMapaInputu().put(
-                "vyhledat", TextFieldAplikace("Vyhledat", t -> {})
-                );
+                "vyhledat",         TextFieldAplikace(
+                        "",
+                        t -> {
+                            t.setOnMouseClicked(mouseEvent -> t.clear());
+                            HBox.setMargin(t, new Insets(0,0,0,5));
+                        }
+                )
+        );
     }
 
     private void vytvorGUI() {
         this.getPane().setTop(
                 HorniPanel(
-                        (horniPanel) -> horniPanel.getChildren().addAll(
+                        horniPanel -> horniPanel.getChildren().addAll(
                                 NadpisOknaLabel("Vyhledávání podle jména"),
-                                this.getMapaInputu().get("vyhledat")
+                                this.getMapaInputu().get("vyhledat"),
+                                TlacitkoAplikace("Vyhledej",
+                                        t -> {
+                                            t.setOnMouseClicked(mouseEvent -> this.vyfiltrujPodniky());
+                                            HBox.setMargin(t, new Insets(0,0,0,5));
+                                        }
+
+                                )
                         )
                 )
         );
@@ -52,9 +65,21 @@ public class VyhledaniPodleJmena extends Obrazovka<BorderPane> {
         this.getPane().setCenter(pripravtabulku());
     }
 
+    private void vyfiltrujPodniky() {
+        String pozadovanyNazev = this.getMapaInputu().get("vyhledat").getText();
+
+        this.seznamPodnikuProTabulku.clear();
+        this.seznamPodnikuProTabulku.addAll(
+                this.db.getPodnikFiltrBuilder()
+                    .nazev(pozadovanyNazev)
+                    .finalizuj()
+        );
+    }
+
     private TableView<Podnik> pripravtabulku() {
         Tabulka<Podnik> oblibenePodnikyTabulka = new Tabulka<>(Podnik.PRO_TABULKU);
-        oblibenePodnikyTabulka.getTableView().setItems(this.vyhledanyPodnik);
+        oblibenePodnikyTabulka.getTableView().setItems(this.seznamPodnikuProTabulku);
+        oblibenePodnikyTabulka.setRadky(this.db.getPodnikFiltrBuilder().finalizuj());
 
         return oblibenePodnikyTabulka.getTableView();
     }

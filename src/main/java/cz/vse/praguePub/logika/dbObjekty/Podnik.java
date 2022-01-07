@@ -1,13 +1,14 @@
 package cz.vse.praguePub.logika.dbObjekty;
 
 import com.mongodb.client.MongoCollection;
-import com.mongodb.client.model.Filters;
 import lombok.Data;
 import org.bson.Document;
 import org.bson.types.ObjectId;
 
 import java.util.*;
 import java.util.stream.Collectors;
+
+import static com.mongodb.client.model.Filters.eq;
 
 @Data
 public class Podnik implements DBObjekt {
@@ -98,20 +99,20 @@ public class Podnik implements DBObjekt {
         );
 
         List<Pivo> pivniListek = new ArrayList<>();
-        doc.getList("piva", Document.class).forEach(
-                pivoDoc -> {
-                    Document pivoDocZKolekce = kolekcePiv.find(Filters.eq("_id", pivoDoc.get("_id"))).first();
-                    if (pivoDocZKolekce == null) return;
+        List<Document> pivoDocList = doc.getList("piva", Document.class);
 
-                    pivniListek.add(
-                            Pivo.inicializujZDokumentu(
-                                    pivoDocZKolekce,
-                                    pivoDoc.getDouble("cena"),
-                                    pivoDoc.getDouble("objem")
-                            )
-                    );
-                }
-        );
+        for (Document pivoDoc : pivoDocList) {
+            Document nalezenePivo = kolekcePiv.find(eq("_id", pivoDoc.getObjectId("_id"))).first();
+            if (nalezenePivo == null) continue;
+
+            pivniListek.add(
+                    Pivo.inicializujZDokumentu(
+                            nalezenePivo,
+                            pivoDoc.getDouble("cena"),
+                            pivoDoc.getDouble("objem")
+                    )
+            );
+        }
 
         Document adresa = doc.get("adresa", Document.class);
 

@@ -23,7 +23,7 @@ public class OblibenePodniky extends Obrazovka<BorderPane> {
     /**
      * Metoda, která vytváří grafické rozhraní.
      */
-    private void vytvorGui(){
+    private void vytvorGui() {
         this.getPane().setTop(
                 HorniPanel(
                         horniPanel -> {
