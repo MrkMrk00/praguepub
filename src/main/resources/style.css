@@ -22,6 +22,15 @@
     -fx-padding: 5 10 5 10;
     -fx-alignment: baseline-center;
 }
+.tlacitkoZpet {
+    -fx-background-color: #dfedd6;
+    -fx-background-radius: 100;
+    -fx-border-width: 1;
+    -fx-border-color: black;
+    -fx-border-radius: 100;
+    -fx-padding: 5 10 5 10;
+    -fx-alignment: baseline-center;
+}
 
 .labelAplikace {
     -fx-font-size: 12;

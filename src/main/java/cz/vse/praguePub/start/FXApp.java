@@ -44,7 +44,9 @@ public class FXApp extends Application {
                // new PridejPodnikObrazovka().getScene(),
                 //new VyberPivoDialog(Databaze.get(Uzivatel.guest()).getPivaCollection(),null).getScene(),
                 //new OblibenePodniky().getScene(),
-                new HlavniObrazovka().getScene()
+                //new HlavniObrazovka().getScene(),
+                //new ZobrazitSeznamVLokaci().getScene(),
+                new ZobrazitPodnik().getScene()
 
 
 
