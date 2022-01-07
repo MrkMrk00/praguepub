@@ -114,7 +114,7 @@ public final class Komponenty {
     public static Label NadpisOknaLabel(String text) {
         Label label = new Label(text);
         label.getStyleClass().add("nadpisLabel");
-
+        label.setPadding(new Insets(0,0,0,15));
         return label;
     }
 
