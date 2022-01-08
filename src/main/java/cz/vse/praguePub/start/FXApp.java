@@ -17,35 +17,23 @@ import java.util.List;
 public class FXApp extends Application {
     private static final Logger log = LoggerFactory.getLogger(FXApp.class);
 
-
     public static void main(String[] args) {
-
-        Databaze db = Databaze.get(Uzivatel.guest());
-        log.info(db.getPodnikFiltrBuilder()
-                .cisloMestskeCasti(6)
-                .cenaPiva(50)
-                .finalizuj()
-                .get(0)
-                .toString()
-        );
-
         Application.launch(args);
-
     }
 
     @Override
     public void start(Stage primaryStage) {
+        Databaze db = Databaze.get(Uzivatel.guest());
 
         List.of(
-                /*new HlavniObrazovka().getScene(),
-                new Filtr().getScene(),
-                new ZobrazitSeznamVLokaci().getScene(),*/
-                //new Prihlaseni().getScene(),
-               // new PridejPodnikObrazovka().getScene(),
-                //new VyberPivoDialog(Databaze.get(Uzivatel.guest()).getPivaCollection(),null).getScene(),
-                //new OblibenePodniky().getScene(),
-                //new HlavniObrazovka().getScene(),
-                //new ZobrazitSeznamVLokaci().getScene(),
+                new HlavniObrazovka(db).getScene(),
+                new Filtr(null).getScene(),
+                new ZobrazitSeznamVLokaci().getScene(),
+                new Prihlaseni().getScene(),
+                new PridejPodnikObrazovka(db).getScene(),
+                new VyberPivoDialog(db.getPivaCollection(),null).getScene(),
+                new OblibenePodniky().getScene(),
+                new ZobrazitSeznamVLokaci().getScene(),
                 new ZobrazitPodnik().getScene()
         ).forEach(
                 (scene) -> {

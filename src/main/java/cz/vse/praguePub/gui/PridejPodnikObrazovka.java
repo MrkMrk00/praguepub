@@ -28,11 +28,13 @@ public class PridejPodnikObrazovka extends Obrazovka<BorderPane> {
 
     private final ObservableList<Pivo> pivaUPodniku;
     private final Stage oknoProVyberPiva;
+    private final Databaze db;
 
-    public PridejPodnikObrazovka() {
+    public PridejPodnikObrazovka(Databaze db) {
         super(new BorderPane(), 900, 600, "background");
 
         this.oknoProVyberPiva = new Stage();
+        this.db = db;
         this.pivaUPodniku = FXCollections.observableArrayList();
 
         this.registrujInputy();
@@ -140,7 +142,7 @@ public class PridejPodnikObrazovka extends Obrazovka<BorderPane> {
 
         this.oknoProVyberPiva.setScene(
                 new VyberPivoDialog(
-                        Databaze.get(Uzivatel.guest()).getPivaCollection(),
+                        this.db.getPivaCollection(),
                         callbackPoVyberuPiva
                 ).getScene()
         );

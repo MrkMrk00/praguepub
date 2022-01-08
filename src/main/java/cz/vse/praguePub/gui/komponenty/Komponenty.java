@@ -1,20 +1,18 @@
 package cz.vse.praguePub.gui.komponenty;
 
-import cz.vse.praguePub.gui.ZobrazitPodnik;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 
-import java.lang.invoke.ConstantCallSite;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -25,24 +23,31 @@ public final class Komponenty {
         button.getStyleClass().add("tlacitkoAplikace");
         button.setAlignment(Pos.BASELINE_RIGHT);
         HBox.setMargin(button, new Insets(6, 0,0, 5));
-        styluj.accept(button);
+
+        if (styluj != null) styluj.accept(button);
         return button;
     }
 
-    public static Button TlacitkoZpet(Consumer<Button> styluj){
+    public static Button TlacitkoAplikace(String text, EventHandler<MouseEvent> onClick, Consumer<Button> styluj) {
+        Button button = TlacitkoAplikace(text, styluj);
+        button.setOnMouseClicked(onClick);
+        return button;
+    }
+
+    public static Button TlacitkoZpet(Consumer<Button> styluj) {
         Button button = new Button();
         button.getStyleClass().add("tlacitkoZpet");
         button.setAlignment(Pos.BASELINE_RIGHT);
         button.setPrefSize(5,5);
         HBox.setMargin(button, new Insets(6,8,0, 5));
-        styluj.accept(button);
+        if (styluj != null) styluj.accept(button);
         return button;
     }
 
     public static HBox HorniPanel(Consumer<HBox> styluj) {
         HBox hbox = new HBox();
         hbox.getStyleClass().add("vrchniPanel");
-        styluj.accept(hbox);
+        if (styluj != null) styluj.accept(hbox);
         return hbox;
     }
 
@@ -56,7 +61,7 @@ public final class Komponenty {
 
     public static VBox Sloupec(List<Node> pridej, Consumer<VBox> styluj) {
         VBox vBox = Sloupec(pridej.toArray(new Node[]{}));
-        styluj.accept(vBox);
+        if (styluj != null) styluj.accept(vBox);
         return vBox;
     }
 
@@ -69,7 +74,7 @@ public final class Komponenty {
 
     public static HBox Radek(List<Node> pridej, Consumer<HBox> styluj) {
         HBox hBox = Radek(pridej.toArray(new Node[]{}));
-        styluj.accept(hBox);
+        if (styluj != null) styluj.accept(hBox);
         return hBox;
     }
 
@@ -83,7 +88,7 @@ public final class Komponenty {
                 }
         );
 
-        styluj.accept(textField);
+        if (styluj != null) styluj.accept(textField);
         return textField;
     }
 
@@ -92,7 +97,7 @@ public final class Komponenty {
         textField.getStyleClass().add("tlacitkoAplikace");
         textField.setOnMouseClicked(onClick);
 
-        styluj.accept(textField);
+        if (styluj != null) styluj.accept(textField);
         return textField;
     }
 
@@ -105,7 +110,7 @@ public final class Komponenty {
 
     public static Label LabelAplikace(String defaultText, Consumer<Label> styluj) {
         Label label = LabelAplikace(defaultText);
-        styluj.accept(label);
+        if (styluj != null) styluj.accept(label);
         return label;
     }
 
@@ -116,5 +121,10 @@ public final class Komponenty {
         return label;
     }
 
+    public static void zobrazOkno(Scene scene) {
+        Stage st = new Stage();
+        st.setScene(scene);
+        st.show();
+    }
 
 }
