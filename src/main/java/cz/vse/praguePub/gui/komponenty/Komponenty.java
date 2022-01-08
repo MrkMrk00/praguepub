@@ -33,6 +33,7 @@ public final class Komponenty {
         Button button = new Button();
         button.getStyleClass().add("tlacitkoZpet");
         button.setAlignment(Pos.BASELINE_RIGHT);
+        button.setPrefSize(5,5);
         HBox.setMargin(button, new Insets(6,8,0, 5));
         styluj.accept(button);
         return button;

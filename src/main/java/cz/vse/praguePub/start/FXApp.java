@@ -20,14 +20,14 @@ public class FXApp extends Application {
 
     public static void main(String[] args) {
 
-        Databaze db = Databaze.get(Uzivatel.guest());
+        /*Databaze db = Databaze.get(Uzivatel.guest());
         log.info(db.getPodnikFiltrBuilder()
                 .cisloMestskeCasti(6)
                 .cenaPiva(50)
                 .finalizuj()
                 .get(0)
                 .toString()
-        );
+        );*/
 
         Application.launch(args);
 
