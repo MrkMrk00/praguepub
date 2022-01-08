@@ -47,8 +47,12 @@ application {
 
 jar {
     manifest {
-        attributes 'Main-Class': 'cz.vse.praguePub.start.FXApp'
+        attributes 'Main-Class': 'cz.vse.praguePub.start.Launcher'
     }
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+    duplicatesStrategy DuplicatesStrategy.EXCLUDE
 }
 
 test {
