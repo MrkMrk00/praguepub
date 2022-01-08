@@ -34,9 +34,6 @@ public final class Komponenty {
         button.getStyleClass().add("tlacitkoZpet");
         button.setAlignment(Pos.BASELINE_RIGHT);
         HBox.setMargin(button, new Insets(6,8,0, 5));
-        Image ikona = new Image(ZobrazitPodnik.class.getResourceAsStream("/resources/sipkaZpet.png"),10,10,false,true);
-        ImageView view = new ImageView(ikona);
-        button.setGraphic(view);
         styluj.accept(button);
         return button;
     }
