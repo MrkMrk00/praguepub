@@ -2,6 +2,8 @@ package cz.vse.praguePub.logika;
 
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.result.DeleteResult;
+import com.mongodb.client.result.UpdateResult;
 import cz.vse.praguePub.logika.dbObjekty.DBObjekt;
 import cz.vse.praguePub.logika.dbObjekty.Pivo;
 import cz.vse.praguePub.logika.dbObjekty.Podnik;
@@ -97,6 +99,30 @@ public class DatabazeImpl implements Databaze {
     }
 
     @Override
+    public Vysledek<Podnik> upravPodnik(Podnik upravenyPodnik) {
+        UpdateResult vysledek = this.getPodnikyCollection()
+                .updateOne(
+                        eq("_id", upravenyPodnik.get_id()),
+                        Document.parse("{ $set: " + upravenyPodnik.getDocument().toJson() + " }")
+                );
+
+        if (!vysledek.wasAcknowledged()) return CHYBA(upravenyPodnik);
+        if (vysledek.getModifiedCount() < 1) return ZADNA_ZMENA(upravenyPodnik);
+        return OK(upravenyPodnik);
+    }
+
+    @Override
+    public Vysledek<Podnik> vymazPodnik(Podnik podnikKVymazani) {
+        DeleteResult vysledek = this.getPodnikyCollection().deleteOne(
+                eq("_id", podnikKVymazani.get_id())
+        );
+
+        if (!vysledek.wasAcknowledged()) return CHYBA(podnikKVymazani);
+        if (vysledek.getDeletedCount() < 1) return ZADNA_ZMENA(podnikKVymazani);
+        return OK(podnikKVymazani);
+    }
+
+    @Override
     public Vysledek<Pivo> vytvorNovePivo(Pivo pivo) {
         var dbQuery = this.db.getCollection("piva").find(
                 and(
@@ -178,11 +204,21 @@ public class DatabazeImpl implements Databaze {
     /**
      * @param dotazovany objekt nahrávaný do databáze
      * @param <T> typ DBObjektu
-     * @return výsledek s typek DB_CHYBA
+     * @return výsledek s typem DB_CHYBA
      */
     private <T extends DBObjekt> Vysledek<T> CHYBA(T dotazovany) {
         return new Vysledek<>(
                 dotazovany, null, TypVysledku.DB_CHYBA, "Chyba databáze", null
+        );
+    }
+
+    /**
+     * @param dotazovany objekt, který byl do databáze nahráván
+     * @return výsledek s typem ZADNA_ZMENA
+     */
+    private <T extends DBObjekt> Vysledek<T> ZADNA_ZMENA(T dotazovany) {
+        return new Vysledek<>(
+                dotazovany, null, TypVysledku.ZADNA_ZMENA, "Nestala se zadna zmena", null
         );
     }
 }

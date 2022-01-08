@@ -5,12 +5,17 @@ import cz.vse.praguePub.gui.*;
 import cz.vse.praguePub.logika.Databaze;
 import cz.vse.praguePub.logika.Uzivatel;
 
+import cz.vse.praguePub.logika.Vysledek;
+import cz.vse.praguePub.logika.dbObjekty.Pivo;
+import cz.vse.praguePub.logika.dbObjekty.Podnik;
 import javafx.application.Application;
 import javafx.stage.Stage;
 import org.bson.Document;
+import org.bson.types.ObjectId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
