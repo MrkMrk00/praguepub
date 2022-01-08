@@ -1,4 +1,4 @@
-package cz.vse.praguePub.util;
+package cz.vse.praguePub.gui.komponenty;
 
 import javafx.scene.Node;
 import javafx.scene.control.Alert;

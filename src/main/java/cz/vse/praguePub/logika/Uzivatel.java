@@ -5,8 +5,10 @@ import com.mongodb.MongoSecurityException;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.model.Filters;
 import cz.vse.praguePub.util.AesUtil;
 import lombok.Getter;
+import lombok.ToString;
 import org.bson.Document;
 
 import java.util.Map;
@@ -25,6 +27,7 @@ import static cz.vse.praguePub.util.AesUtil.fillTo16Chars;
  * Třída zároveň řeší i speciální případ uživatele - hosta (guest). Heslo příslušného databázového uživatele
  * je uloženo v konstantě GUEST_PASSWORD. Pro přihlášení hosta se používá privátní konstruktor bez argumentů.
  */
+@ToString
 public class Uzivatel {
     @Getter private final String username;
     @Getter private final MongoClient client;
@@ -48,10 +51,20 @@ public class Uzivatel {
      * @param heslo heslo uživatele
      */
     public Uzivatel(String prihlasovaciJmeno, String heslo) {
+        this(prihlasovaciJmeno, heslo, "regular");
+    }
+
+    /**
+     * Konstruktor uživatele aplikace, přihlašuje uživatele zároveň do databáze
+     * @param prihlasovaciJmeno přihlašovací jméno uživatele
+     * @param heslo heslo uživatele
+     * @param dbUsername jméno databázového uživatele
+     */
+    public Uzivatel(String prihlasovaciJmeno, String heslo, String dbUsername) {
         this.username = prihlasovaciJmeno;
 
-        String dbPassword = this.getPasswordFromDatabase(username, heslo);
-        this.client = this.dbLogin(DB_USERNAMES.get("regular"), dbPassword);
+        String dbPassword = this.getPasswordFromDatabase(prihlasovaciJmeno, heslo);
+        this.client = this.dbLogin(DB_USERNAMES.get(dbUsername), dbPassword);
     }
 
     /**
@@ -96,8 +109,8 @@ public class Uzivatel {
 
         Document userDocument = guestInstance
                 .getPraguePubDatabaze()
-                .getCollection("users")
-                .find(eq("username", username))
+                .getCollection("uzivatele")
+                .find(eq("userName", username))
                 .first();
 
         if (userDocument != null && !userDocument.isEmpty()) {
@@ -118,7 +131,10 @@ public class Uzivatel {
     private MongoClient dbLogin(String username, String password) {
         MongoClient mongoClient = MongoClients.create(fillConString(username, password));
         try {
-            mongoClient.listDatabaseNames().first();
+            mongoClient
+                    .getDatabase("prague_pub")
+                    .getCollection("uzivatele")
+                    .find(Filters.eq("userName", "admin"));
             this.prihlasen = true;
         } catch ( MongoCommandException | MongoSecurityException e) {
             mongoClient.close();
