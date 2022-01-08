@@ -9,6 +9,8 @@ import cz.vse.praguePub.logika.Vysledek;
 import cz.vse.praguePub.logika.dbObjekty.Pivo;
 import cz.vse.praguePub.logika.dbObjekty.Podnik;
 import javafx.application.Application;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.stage.Stage;
 import org.bson.Document;
 import org.bson.types.ObjectId;
@@ -17,6 +19,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 
 public class FXApp extends Application {
@@ -29,17 +32,23 @@ public class FXApp extends Application {
     @Override
     public void start(Stage primaryStage) {
         Databaze db = Databaze.get(Uzivatel.guest());
+        ObservableList<Podnik> obsList = FXCollections.observableArrayList();
+
+        Consumer<Podnik> odeber = podnik -> {
+            obsList.remove(podnik);
+            log.debug("odebrano " + podnik.getNazev());
+        };
+
+        obsList.addAll(db.getPodnikFiltrBuilder().finalizuj().get(0), db.getPodnikFiltrBuilder().finalizuj().get(0));
 
         List.of(
-                new HlavniObrazovka(db).getScene(),
+                new HlavniObrazovka().getScene()/*,
                 new Filtr(null).getScene(),
                 new ZobrazitSeznamVLokaci().getScene(),
-                new Prihlaseni().getScene(),
                 new PridejPodnikObrazovka(db).getScene(),
                 new VyberPivoDialog(db.getPivaCollection(),null).getScene(),
-                new OblibenePodniky().getScene(),
                 new ZobrazitSeznamVLokaci().getScene(),
-                new ZobrazitPodnik().getScene()
+                new ZobrazitPodnik().getScene()*/
         ).forEach(
                 (scene) -> {
                     Stage newStage = new Stage();

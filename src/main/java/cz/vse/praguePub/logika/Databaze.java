@@ -7,6 +7,7 @@ import org.bson.Document;
 import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
 
+import java.util.List;
 import java.util.Set;
 
 public interface Databaze {
@@ -19,6 +20,30 @@ public interface Databaze {
     static Databaze get(Uzivatel uzivatel) {
         return new DatabazeImpl(uzivatel);
     }
+
+    /**
+     * @return instanci uživatele, který je právě přihlášen
+     */
+    Uzivatel getUzivatel();
+
+    /**
+     * Přidá podnik do arraye s oblíbenými podniky v databázi.
+     * @param podnik podnik, který se má do oblíbených přidat
+     * @return boolean - podařilo se / nepodařilo se
+     */
+    boolean pridejDoOblibenych(Podnik podnik);
+
+    /**
+     * Odebere podnik z arraye s oblíbenými podniky v databázi.
+     * @param podnik podnik, který se má z oblíbených odebrat
+     * @return boolean - podařilo se / nepodařilo se
+     */
+    boolean odeberZOblibenych(Podnik podnik);
+
+    /**
+     * @return list oblíbených podniků uživatele
+     */
+    List<Podnik> getOblibenePodniky();
 
     /**
      * Vytvoří instanci builderu pro filtrování piv z databáze.

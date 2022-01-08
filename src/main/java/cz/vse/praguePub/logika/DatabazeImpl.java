@@ -2,20 +2,18 @@ package cz.vse.praguePub.logika;
 
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.model.Updates;
 import com.mongodb.client.result.DeleteResult;
 import com.mongodb.client.result.UpdateResult;
 import cz.vse.praguePub.logika.dbObjekty.DBObjekt;
 import cz.vse.praguePub.logika.dbObjekty.Pivo;
 import cz.vse.praguePub.logika.dbObjekty.Podnik;
-import cz.vse.praguePub.logika.dbObjekty.Recenze;
 import org.bson.Document;
-import org.bson.conversions.Bson;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.*;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
 import static com.mongodb.client.model.Filters.*;
 
@@ -41,6 +39,46 @@ public class DatabazeImpl implements Databaze {
     }
 
     @Override
+    public Uzivatel getUzivatel() {
+        return this.uzivatel;
+    }
+
+    @Override
+    public boolean pridejDoOblibenych(Podnik podnik) {
+        UpdateResult updateResult = this.db.getCollection("uzivatele").updateOne(
+                eq("_id", this.uzivatel.get_id()),
+                Updates.push("oblibene_podniky", podnik.get_id())
+        );
+
+        return (updateResult.wasAcknowledged() && updateResult.getModifiedCount() > 0);
+    }
+
+    @Override
+    public boolean odeberZOblibenych(Podnik podnik) {
+        UpdateResult updateResult = this.db.getCollection("uzivatele").updateOne(
+                eq("_id", this.uzivatel.get_id()),
+                Updates.pull("oblibene_podniky", podnik.get_id())
+        );
+
+        return (updateResult.wasAcknowledged() && updateResult.getModifiedCount() > 0);
+    }
+
+    @Override
+    public List<Podnik> getOblibenePodniky() {
+        Document userDoc = this.db.getCollection("uzivatele")
+                .find(eq("_id", this.uzivatel.get_id()))
+                .first();
+
+        if (userDoc == null || userDoc.isEmpty()) return null;
+
+        List<Document> idList = userDoc.getList("oblibene_podniky", Document.class);
+        return this.prevedNalezenePodnikyNaInstance(
+                this.getPodnikyCollection()
+                        .find(in("_id", idList))
+        );
+    }
+
+    @Override
     public PivoFiltrBuilder getPivoFilterBuilder() {
         return new PivoFiltrBuilder(this.getPivaCollection());
     }
@@ -50,16 +88,16 @@ public class DatabazeImpl implements Databaze {
         return new PodnikFiltrBuilder(this.getPodnikyCollection(), this.getPivaCollection());
     }
 
-    private Set<Podnik> prevedNalezenePodnikyNaInstance(Iterable<Document> nalezenePodniky) {
-        Set<Podnik> vratit = new HashSet<>();
+    private List<Podnik> prevedNalezenePodnikyNaInstance(Iterable<Document> nalezenePodniky) {
+        List<Podnik> vratit = new ArrayList<>();
         nalezenePodniky.forEach(podnikDoc ->
                 vratit.add(Podnik.inicializujZDokumentu(podnikDoc, this.db.getCollection("piva")))
         );
         return vratit;
     }
 
-    private Set<Pivo> prevedNalezenaPivaNaInstance(Iterable<Document> nalezenaPiva) {
-        Set<Pivo> vratit = new HashSet<>();
+    private List<Pivo> prevedNalezenaPivaNaInstance(Iterable<Document> nalezenaPiva) {
+        List<Pivo> vratit = new ArrayList<>();
         nalezenaPiva.forEach(pivoDoc ->
                 vratit.add(Pivo.inicializujZDokumentu(pivoDoc, null, null))
         );
@@ -76,7 +114,7 @@ public class DatabazeImpl implements Databaze {
                         eq("adresa.mc_cislo", novyPodnik.getAdresa_mc_cislo())
                 )
         );
-        List<Podnik> seStejnymNazvem = List.copyOf(this.prevedNalezenePodnikyNaInstance(dbQueryVysledekJmeno));
+        List<Podnik> seStejnymNazvem = this.prevedNalezenePodnikyNaInstance(dbQueryVysledekJmeno);
 
         //Vyhledá podniky podle ulice a čísla popisného
         var dbQueryVysledekAdresa = this.db.getCollection("podniky").find(
@@ -86,7 +124,7 @@ public class DatabazeImpl implements Databaze {
                         eq("adresa.mc_cislo", novyPodnik.getAdresa_mc_cislo())
                 )
         );
-        List<Podnik> seStejnouAdresou = List.copyOf(this.prevedNalezenePodnikyNaInstance(dbQueryVysledekAdresa));
+        List<Podnik> seStejnouAdresou = this.prevedNalezenePodnikyNaInstance(dbQueryVysledekAdresa);
 
 
         if (!seStejnymNazvem.isEmpty())
@@ -130,7 +168,7 @@ public class DatabazeImpl implements Databaze {
                         eq("stupnovitost", pivo.getStupnovitost())
                 )
         );
-        List<Pivo> nalezene = List.copyOf(this.prevedNalezenaPivaNaInstance(dbQuery));
+        List<Pivo> nalezene = this.prevedNalezenaPivaNaInstance(dbQuery);
         if (nalezene != null && !nalezene.isEmpty()) return
                 this.PODOBNY_OBJEKT(
                         pivo,

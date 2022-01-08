@@ -121,10 +121,11 @@ public final class Komponenty {
         return label;
     }
 
-    public static void zobrazOkno(Scene scene) {
+    public static Stage zobrazOkno(Scene scene) {
         Stage st = new Stage();
         st.setScene(scene);
         st.show();
+        return st;
     }
 
 }

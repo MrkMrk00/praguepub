@@ -19,17 +19,17 @@ public class FiltrBuilder {
         this.listAgregatu = new ArrayList<>();
     }
 
-    public FiltrBuilder pridejCustom(Bson filtr) {
+    public final FiltrBuilder pridejCustom(Bson filtr) {
         this.listFiltru.add(filtr);
         return this;
     }
 
-    public FiltrBuilder pridejAgregat(Bson agregat) {
+    public final FiltrBuilder pridejAgregat(Bson agregat) {
         this.listAgregatu.add(agregat);
         return this;
     }
 
-    public List<Document> finalizujDokumenty() {
+    public final List<Document> finalizujDokumenty() {
         for (Bson filter : this.listFiltru) this.pridejAgregat(Aggregates.match(filter));
 
         List<Document> kVraceni = new ArrayList<>();

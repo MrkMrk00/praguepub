@@ -24,14 +24,15 @@ import static cz.vse.praguePub.gui.komponenty.Komponenty.*;
  * Třída reprezentuje GUI přidání nového podniku do databáze.
  */
 public class UpravitPodnikObrazovka extends Obrazovka<BorderPane> {
-    private final static Logger log = LoggerFactory.getLogger(UpravitPodnikObrazovka.class);
 
+    private final Podnik upravovanyPodnik;
     private final ObservableList<Pivo> pivaUPodniku;
     private final Stage oknoProVyberPiva;
 
-    public UpravitPodnikObrazovka() {
+    public UpravitPodnikObrazovka(Podnik podnik) {
         super(new BorderPane(), 900, 600, "background");
 
+        this.upravovanyPodnik = podnik;
         this.oknoProVyberPiva = new Stage();
         this.pivaUPodniku = FXCollections.observableArrayList();
 
@@ -53,21 +54,6 @@ public class UpravitPodnikObrazovka extends Obrazovka<BorderPane> {
                         "cp",       TextFieldAplikace("Číslo popisné", t -> {})
                 )
         );
-    }
-
-
-    private void parsuj() {
-        log.debug(new Podnik(
-                null,
-                this.getMapaInputu().get("nazev").getText(),
-                Integer.parseInt(this.getMapaInputu().get("mc_cislo").getText()),
-                this.getMapaInputu().get("mc_nazev").getText(),
-                this.getMapaInputu().get("ulice").getText(),
-                Integer.parseInt(this.getMapaInputu().get("psc").getText()),
-                this.getMapaInputu().get("cp").getText(),
-                new ArrayList<>(),
-                new ArrayList<>()
-        ).toString());
     }
 
     private void vytvorGUI() {
@@ -93,9 +79,6 @@ public class UpravitPodnikObrazovka extends Obrazovka<BorderPane> {
                                 Radek(LabelAplikace("Číslo popisné:"), this.getMapaInputu().get("cp"))
                         )
                 ),
-                Radek(TlacitkoAplikace("Parsuj", t -> {
-                    t.setOnAction(event -> this.parsuj());
-                })),
                 Radek(
                         TlacitkoAplikace("+ Vlož pivo", tlacitko -> tlacitko.setOnMouseClicked(event -> this.vyberPivo()))
                 )

@@ -10,6 +10,7 @@ import cz.vse.praguePub.util.AesUtil;
 import lombok.Getter;
 import lombok.ToString;
 import org.bson.Document;
+import org.bson.types.ObjectId;
 
 import java.util.Map;
 
@@ -29,10 +30,14 @@ import static cz.vse.praguePub.util.AesUtil.fillTo16Chars;
  */
 @ToString
 public class Uzivatel {
-    @Getter private final String username;
-    @Getter private final MongoClient client;
-    private MongoDatabase praguePubDatabaze = null;
-    @Getter private boolean prihlasen = false;
+    @Getter private final String        username;
+    @Getter private final MongoClient   client;
+    @Getter private boolean             prihlasen = false;
+    @Getter private final boolean       isGuest;
+
+    @Getter private ObjectId            _id = null;
+    private MongoDatabase               praguePubDatabaze = null;
+
 
     private static Uzivatel guest = null;
     private final static String GUEST_PASSWORD = "w22dY4DAJ7c2Rzf";
@@ -62,9 +67,17 @@ public class Uzivatel {
      */
     public Uzivatel(String prihlasovaciJmeno, String heslo, String dbUsername) {
         this.username = prihlasovaciJmeno;
+        this.isGuest = false;
 
         String dbPassword = this.getPasswordFromDatabase(prihlasovaciJmeno, heslo);
         this.client = this.dbLogin(DB_USERNAMES.get(dbUsername), dbPassword);
+        Document userDoc = this.client
+                .getDatabase("prague_pub")
+                .getCollection("uzivatele")
+                .find(Filters.eq("userName", prihlasovaciJmeno))
+                .first();
+
+        this._id = (userDoc == null ? null : userDoc.getObjectId("_id"));
     }
 
     /**
@@ -72,6 +85,7 @@ public class Uzivatel {
      */
     private Uzivatel() {
         this.username = "guest";
+        this.isGuest = true;
         this.client = this.dbLogin(DB_USERNAMES.get("guest"), GUEST_PASSWORD);
     }
 
