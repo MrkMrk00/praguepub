@@ -1,4 +1,4 @@
-package cz.vse.praguePub.gui;
+package cz.vse.praguePub.gui.obrazovky;
 
 import cz.vse.praguePub.gui.komponenty.AlertBuilder;
 import javafx.geometry.Insets;

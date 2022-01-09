@@ -1,8 +1,7 @@
-package cz.vse.praguePub.gui;
+package cz.vse.praguePub.gui.obrazovky;
 
 import cz.vse.praguePub.gui.komponenty.Tabulka;
 import cz.vse.praguePub.logika.Databaze;
-import cz.vse.praguePub.logika.Uzivatel;
 import cz.vse.praguePub.logika.dbObjekty.Pivo;
 import cz.vse.praguePub.logika.dbObjekty.Podnik;
 import javafx.collections.FXCollections;
@@ -23,17 +22,18 @@ import static cz.vse.praguePub.gui.komponenty.Komponenty.*;
 /**
  * Třída reprezentuje GUI přidání nového podniku do databáze.
  */
-public class UpravitPodnikObrazovka extends Obrazovka<BorderPane> {
+public class PridejPodnikObrazovka extends Obrazovka<BorderPane> {
+    private final static Logger log = LoggerFactory.getLogger(PridejPodnikObrazovka.class);
 
-    private final Podnik upravovanyPodnik;
     private final ObservableList<Pivo> pivaUPodniku;
     private final Stage oknoProVyberPiva;
+    private final Databaze db;
 
-    public UpravitPodnikObrazovka(Podnik podnik) {
+    public PridejPodnikObrazovka(Databaze db) {
         super(new BorderPane(), 900, 600, "background");
 
-        this.upravovanyPodnik = podnik;
         this.oknoProVyberPiva = new Stage();
+        this.db = db;
         this.pivaUPodniku = FXCollections.observableArrayList();
 
         this.registrujInputy();
@@ -56,13 +56,28 @@ public class UpravitPodnikObrazovka extends Obrazovka<BorderPane> {
         );
     }
 
+
+    private void parsuj() {
+        log.debug(new Podnik(
+                null,
+                this.getMapaInputu().get("nazev").getText(),
+                Integer.parseInt(this.getMapaInputu().get("mc_cislo").getText()),
+                this.getMapaInputu().get("mc_nazev").getText(),
+                this.getMapaInputu().get("ulice").getText(),
+                Integer.parseInt(this.getMapaInputu().get("psc").getText()),
+                this.getMapaInputu().get("cp").getText(),
+                new ArrayList<>(),
+                new ArrayList<>()
+        ).toString());
+    }
+
     private void vytvorGUI() {
         this.getPane().setTop(
                 HorniPanel(
-                        horniPanel -> {
-                            horniPanel.getChildren().add(NadpisOknaLabel("Upravit podnik"));
-                            horniPanel.setAlignment(Pos.CENTER);
-                        }
+                    horniPanel -> {
+                        horniPanel.getChildren().add(NadpisOknaLabel("Přidat nový podnik"));
+                        horniPanel.setAlignment(Pos.CENTER);
+                    }
                 )
         );
 
@@ -79,6 +94,9 @@ public class UpravitPodnikObrazovka extends Obrazovka<BorderPane> {
                                 Radek(LabelAplikace("Číslo popisné:"), this.getMapaInputu().get("cp"))
                         )
                 ),
+                Radek(TlacitkoAplikace("Parsuj", t -> {
+                    t.setOnAction(event -> this.parsuj());
+                })),
                 Radek(
                         TlacitkoAplikace("+ Vlož pivo", tlacitko -> tlacitko.setOnMouseClicked(event -> this.vyberPivo()))
                 )
@@ -94,7 +112,7 @@ public class UpravitPodnikObrazovka extends Obrazovka<BorderPane> {
                 Radek(List.of(inputy), radek -> {
                     radek.widthProperty().add(this.getPane().widthProperty());
                     radek.setAlignment(Pos.CENTER);
-                }));
+        }));
 
         Tabulka<Pivo> tabulkaPivaUNovehoPodniku = new Tabulka<>(Pivo.PRO_TABULKU);
         tabulkaPivaUNovehoPodniku.getTableView().setItems(this.pivaUPodniku);
@@ -121,12 +139,12 @@ public class UpravitPodnikObrazovka extends Obrazovka<BorderPane> {
             this.oknoProVyberPiva.hide();
         };
 
-        /*this.oknoProVyberPiva.setScene(
+        this.oknoProVyberPiva.setScene(
                 new VyberPivoDialog(
-                        Databaze.get(Uzivatel.guest()).getPivaCollection(),
+                        this.db.getPivaCollection(),
                         callbackPoVyberuPiva
                 ).getScene()
-        );*/
+        );
         this.oknoProVyberPiva.showAndWait();
     }
 }

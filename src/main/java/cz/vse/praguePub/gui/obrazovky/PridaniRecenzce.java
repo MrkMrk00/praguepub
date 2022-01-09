@@ -1,14 +1,9 @@
-package cz.vse.praguePub.gui;
+package cz.vse.praguePub.gui.obrazovky;
 
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.control.Hyperlink;
-import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 

@@ -1,4 +1,4 @@
-package cz.vse.praguePub.gui;
+package cz.vse.praguePub.gui.obrazovky;
 
 import cz.vse.praguePub.gui.komponenty.Tabulka;
 import cz.vse.praguePub.logika.dbObjekty.Podnik;
@@ -7,7 +7,6 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
-import javafx.scene.input.MouseButton;
 import javafx.scene.layout.BorderPane;
 
 

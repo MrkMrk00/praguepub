@@ -2,41 +2,43 @@ package cz.vse.praguePub.gui;
 
 import com.mongodb.MongoException;
 import cz.vse.praguePub.gui.komponenty.AlertBuilder;
+import cz.vse.praguePub.gui.obrazovky.HlavniObrazovka;
+import cz.vse.praguePub.gui.obrazovky.OblibenePodniky;
+import cz.vse.praguePub.gui.obrazovky.Prihlaseni;
+import cz.vse.praguePub.gui.obrazovky.UpravitPodnikObrazovka;
 import cz.vse.praguePub.logika.Databaze;
 import cz.vse.praguePub.logika.Uzivatel;
 import cz.vse.praguePub.logika.dbObjekty.Podnik;
 import cz.vse.praguePub.util.PraguePubDatabaseException;
-import javafx.application.Application;
-import javafx.geometry.Insets;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
-import javafx.scene.control.TextField;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.layout.*;
 import javafx.stage.Stage;
-import lombok.Data;
 
 import java.util.List;
-import java.util.Map;
-import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-import static cz.vse.praguePub.gui.komponenty.Komponenty.*;
+import static cz.vse.praguePub.gui.komponenty.Komponenty.zobrazOkno;
 
-/**
- * Třída hlavní obrazovky, která v sobě zároveň obsahuje logiku otevírání oken a
- * návaznosti obrazovek na sebe.<br>
- * Návaznost je řešena <b>funkcionálně</b>.
- */
-public class HlavniObrazovka extends Obrazovka<BorderPane> {
+public class ObrazovkyController {
 
     private Databaze databaze = null;
 
-    /*
-     * Část kódu, která se stará o zobrazování oken a návaznost oken mezi sebou
+    public ObrazovkyController() {
+        this.prihlasHosta();
+    }
+
+    /**
+     * Přihlásí hosta a inicializuje databázi
      */
+    private void prihlasHosta() {
+        try {
+            this.databaze = Databaze.get(Uzivatel.guest());
+        } catch (PraguePubDatabaseException e) {
+            this.nepovedenePrihlaseni(e.getMessage());
+        }
+    }
 
     /**
      * Metoda zobrazí alert a vypne aplikaci
@@ -53,13 +55,18 @@ public class HlavniObrazovka extends Obrazovka<BorderPane> {
         System.exit(0);
     }
 
+    public void zapniAplikaci(Stage primaryStage) {
+        primaryStage.setScene(new HlavniObrazovka(this).getScene());
+        primaryStage.show();
+    }
+
     /**
      * Metoda otevírá okno s oblíbenými podniky.<p>
      * () -> List&lt;Podnik&gt; &emsp; <b>ziskejOblibenePodniky</b>: dotaz do databáze - vrací podniky z databáze <br>
      * (Podnik) -> void&emsp;&emsp; <b>odeberPodnik</b>: dotaz do databáze - odebírá podnik z oblíbených podniků uživatele <br>
      * (Podnik) -> void&emsp;&emsp; <b>upravPodnik</b>: dotaz do databáze - otevře okno úpravy podniku <br>
      */
-    private void zobrazOblibenePodniky() {
+    public void zobrazOblibenePodniky() {
         Supplier<List<Podnik>> ziskejOblibenePodniky = () -> this.databaze.getOblibenePodniky();
         Consumer<Podnik> odeberPodnik = podnik -> this.databaze.odeberZOblibenych(podnik);
         Consumer<Podnik> upravPodnik = this::zobrazUpraveniPodniku;
@@ -79,7 +86,7 @@ public class HlavniObrazovka extends Obrazovka<BorderPane> {
      * () -> void &emsp; <b>hidePozadavek</b>: slouží k zavření okna s přihlášením. Když se
      * uživateli povede úspěšně přihlásit, tak se okno automaticky zavře.
      */
-    private void zobrazPrihlaseni() {
+    public void zobrazPrihlaseni() {
         final Stage prihlaseniStage = new Stage();
 
         BiFunction<String, String, Boolean> prihlas = (jmeno, heslo) -> {
@@ -104,79 +111,8 @@ public class HlavniObrazovka extends Obrazovka<BorderPane> {
      * Zobrazí okno pro úpravu informací o podniku.
      * @param podnik podnik, který chce uživatel upravit
      */
-    private void zobrazUpraveniPodniku(Podnik podnik) {
+    public void zobrazUpraveniPodniku(Podnik podnik) {
         zobrazOkno(new UpravitPodnikObrazovka(podnik).getScene());
     }
 
-    private void prihlasHosta() {
-        try {
-            this.databaze = Databaze.get(Uzivatel.guest());
-        } catch (PraguePubDatabaseException e) {
-            this.nepovedenePrihlaseni(e.getMessage());
-        }
-    }
-
-    /*
-     * ========================================================================
-     */
-
-    public HlavniObrazovka() {
-        super(new BorderPane(), 700, 700, "background");
-
-        this.prihlasHosta();
-
-        this.registrujInputy(this.getMapaInputu());
-        this.vytvorGUI(this.getPane());
-    }
-
-    /**
-     * Zaregistruje textové vstupy do jedné mapy pro jednodušší přístup
-     * @param mapaInputu mapa, do které se instance TextField přidají
-     */
-    private void registrujInputy(Map<String, TextField> mapaInputu) {
-        mapaInputu.put(
-                "vyhledat", TextFieldAplikace("Vyhledat", t -> {
-                    HBox.setMargin(t, new Insets(6,0,0,5));
-                })
-        );
-    }
-
-    /**
-     * Metoda obsahuje tvorbu GUI.
-     * @param pane hlavní Parent okna
-     */
-    private void vytvorGUI(BorderPane pane) {
-        pane.setTop(
-                HorniPanel(hp -> {
-                    BorderPane vrchniBar = new BorderPane();
-
-                    vrchniBar.setLeft(
-                            Radek(
-                                    NadpisOknaLabel("PraguePub"),
-                                    this.getMapaInputu().get("vyhledat"),
-                                    TlacitkoAplikace("Oblibene podniky", e -> this.zobrazOblibenePodniky(), null)
-                            )
-                    );
-
-                    vrchniBar.setRight(
-                            Radek(
-                                    TlacitkoAplikace(
-                                            "Prihlasit se",
-                                            mouseEvent -> this.zobrazPrihlaseni(),
-                                            t -> HBox.setMargin(t, new Insets(6, 8, 0, 0))
-                                    )
-                            )
-                    );
-
-                    hp.getChildren().add(vrchniBar);
-                    hp.setPrefWidth(Integer.MAX_VALUE);
-                    vrchniBar.setPrefWidth(Integer.MAX_VALUE);
-
-                })
-        );
-
-        pane.setCenter(
-                new ImageView(new Image(this.getClass().getResourceAsStream("/castiMapy/Praha5.png")))
-        );
-    }
 }

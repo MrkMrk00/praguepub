@@ -1,12 +1,6 @@
-package cz.vse.praguePub.gui;
+package cz.vse.praguePub.gui.obrazovky;
 
-import cz.vse.praguePub.gui.komponenty.Tabulka;
-import cz.vse.praguePub.logika.dbObjekty.Podnik;
-import cz.vse.praguePub.logika.dbObjekty.Recenze;
 import javafx.geometry.Insets;
-import javafx.scene.Node;
-import javafx.scene.control.Button;
-import javafx.scene.control.TableView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;

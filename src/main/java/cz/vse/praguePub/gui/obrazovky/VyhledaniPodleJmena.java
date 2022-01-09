@@ -1,19 +1,14 @@
-package cz.vse.praguePub.gui;
+package cz.vse.praguePub.gui.obrazovky;
 
-import com.mongodb.client.MongoCollection;
 import cz.vse.praguePub.gui.komponenty.Tabulka;
 import cz.vse.praguePub.logika.Databaze;
 import cz.vse.praguePub.logika.dbObjekty.Podnik;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
-import javafx.scene.control.Button;
 import javafx.scene.control.TableView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
-import org.bson.Document;
-
-import java.util.List;
 
 import static cz.vse.praguePub.gui.komponenty.Komponenty.*;
 

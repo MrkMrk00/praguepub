@@ -1,21 +1,17 @@
-package cz.vse.praguePub.gui;
+package cz.vse.praguePub.gui.obrazovky;
 
-import cz.vse.praguePub.logika.PivoFiltrBuilder;
 import javafx.geometry.Insets;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import org.bson.Document;
-import org.bson.conversions.Bson;
 
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
 
-import static com.mongodb.client.model.Filters.*;
 import static cz.vse.praguePub.gui.komponenty.Komponenty.*;
 
 public class Filtr extends Obrazovka <BorderPane> {
