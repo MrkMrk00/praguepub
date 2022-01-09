@@ -10,6 +10,8 @@ import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import lombok.Data;
@@ -166,6 +168,10 @@ public class HlavniObrazovka extends Obrazovka<BorderPane> {
                     vrchniBar.setPrefWidth(Integer.MAX_VALUE);
 
                 })
+        );
+
+        pane.setCenter(
+                new ImageView(new Image(this.getClass().getResourceAsStream("/castiMapy/Praha1.png")))
         );
     }
 }
