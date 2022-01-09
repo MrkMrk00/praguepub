@@ -20,12 +20,13 @@ public class Recenze implements DBObjekt {
 
     @Setter(AccessLevel.NONE) @Getter(AccessLevel.NONE)
     private String uzivatelskeJmeno = null;
+    private String pomocny = getUzivatelskeJmeno();
 
 
     //levý sloupec: názvy, co se zobrazí v tabulce jako nadpisy sloupců; pravý sloupec: názvy atributů instance)
     //(logika tabulky bere atribut instance přes getter, tudíž atribut musí být v camelCase a metoda musí začínat "get")
     public static final String[][] PRO_TABULKU = {
-            { "Jméno uživatele", "uzivatel"  },
+            { "Jméno uživatele", "pomocny"  },
             { "Hodnocení",         "text"    },
             { "Komentář",        "hodnoceni" }
     };

@@ -28,7 +28,7 @@ public class FXApp extends Application {
         }
 
         var st = new Stage();
-        st.setScene(new ZobrazitPodnik().getScene());
+        st.setScene(new ZobrazitPodnik(db).getScene());
         st.showAndWait();
 
         new ObrazovkyController().zapniAplikaci(primaryStage);
