@@ -1,5 +1,6 @@
 package cz.vse.praguePub.gui.obrazovky;
 
+import cz.vse.praguePub.gui.obrazovky.abstraktniObrazovky.Obrazovka;
 import javafx.geometry.Insets;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -14,7 +15,7 @@ import java.util.function.Consumer;
 
 import static cz.vse.praguePub.gui.komponenty.Komponenty.*;
 
-public class Filtr extends Obrazovka <BorderPane> {
+public class Filtr extends Obrazovka<BorderPane> {
     private final Consumer<Map<String, Object>> callbackSVysledkem;
 
     public Filtr(Consumer<Map<String, Object>> callbackSVysledkem) {

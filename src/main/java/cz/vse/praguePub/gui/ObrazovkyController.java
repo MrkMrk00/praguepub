@@ -2,10 +2,7 @@ package cz.vse.praguePub.gui;
 
 import com.mongodb.MongoException;
 import cz.vse.praguePub.gui.komponenty.AlertBuilder;
-import cz.vse.praguePub.gui.obrazovky.HlavniObrazovka;
-import cz.vse.praguePub.gui.obrazovky.OblibenePodniky;
-import cz.vse.praguePub.gui.obrazovky.Prihlaseni;
-import cz.vse.praguePub.gui.obrazovky.UpravitPodnikObrazovka;
+import cz.vse.praguePub.gui.obrazovky.*;
 import cz.vse.praguePub.logika.Databaze;
 import cz.vse.praguePub.logika.Uzivatel;
 import cz.vse.praguePub.logika.dbObjekty.Podnik;
@@ -56,7 +53,12 @@ public class ObrazovkyController {
     }
 
     public void zapniAplikaci(Stage primaryStage) {
-        primaryStage.setScene(new HlavniObrazovka(this).getScene());
+        HlavniObrazovka hlObr = new HlavniObrazovka(this);
+        Scene hlScene = hlObr.getScene();
+
+        primaryStage.setScene(hlScene);
+        primaryStage.setMinWidth(889);
+        primaryStage.setMinHeight(817);
         primaryStage.show();
     }
 
@@ -76,7 +78,7 @@ public class ObrazovkyController {
             this.zobrazPrihlaseni();
             return;
         }
-        zobrazOkno(new OblibenePodniky(ziskejOblibenePodniky, odeberPodnik, upravPodnik).getScene());
+        zobrazOkno(new OblibenePodnikyObrazovka(ziskejOblibenePodniky, odeberPodnik, upravPodnik).getScene());
     }
 
     /**
@@ -113,6 +115,10 @@ public class ObrazovkyController {
      */
     public void zobrazUpraveniPodniku(Podnik podnik) {
         zobrazOkno(new UpravitPodnikObrazovka(podnik).getScene());
+    }
+
+    public void zobrazPodnikyVOblasti(Integer cisloMeskeCasti) {
+        zobrazOkno(new PodnikyVMestskeCastiObrazovka(cisloMeskeCasti).getScene());
     }
 
 }

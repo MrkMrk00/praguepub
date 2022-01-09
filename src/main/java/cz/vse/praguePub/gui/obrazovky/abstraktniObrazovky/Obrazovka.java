@@ -1,4 +1,4 @@
-package cz.vse.praguePub.gui.obrazovky;
+package cz.vse.praguePub.gui.obrazovky.abstraktniObrazovky;
 
 import javafx.scene.Parent;
 import javafx.scene.Scene;

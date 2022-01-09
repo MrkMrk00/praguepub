@@ -1,6 +1,7 @@
 package cz.vse.praguePub.gui.obrazovky;
 
 import cz.vse.praguePub.gui.komponenty.Tabulka;
+import cz.vse.praguePub.gui.obrazovky.abstraktniObrazovky.Obrazovka;
 import cz.vse.praguePub.logika.Databaze;
 import cz.vse.praguePub.logika.dbObjekty.Pivo;
 import cz.vse.praguePub.logika.dbObjekty.Podnik;

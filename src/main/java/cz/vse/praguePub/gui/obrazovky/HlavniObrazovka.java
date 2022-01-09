@@ -1,39 +1,27 @@
 package cz.vse.praguePub.gui.obrazovky;
 
-import com.mongodb.MongoException;
 import cz.vse.praguePub.gui.ObrazovkyController;
-import cz.vse.praguePub.gui.komponenty.AlertBuilder;
-import cz.vse.praguePub.logika.Databaze;
-import cz.vse.praguePub.logika.Uzivatel;
-import cz.vse.praguePub.logika.dbObjekty.Podnik;
-import cz.vse.praguePub.util.PraguePubDatabaseException;
+import cz.vse.praguePub.gui.obrazovky.abstraktniObrazovky.Obrazovka;
 import javafx.geometry.Insets;
-import javafx.scene.control.Alert;
+import javafx.geometry.Pos;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
-import javafx.stage.Stage;
 
-import java.util.List;
+import java.io.InputStream;
 import java.util.Map;
-import java.util.function.BiFunction;
-import java.util.function.Consumer;
-import java.util.function.Supplier;
 
 import static cz.vse.praguePub.gui.komponenty.Komponenty.*;
 
-/**
- * Třída hlavní obrazovky, která v sobě zároveň obsahuje logiku otevírání oken a
- * návaznosti obrazovek na sebe.<br>
- * Návaznost je řešena <b>funkcionálně</b>.
- */
 public class HlavniObrazovka extends Obrazovka<BorderPane> {
 
     private final ObrazovkyController controller;
 
     public HlavniObrazovka(ObrazovkyController controller) {
-        super(new BorderPane(), 700, 700, "background");
+        super(new BorderPane(), 680, 600, "background");
 
         this.controller = controller;
         this.registrujInputy(this.getMapaInputu());
@@ -52,6 +40,30 @@ public class HlavniObrazovka extends Obrazovka<BorderPane> {
         );
     }
 
+    private StackPane pripravMapu() {
+        StackPane mapaPane = new StackPane();
+
+        for (int i = 1; i <= 22; i++) {
+            final InputStream obrIS = this.getClass().getResourceAsStream("/castiMapy/Praha" + i + ".png");
+            if (obrIS == null) continue;
+
+            ImageView imageView = new ImageView(
+                    new Image(obrIS, 889d, 817d, false, true)
+            );
+
+            Integer iFinal = i;
+            imageView.setOnMouseClicked(
+                    event -> {
+                        this.controller.zobrazPodnikyVOblasti(iFinal);
+                    }
+            );
+
+            mapaPane.getChildren().add(imageView);
+        }
+
+        return mapaPane;
+    }
+
     /**
      * Metoda obsahuje tvorbu GUI.
      * @param pane hlavní Parent okna
@@ -59,35 +71,36 @@ public class HlavniObrazovka extends Obrazovka<BorderPane> {
     private void vytvorGUI(BorderPane pane) {
         pane.setTop(
                 HorniPanel(hp -> {
-                    BorderPane vrchniBar = new BorderPane();
-
-                    vrchniBar.setLeft(
-                            Radek(
-                                    NadpisOknaLabel("PraguePub"),
-                                    this.getMapaInputu().get("vyhledat"),
-                                    TlacitkoAplikace("Oblibene podniky", e -> this.controller.zobrazOblibenePodniky(), null)
-                            )
+                    Label nadpisOkna = NadpisOknaLabel("PraguePub");
+                    TextField inputVyhledat = this.getMapaInputu().get("vyhledat");
+                    Button oblibenePodniky = TlacitkoAplikace(
+                            "Oblibene podniky",
+                            e -> this.controller.zobrazOblibenePodniky(),
+                            null
                     );
 
-                    vrchniBar.setRight(
-                            Radek(
-                                    TlacitkoAplikace(
-                                            "Prihlasit se",
-                                            mouseEvent -> this.controller.zobrazPrihlaseni(),
-                                            t -> HBox.setMargin(t, new Insets(6, 8, 0, 0))
-                                    )
-                            )
+                    Button prihlasitSe = TlacitkoAplikace(
+                            "Prihlasit se",
+                            mouseEvent -> this.controller.zobrazPrihlaseni(),
+                            t -> HBox.setMargin(t, new Insets(6, 8, 0, 0))
                     );
 
-                    hp.getChildren().add(vrchniBar);
+                    Region separator = new Region();
+                        HBox.setHgrow(separator, Priority.ALWAYS);
+
+                    VBox tlacitkoVBox = Sloupec(prihlasitSe);
+                    tlacitkoVBox.setAlignment(Pos.CENTER_LEFT);
+
+                    hp.getChildren().addAll(
+                            Radek(nadpisOkna, inputVyhledat, oblibenePodniky), separator, Radek(prihlasitSe)
+                    );
+
                     hp.setPrefWidth(Integer.MAX_VALUE);
-                    vrchniBar.setPrefWidth(Integer.MAX_VALUE);
-
                 })
         );
 
-        pane.setCenter(
-                new ImageView(new Image(this.getClass().getResourceAsStream("/castiMapy/Praha5.png")))
-        );
+        pane.setCenter(this.pripravMapu());
+
+
     }
 }

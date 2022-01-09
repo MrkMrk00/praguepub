@@ -1,5 +1,6 @@
 package cz.vse.praguePub.gui.obrazovky;
 
+import cz.vse.praguePub.gui.obrazovky.abstraktniObrazovky.Obrazovka;
 import javafx.geometry.Insets;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
@@ -9,7 +10,7 @@ import java.util.List;
 
 import static cz.vse.praguePub.gui.komponenty.Komponenty.*;
 
-public class ZobrazitPodnik extends Obrazovka<BorderPane>{
+public class ZobrazitPodnik extends Obrazovka<BorderPane> {
 
     public ZobrazitPodnik() {
         super(new BorderPane(), 700, 700, "background" );

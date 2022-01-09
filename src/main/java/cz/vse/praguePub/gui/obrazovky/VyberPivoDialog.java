@@ -2,6 +2,7 @@ package cz.vse.praguePub.gui.obrazovky;
 
 import com.mongodb.client.MongoCollection;
 import cz.vse.praguePub.gui.komponenty.Tabulka;
+import cz.vse.praguePub.gui.obrazovky.abstraktniObrazovky.Obrazovka;
 import cz.vse.praguePub.logika.PivoFiltrBuilder;
 import cz.vse.praguePub.logika.dbObjekty.Pivo;
 import javafx.collections.FXCollections;
