@@ -18,12 +18,24 @@ import java.util.function.Supplier;
 
 import static cz.vse.praguePub.gui.komponenty.Komponenty.*;
 
+/**
+ * Třída hlavní obrazovky, která v sobě zároveň obsahuje logiku otevírání oken a
+ * návaznosti obrazovek na sebe.<br>
+ * Návaznost je řešena <b>funkcionálně</b>.
+ */
 public class HlavniObrazovka extends Obrazovka<BorderPane> {
 
     private Databaze databaze = Databaze.get(Uzivatel.guest());
 
     /*
      * Část kódu, která se stará o zobrazování oken a návaznost oken mezi sebou
+     */
+
+    /**
+     * Metoda otevírá okno s oblíbenými podniky.<p>
+     * () -> List&lt;Podnik&gt; &emsp; <b>ziskejOblibenePodniky</b>: dotaz do databáze - vrací podniky z databáze <br>
+     * (Podnik) -> void&emsp;&emsp; <b>odeberPodnik</b>: dotaz do databáze - odebírá podnik z oblíbených podniků uživatele <br>
+     * (Podnik) -> void&emsp;&emsp; <b>upravPodnik</b>: dotaz do databáze - otevře okno úpravy podniku <br>
      */
     private void zobrazOblibenePodniky() {
         Supplier<List<Podnik>> ziskejOblibenePodniky = () -> this.databaze.getOblibenePodniky();
@@ -37,6 +49,13 @@ public class HlavniObrazovka extends Obrazovka<BorderPane> {
         zobrazOkno(new OblibenePodniky(ziskejOblibenePodniky, odeberPodnik, upravPodnik).getScene());
     }
 
+    /**
+     * Zobrazí okno s přihlášením.<p>
+     * (String, String) -> Boolean &emsp; <b>prihlas</b>: metoda se pokusí vytvořít nového uživatele
+     * a přiřadit instanční proměnné databaze novou instanci s přihlášeným uživatelem.<br>
+     * () -> void &emsp; <b>hidePozadavek</b>: slouží k zavření okna s přihlášením. Když se
+     * uživateli povede úspěšně přihlásit, tak se okno automaticky zavře.
+     */
     private void zobrazPrihlaseni() {
         final Stage prihlaseniStage = new Stage();
 
@@ -57,6 +76,10 @@ public class HlavniObrazovka extends Obrazovka<BorderPane> {
         prihlaseniStage.show();
     }
 
+    /**
+     * Zobrazí okno pro úpravu informací o podniku.
+     * @param podnik podnik, který chce uživatel upravit
+     */
     private void zobrazUpraveniPodniku(Podnik podnik) {
         zobrazOkno(new UpravitPodnikObrazovka(podnik).getScene());
     }
@@ -72,6 +95,10 @@ public class HlavniObrazovka extends Obrazovka<BorderPane> {
         this.vytvorGUI(this.getPane());
     }
 
+    /**
+     * Zaregistruje textové vstupy do jedné mapy pro jednodušší přístup
+     * @param mapaInputu mapa, do které se instance TextField přidají
+     */
     private void registrujInputy(Map<String, TextField> mapaInputu) {
         mapaInputu.put(
                 "vyhledat", TextFieldAplikace("Vyhledat", t -> {
@@ -80,6 +107,10 @@ public class HlavniObrazovka extends Obrazovka<BorderPane> {
         );
     }
 
+    /**
+     * Metoda obsahuje tvorbu GUI.
+     * @param pane hlavní Parent okna
+     */
     private void vytvorGUI(BorderPane pane) {
         pane.setTop(
                 HorniPanel(hp -> {
@@ -109,13 +140,5 @@ public class HlavniObrazovka extends Obrazovka<BorderPane> {
 
                 })
         );
-
-
-
-
-
-
-
-
     }
 }

@@ -9,6 +9,7 @@ import cz.vse.praguePub.logika.dbObjekty.DBObjekt;
 import cz.vse.praguePub.logika.dbObjekty.Pivo;
 import cz.vse.praguePub.logika.dbObjekty.Podnik;
 import org.bson.Document;
+import org.bson.types.ObjectId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -71,7 +72,7 @@ public class DatabazeImpl implements Databaze {
 
         if (userDoc == null || userDoc.isEmpty()) return null;
 
-        List<Document> idList = userDoc.getList("oblibene_podniky", Document.class);
+        List<ObjectId> idList = userDoc.getList("oblibene_podniky", ObjectId.class);
         return this.prevedNalezenePodnikyNaInstance(
                 this.getPodnikyCollection()
                         .find(in("_id", idList))

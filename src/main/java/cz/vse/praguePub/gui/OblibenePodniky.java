@@ -22,9 +22,11 @@ import static cz.vse.praguePub.gui.komponenty.Komponenty.NadpisOknaLabel;
 
 public class OblibenePodniky extends Obrazovka<BorderPane> {
 
-    private final Supplier<List<Podnik>> ziskejPodniky;
     private final ObservableList<Podnik> zobrazenePodniky;
-    private final Consumer<Podnik> odeberCallback;
+
+    private final Supplier<List<Podnik>> ziskejPodniky;
+    private final Consumer<Podnik> odeberPodnik;
+    private final Consumer<Podnik> upravPodnik;
 
     public OblibenePodniky(
             Supplier<List<Podnik>> ziskejPodniky,
@@ -33,9 +35,11 @@ public class OblibenePodniky extends Obrazovka<BorderPane> {
     ) {
         super(new BorderPane(),  900, 600, "background");
         this.zobrazenePodniky = FXCollections.observableArrayList();
-        this.odeberCallback = odeberCallback;
+        this.odeberPodnik = odeberCallback;
         this.ziskejPodniky = ziskejPodniky;
+        this.upravPodnik = upravCallback;
 
+        this.nactiPodniky();
         this.vytvorGui();
     }
 
@@ -58,33 +62,50 @@ public class OblibenePodniky extends Obrazovka<BorderPane> {
         );
 
         this.getPane().setCenter(
-                this.pripravtabulku(this.zobrazenePodniky)
+                this.pripravTabulku(this.zobrazenePodniky)
         );
     }
 
-    private TableView<Podnik> pripravtabulku(ObservableList<Podnik> zobrazovanePodniky) {
+    private TableView<Podnik> pripravTabulku(ObservableList<Podnik> zobrazovanePodniky) {
         Tabulka<Podnik> tab = new Tabulka<>(Podnik.PRO_TABULKU);
-        TableView<Podnik> tv = tab.getTableView();
 
+        TableView<Podnik> tv = tab.getTableView();
         tv.setItems(zobrazovanePodniky);
 
-        ContextMenu contextMenu = new ContextMenu();
-            MenuItem odebratMenuItem = new MenuItem("Odebrat z oblíbených");
-            MenuItem zrusit = new MenuItem("Zrušit");
-
-        contextMenu.getItems().addAll(odebratMenuItem, new SeparatorMenuItem(), zrusit);
+        ContextMenu contextMenu = this.pripravContextoveMenu(tab);
 
         tv.setOnMouseClicked(mouseEvent -> {
             if (mouseEvent.getButton() == MouseButton.SECONDARY) {
-                odebratMenuItem.setOnAction(
-                        event -> {
-                            this.odeberCallback.accept(tv.getSelectionModel().getSelectedItem());
-                        }
-                );
                 contextMenu.show(tv, mouseEvent.getScreenX(), mouseEvent.getScreenY());
             }
         });
 
         return tv;
+    }
+
+    private ContextMenu pripravContextoveMenu(Tabulka<Podnik> tabulka) {
+        TableView<Podnik> tv = tabulka.getTableView();
+
+        MenuItem odebratMenuItem = new MenuItem("Odebrat z oblíbených");
+        odebratMenuItem.setOnAction(
+                event -> {
+                    this.odeberPodnik.accept(tv.getSelectionModel().getSelectedItem());
+                    this.nactiPodniky();
+                }
+        );
+
+        MenuItem upravitMenuItem = new MenuItem("Upravit podnik");
+        upravitMenuItem.setOnAction(
+                event -> this.upravPodnik.accept(tv.getSelectionModel().getSelectedItem())
+        );
+
+        MenuItem zrusitMenuItem = new MenuItem("Zrušit");
+
+        return new ContextMenu(
+                upravitMenuItem,
+                new SeparatorMenuItem(),
+                odebratMenuItem,
+                zrusitMenuItem
+        );
     }
 }

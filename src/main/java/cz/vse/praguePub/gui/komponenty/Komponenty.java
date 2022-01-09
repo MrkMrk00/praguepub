@@ -16,6 +16,9 @@ import javafx.stage.Stage;
 import java.util.List;
 import java.util.function.Consumer;
 
+/**
+ * Třída slouží pro snížení boilerplate JavaFX kódu
+ */
 public final class Komponenty {
 
     public static Button TlacitkoAplikace(String text, Consumer<Button> styluj) {
