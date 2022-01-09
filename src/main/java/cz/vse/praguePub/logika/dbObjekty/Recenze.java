@@ -21,6 +21,15 @@ public class Recenze implements DBObjekt {
     @Setter(AccessLevel.NONE) @Getter(AccessLevel.NONE)
     private String uzivatelskeJmeno = null;
 
+
+    //levý sloupec: názvy, co se zobrazí v tabulce jako nadpisy sloupců; pravý sloupec: názvy atributů instance)
+    //(logika tabulky bere atribut instance přes getter, tudíž atribut musí být v camelCase a metoda musí začínat "get")
+    public static final String[][] PRO_TABULKU = {
+            { "Jméno uživatele", "uzivatel"  },
+            { "Hodnocení",         "text"    },
+            { "Komentář",        "hodnoceni" }
+    };
+
     /**
      * Vytvoří instanci recenze z databázového dokumentu
      * @param doc databázový dokument

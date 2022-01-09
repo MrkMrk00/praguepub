@@ -1,7 +1,11 @@
 package cz.vse.praguePub.gui.obrazovky;
 
+import cz.vse.praguePub.gui.komponenty.Tabulka;
 import cz.vse.praguePub.gui.obrazovky.abstraktniObrazovky.Obrazovka;
+import cz.vse.praguePub.logika.dbObjekty.DBObjekt;
+import cz.vse.praguePub.logika.dbObjekty.Recenze;
 import javafx.geometry.Insets;
+import javafx.scene.control.TableView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -11,6 +15,7 @@ import java.util.List;
 import static cz.vse.praguePub.gui.komponenty.Komponenty.*;
 
 public class ZobrazitPodnik extends Obrazovka<BorderPane> {
+
 
     public ZobrazitPodnik() {
         super(new BorderPane(), 700, 700, "background" );
@@ -63,13 +68,14 @@ public class ZobrazitPodnik extends Obrazovka<BorderPane> {
 
         );
 
-        /*this.getPane().setBottom(
+        this.getPane().setBottom(
                 pripravTabulku()
-        );*/
+        );
     }
 
-    /*private TableView<Recenze> pripravTabulku() {
-        Tabulka<Recenze> recenzeTabulka = new Tabulka<>(Recenze.inicializujZDokumentu());
+    private TableView<Recenze> pripravTabulku() {
+        Tabulka<Recenze> recenzeTabulka = new Tabulka<>(Recenze.PRO_TABULKU);
+
         return recenzeTabulka.getTableView();
-    }*/
+    }
 }
