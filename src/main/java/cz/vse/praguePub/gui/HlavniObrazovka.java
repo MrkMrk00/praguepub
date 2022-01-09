@@ -64,7 +64,8 @@ public class HlavniObrazovka extends Obrazovka<BorderPane> {
         Consumer<Podnik> odeberPodnik = podnik -> this.databaze.odeberZOblibenych(podnik);
         Consumer<Podnik> upravPodnik = this::zobrazUpraveniPodniku;
 
-        if (this.databaze.getUzivatel().isGuest()) {
+        Uzivatel instanceUzivatele = this.databaze.getUzivatel();
+        if (instanceUzivatele.isGuest() || !instanceUzivatele.isPrihlasen()) {
             this.zobrazPrihlaseni();
             return;
         }
@@ -107,6 +108,14 @@ public class HlavniObrazovka extends Obrazovka<BorderPane> {
         zobrazOkno(new UpravitPodnikObrazovka(podnik).getScene());
     }
 
+    private void prihlasHosta() {
+        try {
+            this.databaze = Databaze.get(Uzivatel.guest());
+        } catch (PraguePubDatabaseException e) {
+            this.nepovedenePrihlaseni(e.getMessage());
+        }
+    }
+
     /*
      * ========================================================================
      */
@@ -114,11 +123,7 @@ public class HlavniObrazovka extends Obrazovka<BorderPane> {
     public HlavniObrazovka() {
         super(new BorderPane(), 700, 700, "background");
 
-        try {
-            this.databaze = Databaze.get(Uzivatel.guest());
-        } catch (PraguePubDatabaseException e) {
-            this.nepovedenePrihlaseni(e.getMessage());
-        }
+        this.prihlasHosta();
 
         this.registrujInputy(this.getMapaInputu());
         this.vytvorGUI(this.getPane());

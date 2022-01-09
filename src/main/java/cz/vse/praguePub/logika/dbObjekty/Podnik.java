@@ -49,13 +49,15 @@ public class Podnik implements DBObjekt {
     public String getPivaProTabulku() {
         StringBuilder sb = new StringBuilder();
 
-        this.getPivniListek().forEach(
-                pivo -> sb.append(pivo.getNazev())
-                        .append(" à ")
-                        .append(pivo.getCena())
-                        .append(" Kč")
-                        .append(",\n")
-        );
+        for (Pivo pivo : this.getPivniListek()) {
+            if (pivo.getObjem() < 0.4) continue;
+
+            sb.append(pivo.getNazev())
+                    .append(" à ")
+                    .append(pivo.getCena())
+                    .append(" Kč")
+                    .append(",\n");
+        }
 
         int start = (sb.length() < 3) ? 0 : sb.length() - 2;
         int end   = (sb.length() < 3) ? 0 : sb.length() - 1;
@@ -90,7 +92,7 @@ public class Podnik implements DBObjekt {
         List<Document> pivoDocList = doc.getList("piva", Document.class);
 
         for (Document pivoDoc : pivoDocList) {
-            Document nalezenePivo = kolekcePiv.find(eq("pivo", pivoDoc.getObjectId("_id"))).first();
+            Document nalezenePivo = kolekcePiv.find(eq("_id", pivoDoc.getObjectId("pivo"))).first();
             if (nalezenePivo == null) continue;
 
             pivniListek.add(
