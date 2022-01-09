@@ -11,6 +11,8 @@ import lombok.Getter;
 import lombok.ToString;
 import org.bson.Document;
 import org.bson.types.ObjectId;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 
@@ -30,6 +32,8 @@ import static cz.vse.praguePub.util.AesUtil.fillTo16Chars;
  */
 @ToString
 public class Uzivatel {
+    private static final Logger LOGGER = LoggerFactory.getLogger(Uzivatel.class);
+
     @Getter private final String        username;
     @Getter private final MongoClient   client;
     @Getter private boolean             prihlasen = false;
@@ -71,11 +75,15 @@ public class Uzivatel {
 
         String dbPassword = this.getPasswordFromDatabase(prihlasovaciJmeno, heslo);
         this.client = this.dbLogin(DB_USERNAMES.get(dbUsername), dbPassword);
-        Document userDoc = this.client
-                .getDatabase("prague_pub")
-                .getCollection("uzivatele")
-                .find(Filters.eq("userName", prihlasovaciJmeno))
-                .first();
+
+        Document userDoc = null;
+        if (this.prihlasen) {
+            userDoc = this.client
+                    .getDatabase("prague_pub")
+                    .getCollection("uzivatele")
+                    .find(Filters.eq("userName", prihlasovaciJmeno))
+                    .first();
+        }
 
         this._id = (userDoc == null ? null : userDoc.getObjectId("_id"));
     }
@@ -133,6 +141,7 @@ public class Uzivatel {
         }
 
         if (au == null) return null;
+
         return au.decrypt(dbPassword, fillTo16Chars(password));
     }
 
@@ -145,15 +154,18 @@ public class Uzivatel {
     private MongoClient dbLogin(String username, String password) {
         MongoClient mongoClient = MongoClients.create(fillConString(username, password));
         try {
-            mongoClient
+            Document doc = mongoClient
                     .getDatabase("prague_pub")
                     .getCollection("uzivatele")
-                    .find(Filters.eq("userName", "admin"));
-            this.prihlasen = true;
+                    .find(Filters.eq("userName", "admin"))
+                    .first();
+
+            this.prihlasen = doc != null && !doc.isEmpty();
         } catch ( MongoCommandException | MongoSecurityException e) {
             mongoClient.close();
             this.prihlasen = false;
         }
+        LOGGER.info(this.prihlasen ? "Přihlášení se zdařilo: uživatel " + this.username : "Přihlášení se nezdařilo");
         return mongoClient;
     }
 

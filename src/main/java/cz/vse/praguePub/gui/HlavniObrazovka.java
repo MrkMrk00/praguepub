@@ -1,13 +1,18 @@
 package cz.vse.praguePub.gui;
 
 import com.mongodb.MongoException;
+import cz.vse.praguePub.gui.komponenty.AlertBuilder;
 import cz.vse.praguePub.logika.Databaze;
 import cz.vse.praguePub.logika.Uzivatel;
 import cz.vse.praguePub.logika.dbObjekty.Podnik;
+import cz.vse.praguePub.util.PraguePubDatabaseException;
+import javafx.application.Application;
 import javafx.geometry.Insets;
+import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
+import lombok.Data;
 
 import java.util.List;
 import java.util.Map;
@@ -25,11 +30,26 @@ import static cz.vse.praguePub.gui.komponenty.Komponenty.*;
  */
 public class HlavniObrazovka extends Obrazovka<BorderPane> {
 
-    private Databaze databaze = Databaze.get(Uzivatel.guest());
+    private Databaze databaze = null;
 
     /*
      * Část kódu, která se stará o zobrazování oken a návaznost oken mezi sebou
      */
+
+    /**
+     * Metoda zobrazí alert a vypne aplikaci
+     * @param errorText text, který se zobrazí v alertu
+     */
+    private void nepovedenePrihlaseni(String errorText) {
+        new AlertBuilder(Alert.AlertType.ERROR)
+                .setTitle("PraguePub")
+                .setHeaderText("Chyba databáze")
+                .setContent(errorText)
+                .getAlert()
+                .showAndWait();
+
+        System.exit(0);
+    }
 
     /**
      * Metoda otevírá okno s oblíbenými podniky.<p>
@@ -63,10 +83,11 @@ public class HlavniObrazovka extends Obrazovka<BorderPane> {
             Uzivatel novyUzivatel;
             try {
                 novyUzivatel = new Uzivatel(jmeno, heslo);
-            } catch (MongoException e) {
+                this.databaze = Databaze.get(novyUzivatel);
+            } catch (MongoException | PraguePubDatabaseException e) {
                 return false;
             }
-            this.databaze = Databaze.get(novyUzivatel);
+
             return this.databaze.getUzivatel().isPrihlasen();
         };
 
@@ -90,6 +111,12 @@ public class HlavniObrazovka extends Obrazovka<BorderPane> {
 
     public HlavniObrazovka() {
         super(new BorderPane(), 700, 700, "background");
+
+        try {
+            this.databaze = Databaze.get(Uzivatel.guest());
+        } catch (PraguePubDatabaseException e) {
+            this.nepovedenePrihlaseni(e.getMessage());
+        }
 
         this.registrujInputy(this.getMapaInputu());
         this.vytvorGUI(this.getPane());

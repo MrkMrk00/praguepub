@@ -121,12 +121,12 @@ public class UpravitPodnikObrazovka extends Obrazovka<BorderPane> {
             this.oknoProVyberPiva.hide();
         };
 
-        this.oknoProVyberPiva.setScene(
+        /*this.oknoProVyberPiva.setScene(
                 new VyberPivoDialog(
                         Databaze.get(Uzivatel.guest()).getPivaCollection(),
                         callbackPoVyberuPiva
                 ).getScene()
-        );
+        );*/
         this.oknoProVyberPiva.showAndWait();
     }
 }

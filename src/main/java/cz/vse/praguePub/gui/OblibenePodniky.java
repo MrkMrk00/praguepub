@@ -2,13 +2,11 @@ package cz.vse.praguePub.gui;
 
 import cz.vse.praguePub.gui.komponenty.Tabulka;
 import cz.vse.praguePub.logika.dbObjekty.Podnik;
+import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
-import javafx.scene.control.ContextMenu;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.SeparatorMenuItem;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.BorderPane;
 
@@ -74,10 +72,14 @@ public class OblibenePodniky extends Obrazovka<BorderPane> {
 
         ContextMenu contextMenu = this.pripravContextoveMenu(tab);
 
-        tv.setOnMouseClicked(mouseEvent -> {
-            if (mouseEvent.getButton() == MouseButton.SECONDARY) {
-                contextMenu.show(tv, mouseEvent.getScreenX(), mouseEvent.getScreenY());
-            }
+        tv.setRowFactory(tableView -> {
+            TableRow<Podnik> tableRow = new TableRow<>();
+            tableRow.contextMenuProperty().bind(
+                    Bindings.when(tableRow.emptyProperty())
+                            .then((ContextMenu) null)
+                            .otherwise(contextMenu)
+            );
+            return tableRow;
         });
 
         return tv;

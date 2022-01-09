@@ -31,7 +31,6 @@ public class FXApp extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        Databaze db = Databaze.get(Uzivatel.guest());
         ObservableList<Podnik> obsList = FXCollections.observableArrayList();
 
         Consumer<Podnik> odeber = podnik -> {
@@ -39,7 +38,6 @@ public class FXApp extends Application {
             log.debug("odebrano " + podnik.getNazev());
         };
 
-        obsList.addAll(db.getPodnikFiltrBuilder().finalizuj().get(0), db.getPodnikFiltrBuilder().finalizuj().get(0));
 
         List.of(
                 new HlavniObrazovka().getScene()/*,

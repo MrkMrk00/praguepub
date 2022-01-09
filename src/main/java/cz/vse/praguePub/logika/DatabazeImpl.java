@@ -2,12 +2,14 @@ package cz.vse.praguePub.logika;
 
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.model.UpdateOptions;
 import com.mongodb.client.model.Updates;
 import com.mongodb.client.result.DeleteResult;
 import com.mongodb.client.result.UpdateResult;
 import cz.vse.praguePub.logika.dbObjekty.DBObjekt;
 import cz.vse.praguePub.logika.dbObjekty.Pivo;
 import cz.vse.praguePub.logika.dbObjekty.Podnik;
+import cz.vse.praguePub.util.PraguePubDatabaseException;
 import org.bson.Document;
 import org.bson.types.ObjectId;
 import org.slf4j.Logger;
@@ -24,8 +26,11 @@ public class DatabazeImpl implements Databaze {
     private final Uzivatel uzivatel;
     private final MongoDatabase db;
 
-    DatabazeImpl(Uzivatel uzivatel) {
+    DatabazeImpl(Uzivatel uzivatel) throws PraguePubDatabaseException {
         this.uzivatel = uzivatel;
+        if (uzivatel == null) {
+            throw new PraguePubDatabaseException("Nelze se připojit do databáze jako host");
+        }
         this.db = uzivatel.getPraguePubDatabaze();
     }
 
@@ -46,9 +51,10 @@ public class DatabazeImpl implements Databaze {
 
     @Override
     public boolean pridejDoOblibenych(Podnik podnik) {
-        UpdateResult updateResult = this.db.getCollection("uzivatele").updateOne(
+        UpdateResult updateResult = this.db.getCollection("oblibene_podniky").updateOne(
                 eq("_id", this.uzivatel.get_id()),
-                Updates.push("oblibene_podniky", podnik.get_id())
+                Updates.push("podniky", podnik.get_id()),
+                new UpdateOptions().upsert(true)
         );
 
         return (updateResult.wasAcknowledged() && updateResult.getModifiedCount() > 0);
@@ -56,9 +62,9 @@ public class DatabazeImpl implements Databaze {
 
     @Override
     public boolean odeberZOblibenych(Podnik podnik) {
-        UpdateResult updateResult = this.db.getCollection("uzivatele").updateOne(
+        UpdateResult updateResult = this.db.getCollection("oblibene_podniky").updateOne(
                 eq("_id", this.uzivatel.get_id()),
-                Updates.pull("oblibene_podniky", podnik.get_id())
+                Updates.pull("podniky", podnik.get_id())
         );
 
         return (updateResult.wasAcknowledged() && updateResult.getModifiedCount() > 0);
@@ -66,13 +72,14 @@ public class DatabazeImpl implements Databaze {
 
     @Override
     public List<Podnik> getOblibenePodniky() {
-        Document userDoc = this.db.getCollection("uzivatele")
+        Document userDoc = this.db.getCollection("oblibene_podniky")
                 .find(eq("_id", this.uzivatel.get_id()))
                 .first();
 
-        if (userDoc == null || userDoc.isEmpty()) return null;
+        if (userDoc == null || userDoc.isEmpty()) return List.of();
 
-        List<ObjectId> idList = userDoc.getList("oblibene_podniky", ObjectId.class);
+        List<ObjectId> idList = userDoc.getList("podniky", ObjectId.class);
+        idList.forEach(it -> System.out.println(it.toString()));
         return this.prevedNalezenePodnikyNaInstance(
                 this.getPodnikyCollection()
                         .find(in("_id", idList))

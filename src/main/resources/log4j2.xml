@@ -2,11 +2,11 @@
 <Configuration status="INFO">
     <Appenders>
         <Console name="Console" target="SYSTEM_OUT">
-            <PatternLayout pattern="%d{HH:mm:ss} %highlight{[%t] %-5level %logger{36}}{ERROR=red bright, INFO=null bright, DEBUG=blue bright} : %msg%n\n"/>
+            <PatternLayout pattern="%d{HH:mm:ss} %highlight{[%t] %-5level %logger{36}}{ERROR=red bright, INFO=null bright, DEBUG=blue bright} : %msg%n"/>
         </Console>
 
         <Console name="mongoCon" target="SYSTEM_OUT">
-            <PatternLayout pattern="%d{HH:mm:ss} %highlight{%-5level %logger{36}}{ERROR=red bright, INFO=null bright, DEBUG=green bright}\t: %msg%n\n"/>
+            <PatternLayout pattern="%d{HH:mm:ss} %highlight{%-5level %logger{36}}{ERROR=red bright, INFO=null bright, DEBUG=green bright}\t: %msg%n"/>
         </Console>
 
     </Appenders>

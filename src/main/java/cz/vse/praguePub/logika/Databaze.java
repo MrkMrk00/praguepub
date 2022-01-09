@@ -3,6 +3,7 @@ package cz.vse.praguePub.logika;
 import com.mongodb.client.MongoCollection;
 import cz.vse.praguePub.logika.dbObjekty.Pivo;
 import cz.vse.praguePub.logika.dbObjekty.Podnik;
+import cz.vse.praguePub.util.PraguePubDatabaseException;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
@@ -17,7 +18,7 @@ public interface Databaze {
      * @param uzivatel instance uživatele, který se k databázi chce připojit
      * @return instanci databáze
      */
-    static Databaze get(Uzivatel uzivatel) {
+    static Databaze get(Uzivatel uzivatel) throws PraguePubDatabaseException {
         return new DatabazeImpl(uzivatel);
     }
 
