@@ -171,7 +171,7 @@ public class HlavniObrazovka extends Obrazovka<BorderPane> {
         );
 
         pane.setCenter(
-                new ImageView(new Image(this.getClass().getResourceAsStream("/castiMapy/Praha1.png")))
+                new ImageView(new Image(this.getClass().getResourceAsStream("/castiMapy/Praha5.png")))
         );
     }
 }
