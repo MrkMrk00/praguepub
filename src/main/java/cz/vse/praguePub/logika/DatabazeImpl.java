@@ -79,7 +79,6 @@ public class DatabazeImpl implements Databaze {
         if (userDoc == null || userDoc.isEmpty()) return List.of();
 
         List<ObjectId> idList = userDoc.getList("podniky", ObjectId.class);
-        idList.forEach(it -> System.out.println(it.toString()));
         return this.prevedNalezenePodnikyNaInstance(
                 this.getPodnikyCollection()
                         .find(in("_id", idList))
