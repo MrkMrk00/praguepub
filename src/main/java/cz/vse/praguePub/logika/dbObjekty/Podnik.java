@@ -90,7 +90,7 @@ public class Podnik implements DBObjekt {
         List<Document> pivoDocList = doc.getList("piva", Document.class);
 
         for (Document pivoDoc : pivoDocList) {
-            Document nalezenePivo = kolekcePiv.find(eq("pivo", pivoDoc.getObjectId("_id"))).first();
+            Document nalezenePivo = kolekcePiv.find(eq("_id", pivoDoc.getObjectId("pivo"))).first();
             if (nalezenePivo == null) continue;
 
             pivniListek.add(
