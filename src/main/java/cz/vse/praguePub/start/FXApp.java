@@ -47,6 +47,7 @@ public class FXApp extends Application {
                 new VyberPivoDialog(db.getPivaCollection(),null).getScene(),
                 new ZobrazitSeznamVLokaci().getScene(),
                 new ZobrazitPodnik().getScene()*/
+
         ).forEach(
                 (scene) -> {
                     Stage newStage = new Stage();
