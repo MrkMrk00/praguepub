@@ -1,8 +1,10 @@
 package cz.vse.praguePub.gui.obrazovky;
 
+import cz.vse.praguePub.gui.ObrazovkyController;
 import cz.vse.praguePub.gui.komponenty.Tabulka;
 import cz.vse.praguePub.gui.obrazovky.abstraktniObrazovky.Obrazovka;
 import cz.vse.praguePub.gui.obrazovky.abstraktniObrazovky.OknoSeSeznamemPodniku;
+import cz.vse.praguePub.logika.Databaze;
 import cz.vse.praguePub.logika.dbObjekty.Podnik;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -12,6 +14,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
+import lombok.Data;
 
 import static cz.vse.praguePub.gui.komponenty.Komponenty.HorniPanel;
 import static cz.vse.praguePub.gui.komponenty.Komponenty.TlacitkoAplikace;
@@ -19,15 +22,26 @@ import static cz.vse.praguePub.gui.komponenty.Komponenty.TlacitkoAplikace;
 public class PodnikyVMestskeCastiObrazovka extends OknoSeSeznamemPodniku {
 
     private final int cisloMestskeCasti;
+    private final ObrazovkyController controller;
+    private final Databaze databaze;
 
-    public PodnikyVMestskeCastiObrazovka(int cisloMestskeCasti) {
+    public PodnikyVMestskeCastiObrazovka(int cisloMestskeCasti, ObrazovkyController controller) {
         this.cisloMestskeCasti = cisloMestskeCasti;
+        this.controller = controller;
+        this.databaze = controller.getDatabaze();
+
         super.vytvorGUI();
+    }
+
+    private void nactiPodniky() {
+        this.getZobrazenePodniky().addAll(
+
+        );
     }
 
     @Override
     protected ContextMenu pripravContextoveMenu(Tabulka<Podnik> tabulka) {
-        return null;
+        return new ContextMenu();
     }
 
     @Override

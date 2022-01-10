@@ -1,7 +1,9 @@
 package cz.vse.praguePub.gui.obrazovky;
 
+import cz.vse.praguePub.gui.ObrazovkyController;
 import cz.vse.praguePub.gui.komponenty.Tabulka;
 import cz.vse.praguePub.gui.obrazovky.abstraktniObrazovky.OknoSeSeznamemPodniku;
+import cz.vse.praguePub.logika.Databaze;
 import cz.vse.praguePub.logika.dbObjekty.Podnik;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
@@ -11,32 +13,34 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+import static cz.vse.praguePub.gui.komponenty.Komponenty.HorniPanel;
+import static cz.vse.praguePub.gui.komponenty.Komponenty.NadpisOknaLabel;
+
 public class OblibenePodnikyObrazovka extends OknoSeSeznamemPodniku {
 
-    private final Supplier<List<Podnik>> ziskejPodniky;
-    private final Consumer<Podnik> odeberPodnik;
-    private final Consumer<Podnik> upravPodnik;
+    private final ObrazovkyController controller;
+    private final Databaze databaze;
 
-    public OblibenePodnikyObrazovka(
-            Supplier<List<Podnik>> ziskejPodniky,
-            Consumer<Podnik> odeberCallback,
-            Consumer<Podnik> upravCallback
-    ) {
-        this.odeberPodnik = odeberCallback;
-        this.ziskejPodniky = ziskejPodniky;
-        this.upravPodnik = upravCallback;
+    public OblibenePodnikyObrazovka(ObrazovkyController controller) {
+        this.controller = controller;
+        this.databaze = controller.getDatabaze();
 
         this.nactiPodniky();
+        super.vytvorGUI();
     }
 
     private void nactiPodniky() {
         this.getZobrazenePodniky().clear();
-        this.getZobrazenePodniky().addAll(this.ziskejPodniky.get());
+        this.getZobrazenePodniky().addAll(this.databaze.getOblibenePodniky());
     }
 
     @Override
     protected HBox pripravHorniPanel() {
-        return null;
+        return HorniPanel(
+                hp -> {
+                    hp.getChildren().add(NadpisOknaLabel("Oblíbené podniky"));
+                }
+        );
     }
 
 
@@ -47,14 +51,14 @@ public class OblibenePodnikyObrazovka extends OknoSeSeznamemPodniku {
         MenuItem odebratMenuItem = new MenuItem("Odebrat z oblíbených");
         odebratMenuItem.setOnAction(
                 event -> {
-                    this.odeberPodnik.accept(tv.getSelectionModel().getSelectedItem());
+                    this.databaze.odeberZOblibenych(tv.getSelectionModel().getSelectedItem());
                     this.nactiPodniky();
                 }
         );
 
         MenuItem upravitMenuItem = new MenuItem("Upravit podnik");
         upravitMenuItem.setOnAction(
-                event -> this.upravPodnik.accept(tv.getSelectionModel().getSelectedItem())
+                event -> this.controller.zobrazUpraveniPodniku(tv.getSelectionModel().getSelectedItem())
         );
 
         MenuItem zrusitMenuItem = new MenuItem("Zrušit");

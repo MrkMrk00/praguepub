@@ -10,6 +10,7 @@ import cz.vse.praguePub.util.PraguePubDatabaseException;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.stage.Stage;
+import lombok.Getter;
 
 import java.util.List;
 import java.util.function.BiFunction;
@@ -20,7 +21,7 @@ import static cz.vse.praguePub.gui.komponenty.Komponenty.zobrazOkno;
 
 public class ObrazovkyController {
 
-    private Databaze databaze = null;
+    @Getter private Databaze databaze = null;
 
     public ObrazovkyController() {
         this.prihlasHosta();
@@ -69,16 +70,12 @@ public class ObrazovkyController {
      * (Podnik) -> void&emsp;&emsp; <b>upravPodnik</b>: dotaz do databáze - otevře okno úpravy podniku <br>
      */
     public void zobrazOblibenePodniky() {
-        Supplier<List<Podnik>> ziskejOblibenePodniky = () -> this.databaze.getOblibenePodniky();
-        Consumer<Podnik> odeberPodnik = podnik -> this.databaze.odeberZOblibenych(podnik);
-        Consumer<Podnik> upravPodnik = this::zobrazUpraveniPodniku;
-
         Uzivatel instanceUzivatele = this.databaze.getUzivatel();
         if (instanceUzivatele.isGuest() || !instanceUzivatele.isPrihlasen()) {
             this.zobrazPrihlaseni();
             return;
         }
-        zobrazOkno(new OblibenePodnikyObrazovka(ziskejOblibenePodniky, odeberPodnik, upravPodnik).getScene());
+        zobrazOkno(new OblibenePodnikyObrazovka(this).getScene());
     }
 
     /**
@@ -118,7 +115,7 @@ public class ObrazovkyController {
     }
 
     public void zobrazPodnikyVOblasti(final int cisloMeskeCasti) {
-        zobrazOkno(new PodnikyVMestskeCastiObrazovka(cisloMeskeCasti).getScene());
+        zobrazOkno(new PodnikyVMestskeCastiObrazovka(cisloMeskeCasti, this).getScene());
     }
 
 }
