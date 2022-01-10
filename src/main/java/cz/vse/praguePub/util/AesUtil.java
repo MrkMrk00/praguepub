@@ -1,4 +1,4 @@
-package cz.vse.praguePub.db;
+package cz.vse.praguePub.util;
 
 import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Base64;
@@ -108,6 +108,11 @@ public class AesUtil {
         }
     }
 
+    /**
+     * Metoda doplní nebo ořízne heslo do 16 charů.
+     * @param toFill heslo k úpravě
+     * @return upravené heslo
+     */
     public static String fillTo16Chars(String toFill) {
         StringBuilder sb = new StringBuilder();
         int pswLength = toFill.length();
