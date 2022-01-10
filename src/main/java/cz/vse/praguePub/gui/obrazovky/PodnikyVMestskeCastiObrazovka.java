@@ -18,10 +18,11 @@ import static cz.vse.praguePub.gui.komponenty.Komponenty.TlacitkoAplikace;
 
 public class PodnikyVMestskeCastiObrazovka extends OknoSeSeznamemPodniku {
 
-    private final Integer cisloMestskeCasti;
+    private final int cisloMestskeCasti;
 
-    public PodnikyVMestskeCastiObrazovka(Integer cisloMestskeCasti) {
+    public PodnikyVMestskeCastiObrazovka(int cisloMestskeCasti) {
         this.cisloMestskeCasti = cisloMestskeCasti;
+        super.vytvorGUI();
     }
 
     @Override

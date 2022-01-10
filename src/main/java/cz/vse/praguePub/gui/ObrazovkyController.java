@@ -117,7 +117,7 @@ public class ObrazovkyController {
         zobrazOkno(new UpravitPodnikObrazovka(podnik).getScene());
     }
 
-    public void zobrazPodnikyVOblasti(Integer cisloMeskeCasti) {
+    public void zobrazPodnikyVOblasti(final int cisloMeskeCasti) {
         zobrazOkno(new PodnikyVMestskeCastiObrazovka(cisloMeskeCasti).getScene());
     }
 

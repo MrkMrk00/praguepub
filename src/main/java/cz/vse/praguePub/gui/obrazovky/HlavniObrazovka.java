@@ -51,7 +51,8 @@ public class HlavniObrazovka extends Obrazovka<BorderPane> {
                     new Image(obrIS, 889d, 817d, false, true)
             );
 
-            Integer iFinal = i;
+            final int iFinal = i;
+
             imageView.setOnMouseClicked(
                     event -> {
                         this.controller.zobrazPodnikyVOblasti(iFinal);

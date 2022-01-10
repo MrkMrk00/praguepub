@@ -22,13 +22,12 @@ public abstract class OknoSeSeznamemPodniku extends Obrazovka<BorderPane> {
     public OknoSeSeznamemPodniku() {
         super(new BorderPane(), 800, 600, "background");
         this.zobrazenePodniky = FXCollections.observableArrayList();
-        this.vytvorGUI();
     }
 
     /**
      * Metoda, která vytváří grafické rozhraní.
      */
-    private void vytvorGUI() {
+    protected void vytvorGUI() {
         this.getPane().setTop(this.pripravHorniPanel());
 
         this.getPane().setCenter(
