@@ -60,7 +60,7 @@ public class PodnikyVMestskeCastiObrazovka extends OknoSeSeznamemPodniku {
             nazevLokace.setFont(Font.font("Helvetica", FontWeight.BOLD, 30));
             nazevLokace.setAlignment(Pos.BASELINE_LEFT);
 
-            Button pridatNovyPodnik = TlacitkoAplikace("Pridat novy podnik", (t)->{});
+            Button pridatNovyPodnik = TlacitkoAplikace("Pridat novy podnik", t->this.controller.zobrazPridejNovyPodnik(databaze),null );
             Button filtrovat = TlacitkoAplikace("Filtrovat", (t)->{});
 
             horniPanel.getChildren().addAll(nazevLokace, pridatNovyPodnik, filtrovat);
