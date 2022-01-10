@@ -16,21 +16,6 @@ public class FXApp extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        Databaze db = null;
-        try {
-             db = Databaze.get(Uzivatel.guest());
-        } catch (PraguePubDatabaseException e) {
-            e.printStackTrace();
-        }
-        if (db == null) {
-            System.out.println("dosralo se to");
-            return;
-        }
-
-        var st = new Stage();
-        st.setScene(new ZobrazitPodnik(db).getScene());
-        st.showAndWait();
-
         new ObrazovkyController().zapniAplikaci(primaryStage);
     }
 }
