@@ -12,10 +12,7 @@ import javafx.scene.control.Alert;
 import javafx.stage.Stage;
 import lombok.Getter;
 
-import java.util.List;
 import java.util.function.BiFunction;
-import java.util.function.Consumer;
-import java.util.function.Supplier;
 
 import static cz.vse.praguePub.gui.komponenty.Komponenty.zobrazOkno;
 

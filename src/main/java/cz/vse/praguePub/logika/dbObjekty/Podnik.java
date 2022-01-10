@@ -4,7 +4,6 @@ import com.mongodb.client.MongoCollection;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.bson.Document;
-import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
 
 import java.util.*;
