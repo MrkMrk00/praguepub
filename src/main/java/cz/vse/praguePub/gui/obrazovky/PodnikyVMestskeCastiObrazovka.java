@@ -10,6 +10,7 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
+import javafx.scene.control.MenuItem;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.Font;
@@ -30,17 +31,25 @@ public class PodnikyVMestskeCastiObrazovka extends OknoSeSeznamemPodniku {
         this.controller = controller;
         this.databaze = controller.getDatabaze();
 
+        this.nactiPodniky();
         super.vytvorGUI();
     }
 
     private void nactiPodniky() {
-        this.getZobrazenePodniky().addAll(
+        this.getZobrazenePodniky().clear();
 
+        this.getZobrazenePodniky().addAll(
+            this.databaze.getPodnikFiltrBuilder()
+                    .cisloMestskeCasti(this.cisloMestskeCasti)
+                    .finalizuj()
         );
     }
 
     @Override
     protected ContextMenu pripravContextoveMenu(Tabulka<Podnik> tabulka) {
+        ContextMenu menu = new ContextMenu();
+            MenuItem upravPodnik = new MenuItem("Uprav podnik");
+
         return new ContextMenu();
     }
 

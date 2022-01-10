@@ -118,4 +118,11 @@ public class ObrazovkyController {
         zobrazOkno(new PodnikyVMestskeCastiObrazovka(cisloMeskeCasti, this).getScene());
     }
 
+    public void zobrazVyhledatPodleNazvu(String defaultniDotaz) {
+        zobrazOkno(new VyhledaniPodleJmena(this, defaultniDotaz).getScene());
+    }
+
+    public void zobrazVyhledatPodleNazvu() {
+        zobrazOkno(new VyhledaniPodleJmena(this).getScene());
+    }
 }

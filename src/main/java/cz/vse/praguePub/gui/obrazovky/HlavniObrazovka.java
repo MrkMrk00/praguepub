@@ -9,6 +9,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.*;
 
 import java.io.InputStream;
@@ -36,6 +37,14 @@ public class HlavniObrazovka extends Obrazovka<BorderPane> {
         mapaInputu.put(
                 "vyhledat", TextFieldAplikace("Vyhledat", t -> {
                     HBox.setMargin(t, new Insets(6,0,0,5));
+
+                    t.setOnKeyPressed(
+                            keyEvent -> {
+                                if (keyEvent.getCode() == KeyCode.ENTER) {
+                                    this.controller.zobrazVyhledatPodleNazvu(t.getText());
+                                }
+                            }
+                    );
                 })
         );
     }
