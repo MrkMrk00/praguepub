@@ -1,6 +1,7 @@
 package cz.vse.praguePub.gui.obrazovky;
 
 import cz.vse.praguePub.gui.obrazovky.abstraktniObrazovky.Obrazovka;
+import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
@@ -31,9 +32,9 @@ public class Filtr extends Obrazovka<BorderPane> {
         podniky.put("nazev",    new AtributFilteru("Název", TextFieldAplikace("", null)));
         podniky.put("mc_cislo", new AtributFilteru("Číslo MČ", TextFieldAplikace("", null)));
         podniky.put("mc_nazev", new AtributFilteru("Název MČ", TextFieldAplikace("", null)));
-        podniky.put("ulice",    new AtributFilteru( "Ulice", TextFieldAplikace("", null)));
-        podniky.put("cp",       new AtributFilteru( "Číslo popisné", TextFieldAplikace("", null)));
-        podniky.put("psc",      new AtributFilteru( "PSČ", TextFieldAplikace("", null)));
+        podniky.put("ulice",    new AtributFilteru("Ulice", TextFieldAplikace("", null)));
+        podniky.put("cp",       new AtributFilteru("Číslo popisné", TextFieldAplikace("", null)));
+        podniky.put("psc",      new AtributFilteru("PSČ", TextFieldAplikace("", null)));
         FILTR_PODNIKY = Collections.unmodifiableMap(podniky);
 
         Map<String, AtributFilteru> piva = new LinkedHashMap<>();
@@ -88,11 +89,13 @@ public class Filtr extends Obrazovka<BorderPane> {
         );
 
         List<Node> nastred = new ArrayList<>();
-        this.atributy.forEach(
-                (key, val) -> nastred.add(Radek(LabelAplikace(val.getTextProZobrazeni()), val.getFiltr()))
-        );
+        for (AtributFilteru atr : this.atributy.values()) {
+            nastred.add(Radek(LabelAplikace(atr.getTextProZobrazeni()), atr.getFiltr()));
+        }
         nastred.add(TlacitkoAplikace("Odeslat", t -> this.zpracujFiltr(), null));
-        this.getPane().setCenter(Sloupec(nastred, sl -> {}));
+        this.getPane().setCenter(Sloupec(nastred, sl -> {
+            sl.setPadding(new Insets(10));
+        }));
     }
 
     private void zpracujFiltr() {

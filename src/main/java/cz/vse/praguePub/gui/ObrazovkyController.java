@@ -129,7 +129,9 @@ public class ObrazovkyController {
     }
 
     public void filtruj(Map<String, Filtr.AtributFilteru> atributy, Consumer<Map<String, String>> callback) {
-        zobrazOkno(new Filtr(atributy, callback).getScene()).setAlwaysOnTop(true);
+        Stage oknoFiltru = zobrazOkno(new Filtr(atributy, callback).getScene());
+        oknoFiltru.setAlwaysOnTop(true);
+        oknoFiltru.setResizable(false);
     }
 
     public void zobrazVyhledatPodleNazvu() {
