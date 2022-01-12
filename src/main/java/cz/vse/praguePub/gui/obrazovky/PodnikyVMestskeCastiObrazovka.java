@@ -4,6 +4,7 @@ import cz.vse.praguePub.gui.ObrazovkyController;
 import cz.vse.praguePub.gui.komponenty.Tabulka;
 import cz.vse.praguePub.gui.obrazovky.abstraktniObrazovky.OknoSeSeznamemPodniku;
 import cz.vse.praguePub.logika.Databaze;
+import cz.vse.praguePub.logika.PodnikFiltrBuilder;
 import cz.vse.praguePub.logika.dbObjekty.Podnik;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -13,6 +14,10 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
+
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.function.Consumer;
 
 import static cz.vse.praguePub.gui.komponenty.Komponenty.HorniPanel;
 import static cz.vse.praguePub.gui.komponenty.Komponenty.TlacitkoAplikace;
@@ -28,21 +33,38 @@ public class PodnikyVMestskeCastiObrazovka extends OknoSeSeznamemPodniku {
         this.controller = controller;
         this.databaze = controller.getDatabaze();
 
-        this.nactiPodniky();
+        this.nactiPodniky(null);
         super.vytvorGUI();
     }
 
-    private void nactiPodniky() {
+    private void nactiPodniky(PodnikFiltrBuilder pfb) {
         this.getZobrazenePodniky().clear();
+        PodnikFiltrBuilder filtr =
+                pfb == null ?
+                            this.databaze.getPodnikFiltrBuilder().cisloMestskeCasti(this.cisloMestskeCasti)
+                        :   pfb;
 
-        this.getZobrazenePodniky().addAll(
-            this.databaze.getPodnikFiltrBuilder()
-                    .cisloMestskeCasti(this.cisloMestskeCasti)
-                    .finalizuj()
-
-        );
+        this.getZobrazenePodniky().addAll(filtr.finalizuj());
     }
 
+    private void zpracujFiltr() {
+        Map<String, Filtr.AtributFilteru> atributy = new LinkedHashMap<>();
+        Filtr.FILTR_PODNIKY.forEach(
+                (key, atr) -> {
+                    if (!key.equals("cena") && !key.equals("mc_cislo")) atributy.put(key, atr);
+                }
+        );
+
+        Consumer<Map<String, String>> callbackSFiltrem = filtrMapa -> {
+            PodnikFiltrBuilder pfb = this.databaze.getPodnikFiltrBuilder();
+            pfb.cisloMestskeCasti(this.cisloMestskeCasti)
+                    .parse(filtrMapa);
+
+            this.nactiPodniky(pfb);
+        };
+
+        this.controller.filtruj(atributy, callbackSFiltrem);
+    }
 
     @Override
     protected ContextMenu pripravContextoveMenu(Tabulka<Podnik> tabulka) {
@@ -61,7 +83,8 @@ public class PodnikyVMestskeCastiObrazovka extends OknoSeSeznamemPodniku {
 
             Button pridatNovyPodnik = TlacitkoAplikace("Pridat novy podnik", t -> this.controller.zobrazPridejNovyPodnik(),null);
             Button filtrovat = TlacitkoAplikace("Filter",
-                    t -> {}
+                    t -> this.zpracujFiltr(),
+                    null
             );
 
             horniPanel.getChildren().addAll(nazevLokace, pridatNovyPodnik, filtrovat);

@@ -128,13 +128,8 @@ public class ObrazovkyController {
         zobrazOkno(new PridejPodnikObrazovka(this).getScene());
     }
 
-    public Map<String, String> filtruj(Map<String, Filtr.AtributFilteru> atributy) {
-        Consumer<Map<String, String>> consumerAtributu = atr -> {
-            atr.forEach((a, b) -> log.debug(a + " " + b));
-        };
-
-        zobrazOkno(new Filtr(atributy, consumerAtributu).getScene());
-        return null;
+    public void filtruj(Map<String, Filtr.AtributFilteru> atributy, Consumer<Map<String, String>> callback) {
+        zobrazOkno(new Filtr(atributy, callback).getScene()).setAlwaysOnTop(true);
     }
 
     public void zobrazVyhledatPodleNazvu() {

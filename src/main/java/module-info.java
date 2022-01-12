@@ -11,6 +11,7 @@ module praguePub.main {
     requires org.mongodb.driver.core;
     requires org.mongodb.bson;
     requires org.apache.commons.codec;
+    requires org.apache.commons.lang3;
 
     exports cz.vse.praguePub.start;
     opens cz.vse.praguePub.logika.dbObjekty;

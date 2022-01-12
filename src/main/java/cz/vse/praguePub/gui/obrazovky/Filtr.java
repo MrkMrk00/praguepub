@@ -5,6 +5,7 @@ import javafx.scene.Node;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.BorderPane;
 import lombok.Data;
 
@@ -62,6 +63,12 @@ public class Filtr extends Obrazovka<BorderPane> {
     }
 
     private void vytvorGUI() {
+        this.getPane().setOnKeyPressed(
+                keyEvent -> {
+                    if (keyEvent.getCode() == KeyCode.ENTER) this.zpracujFiltr();
+                }
+        );
+
         InputStream obrazekIS = this.getClass().getResourceAsStream("/filtr.png");
         ImageView obrazekFiltru =
                 (obrazekIS != null) ?
@@ -88,12 +95,11 @@ public class Filtr extends Obrazovka<BorderPane> {
         this.getPane().setCenter(Sloupec(nastred, sl -> {}));
     }
 
-    private Map<String, String> zpracujFiltr() {
+    private void zpracujFiltr() {
         Map<String, String> kVraceni = new HashMap<>();
         this.atributy.forEach(
                 (key, atrFiltru) -> kVraceni.put(key, atrFiltru.getFiltr().getText())
         );
-        System.out.println(kVraceni);
-        return kVraceni;
+        this.callbackSVysledkem.accept(kVraceni);
     }
 }
