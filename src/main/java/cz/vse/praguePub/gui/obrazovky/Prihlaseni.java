@@ -1,7 +1,10 @@
 package cz.vse.praguePub.gui.obrazovky;
 
+import cz.vse.praguePub.gui.ObrazovkyController;
 import cz.vse.praguePub.gui.komponenty.AlertBuilder;
 import cz.vse.praguePub.gui.obrazovky.abstraktniObrazovky.Obrazovka;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Alert;
@@ -11,6 +14,8 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
+import javafx.scene.web.WebEngine;
+import javafx.scene.web.WebView;
 
 import java.util.List;
 import java.util.Map;
@@ -23,6 +28,7 @@ public class Prihlaseni extends Obrazovka<BorderPane> {
 
     private final BiFunction<String, String, Boolean> jmenoHesloCallback;
     private final Runnable pozadavekNaSkrytiOkna;
+    private final ObrazovkyController controller;
     
     private final Consumer<Boolean> alert = prihlaseniUspesne -> 
             new AlertBuilder(prihlaseniUspesne ? Alert.AlertType.INFORMATION : Alert.AlertType.ERROR)
@@ -33,10 +39,11 @@ public class Prihlaseni extends Obrazovka<BorderPane> {
                 .show();
     
 
-    public Prihlaseni(BiFunction<String, String, Boolean> jmenoHesloCallback, Runnable pozadavekNaSkrytiOkna) {
+    public Prihlaseni(BiFunction<String, String, Boolean> jmenoHesloCallback, Runnable pozadavekNaSkrytiOkna, ObrazovkyController controller) {
         super(new BorderPane(), 300, 350, "background");
         this.jmenoHesloCallback = jmenoHesloCallback;
         this.pozadavekNaSkrytiOkna = pozadavekNaSkrytiOkna;
+        this.controller = controller;
 
         this.registrujInputy();
         this.vytvorGUI();
@@ -75,6 +82,7 @@ public class Prihlaseni extends Obrazovka<BorderPane> {
         Hyperlink link = new Hyperlink("Vytvořit účet");
         link.setFont(Font.font("Helvetica", FontWeight.BOLD, 10));
         link.setAlignment(Pos.BASELINE_CENTER);
+        link.setOnAction(event -> {controller.zobrazVytvoreniUcet();});
 
         this.getPane().setTop(
                 Sloupec(List.of(
@@ -86,7 +94,8 @@ public class Prihlaseni extends Obrazovka<BorderPane> {
                                 TlacitkoAplikace("Přihlásit se", t -> {
                             t.setStyle("-fx-font-weight: bold;");
                             t.setOnMouseClicked(mouseEvent -> this.prihlasitUzivatele());
-                        })
+                        }),
+                        link
                 ),
                     textFieldVBox -> {
                         textFieldVBox.setSpacing(20);
