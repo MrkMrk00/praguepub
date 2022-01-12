@@ -1,5 +1,6 @@
 package cz.vse.praguePub.gui.komponenty;
 
+import cz.vse.praguePub.gui.ObrazovkyController;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -8,11 +9,13 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
+import java.io.InputStream;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -124,9 +127,17 @@ public final class Komponenty {
         return label;
     }
 
+    public static Image Ikona() {
+        InputStream ikonaIS = ObrazovkyController.class.getClassLoader().getResourceAsStream("favicon.png");
+        if (ikonaIS == null) return null;
+
+        return new Image(ikonaIS);
+    }
+
     public static Stage zobrazOkno(Scene scene) {
         Stage st = new Stage();
         st.setScene(scene);
+        st.getIcons().add(Ikona());
         st.show();
         return st;
     }

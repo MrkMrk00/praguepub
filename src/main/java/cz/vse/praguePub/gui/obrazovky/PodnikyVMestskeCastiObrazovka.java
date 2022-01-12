@@ -6,21 +6,19 @@ import cz.vse.praguePub.gui.obrazovky.abstraktniObrazovky.OknoSeSeznamemPodniku;
 import cz.vse.praguePub.logika.Databaze;
 import cz.vse.praguePub.logika.PodnikFiltrBuilder;
 import cz.vse.praguePub.logika.dbObjekty.Podnik;
-import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.layout.HBox;
-import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.function.Consumer;
 
-import static cz.vse.praguePub.gui.komponenty.Komponenty.HorniPanel;
-import static cz.vse.praguePub.gui.komponenty.Komponenty.TlacitkoAplikace;
+import static cz.vse.praguePub.gui.komponenty.Komponenty.*;
 
 public class PodnikyVMestskeCastiObrazovka extends OknoSeSeznamemPodniku {
 
@@ -77,17 +75,18 @@ public class PodnikyVMestskeCastiObrazovka extends OknoSeSeznamemPodniku {
     @Override
     protected HBox pripravHorniPanel() {
         return HorniPanel((horniPanel) -> {
-            Label nazevLokace = new Label("Praha " + this.cisloMestskeCasti);
-            nazevLokace.setFont(Font.font("Helvetica", FontWeight.BOLD, 30));
-            nazevLokace.setAlignment(Pos.BASELINE_LEFT);
+            Label nazevLokace = NadpisOknaLabel("Praha " + this.cisloMestskeCasti);
 
-            Button pridatNovyPodnik = TlacitkoAplikace("Pridat novy podnik", t -> this.controller.zobrazPridejNovyPodnik(),null);
-            Button filtrovat = TlacitkoAplikace("Filter",
+            Button pridatNovyPodnik = TlacitkoAplikace("Přidat nový podnik", t -> this.controller.zobrazPridejNovyPodnik(),null);
+            Button filtrovat = TlacitkoAplikace("Filtr",
                     t -> this.zpracujFiltr(),
                     null
             );
 
-            horniPanel.getChildren().addAll(nazevLokace, pridatNovyPodnik, filtrovat);
+            Region separator = new Region();
+            HBox.setHgrow(separator, Priority.ALWAYS);
+
+            horniPanel.getChildren().addAll(nazevLokace, pridatNovyPodnik, separator, filtrovat);
         });
     }
 }

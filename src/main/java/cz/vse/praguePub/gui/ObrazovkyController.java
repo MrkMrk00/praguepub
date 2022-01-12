@@ -9,6 +9,7 @@ import cz.vse.praguePub.logika.dbObjekty.Podnik;
 import cz.vse.praguePub.util.PraguePubDatabaseException;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.image.Image;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import javafx.stage.Stage;
@@ -20,6 +21,7 @@ import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 
+import static cz.vse.praguePub.gui.komponenty.Komponenty.Ikona;
 import static cz.vse.praguePub.gui.komponenty.Komponenty.zobrazOkno;
 
 public class ObrazovkyController {
@@ -61,6 +63,10 @@ public class ObrazovkyController {
         HlavniObrazovka hlObr = new HlavniObrazovka(this);
         Scene hlScene = hlObr.getScene();
 
+        Image ikona = Ikona();
+        if (ikona != null) primaryStage.getIcons().add(ikona);
+
+        primaryStage.setOnCloseRequest(event -> System.exit(0));
         primaryStage.setScene(hlScene);
         primaryStage.setMinWidth(889);
         primaryStage.setMinHeight(817);
