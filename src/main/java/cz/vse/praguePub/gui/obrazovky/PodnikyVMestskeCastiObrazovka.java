@@ -11,11 +11,13 @@ import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 
-import static cz.vse.praguePub.gui.komponenty.Komponenty.HorniPanel;
-import static cz.vse.praguePub.gui.komponenty.Komponenty.TlacitkoAplikace;
+import static cz.vse.praguePub.gui.komponenty.Komponenty.*;
 
 public class PodnikyVMestskeCastiObrazovka extends OknoSeSeznamemPodniku {
 
@@ -54,17 +56,18 @@ public class PodnikyVMestskeCastiObrazovka extends OknoSeSeznamemPodniku {
 
     @Override
     protected HBox pripravHorniPanel() {
-        return HorniPanel((horniPanel) -> {
+        return HorniPanel(horniPanel -> {
             Label nazevLokace = new Label("Praha " + this.cisloMestskeCasti);
             nazevLokace.setFont(Font.font("Helvetica", FontWeight.BOLD, 30));
             nazevLokace.setAlignment(Pos.BASELINE_LEFT);
 
             Button pridatNovyPodnik = TlacitkoAplikace("Pridat novy podnik", t -> this.controller.zobrazPridejNovyPodnik(),null);
-            Button filtrovat = TlacitkoAplikace("Filter",
-                    t -> {}
-            );
+            Button filtrovat = TlacitkoAplikace("Filter", t -> {});
 
-            horniPanel.getChildren().addAll(nazevLokace, pridatNovyPodnik, filtrovat);
+            Region separator = new Region();
+            HBox.setHgrow(separator, Priority.ALWAYS);
+
+            horniPanel.getChildren().addAll(Radek(nazevLokace,filtrovat, pridatNovyPodnik), separator, Radek(filtrovat, pridatNovyPodnik));
         });
     }
 }
