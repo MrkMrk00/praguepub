@@ -7,6 +7,7 @@ module praguePub.main {
     requires java.scripting;
 
     requires javafx.controls;
+    requires javafx.web;
     requires org.mongodb.driver.sync.client;
     requires org.mongodb.driver.core;
     requires org.mongodb.bson;

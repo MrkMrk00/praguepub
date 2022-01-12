@@ -9,6 +9,8 @@ import cz.vse.praguePub.logika.dbObjekty.Podnik;
 import cz.vse.praguePub.util.PraguePubDatabaseException;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.web.WebEngine;
+import javafx.scene.web.WebView;
 import javafx.stage.Stage;
 import lombok.Getter;
 
@@ -99,7 +101,7 @@ public class ObrazovkyController {
 
         Runnable hidePozadavek = prihlaseniStage::hide;
 
-        prihlaseniStage.setScene(new Prihlaseni(prihlas, hidePozadavek).getScene());
+        prihlaseniStage.setScene(new Prihlaseni(prihlas, hidePozadavek,this).getScene());
         prihlaseniStage.show();
     }
 
@@ -129,6 +131,13 @@ public class ObrazovkyController {
 
     public void zobrazVyhledatPodleNazvu() {
         zobrazOkno(new VyhledaniPodleJmena(this).getScene());
+    }
+
+    public void zobrazVytvoreniUcet(){
+        WebView webView = new WebView();
+        WebEngine webEngine = webView.getEngine();
+        webEngine.load("http://localhost:3021/");
+        zobrazOkno(new Scene(webView));
     }
 
 }
