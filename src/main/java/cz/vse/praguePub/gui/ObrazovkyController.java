@@ -10,13 +10,9 @@ import cz.vse.praguePub.util.PraguePubDatabaseException;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.stage.Stage;
-import lombok.Data;
 import lombok.Getter;
 
-import java.util.List;
 import java.util.function.BiFunction;
-import java.util.function.Consumer;
-import java.util.function.Supplier;
 
 import static cz.vse.praguePub.gui.komponenty.Komponenty.zobrazOkno;
 
@@ -122,8 +118,13 @@ public class ObrazovkyController {
     public void zobrazVyhledatPodleNazvu(String defaultniDotaz) {
         zobrazOkno(new VyhledaniPodleJmena(this, defaultniDotaz).getScene());
     }
-    public void zobrazPridejNovyPodnik(Databaze db){
-        zobrazOkno(new PridejPodnikObrazovka(db).getScene());
+
+    public void zobrazPridejNovyPodnik() {
+        zobrazOkno(new PridejPodnikObrazovka(this.databaze).getScene());
+    }
+
+    public void filtruj() {
+
     }
 
     public void zobrazVyhledatPodleNazvu() {

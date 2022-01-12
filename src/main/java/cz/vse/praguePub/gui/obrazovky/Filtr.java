@@ -2,9 +2,11 @@ package cz.vse.praguePub.gui.obrazovky;
 
 import cz.vse.praguePub.gui.obrazovky.abstraktniObrazovky.Obrazovka;
 import javafx.geometry.Insets;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
+import lombok.Data;
 import org.bson.Document;
 
 import java.io.InputStream;
@@ -12,10 +14,26 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
-
 import static cz.vse.praguePub.gui.komponenty.Komponenty.*;
 
 public class Filtr extends Obrazovka<BorderPane> {
+
+    @Data private static class AtributFilteru {
+        private final String identifikacniText;
+        private final String textProZobrazeni;
+        private final TextField filtr;
+    }
+
+    public static final List<AtributFilteru> FILTR_PODNIKY = List.of(
+            new AtributFilteru("nazev", "Název", TextFieldAplikace("", null)),
+            new AtributFilteru("mc_cislo", "Číslo MČ", TextFieldAplikace("", null)),
+            new AtributFilteru("mc_nazev", "Název MČ", TextFieldAplikace("", null)),
+            new AtributFilteru("ulice", "Ulice", TextFieldAplikace("", null)),
+            new AtributFilteru("cp", "Číslo popisné", TextFieldAplikace("", null)),
+            new AtributFilteru("psc", "PSČ", TextFieldAplikace("", null)),
+            new AtributFilteru("mc_cislo", "Číslo MČ", TextFieldAplikace("", null))
+    );
+
     private final Consumer<Map<String, Object>> callbackSVysledkem;
 
     public Filtr(Consumer<Map<String, Object>> callbackSVysledkem) {
