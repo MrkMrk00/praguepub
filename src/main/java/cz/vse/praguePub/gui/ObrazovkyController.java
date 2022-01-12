@@ -11,12 +11,17 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.stage.Stage;
 import lombok.Getter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.util.Map;
 import java.util.function.BiFunction;
+import java.util.function.Consumer;
 
 import static cz.vse.praguePub.gui.komponenty.Komponenty.zobrazOkno;
 
 public class ObrazovkyController {
+    private static final Logger log = LoggerFactory.getLogger(ObrazovkyController.class);
 
     @Getter private Databaze databaze = null;
 
@@ -120,11 +125,16 @@ public class ObrazovkyController {
     }
 
     public void zobrazPridejNovyPodnik() {
-        zobrazOkno(new PridejPodnikObrazovka(this.databaze).getScene());
+        zobrazOkno(new PridejPodnikObrazovka(this).getScene());
     }
 
-    public void filtruj() {
+    public Map<String, String> filtruj(Map<String, Filtr.AtributFilteru> atributy) {
+        Consumer<Map<String, String>> consumerAtributu = atr -> {
+            atr.forEach((a, b) -> log.debug(a + " " + b));
+        };
 
+        zobrazOkno(new Filtr(atributy, consumerAtributu).getScene());
+        return null;
     }
 
     public void zobrazVyhledatPodleNazvu() {

@@ -1,57 +1,64 @@
 package cz.vse.praguePub.gui.obrazovky;
 
 import cz.vse.praguePub.gui.obrazovky.abstraktniObrazovky.Obrazovka;
-import javafx.geometry.Insets;
+import javafx.scene.Node;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import lombok.Data;
-import org.bson.Document;
 
 import java.io.InputStream;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Consumer;
 
 import static cz.vse.praguePub.gui.komponenty.Komponenty.*;
 
 public class Filtr extends Obrazovka<BorderPane> {
 
-    @Data private static class AtributFilteru {
-        private final String identifikacniText;
+    @Data public static class AtributFilteru {
         private final String textProZobrazeni;
         private final TextField filtr;
     }
 
-    public static final List<AtributFilteru> FILTR_PODNIKY = List.of(
-            new AtributFilteru("nazev", "Název", TextFieldAplikace("", null)),
-            new AtributFilteru("mc_cislo", "Číslo MČ", TextFieldAplikace("", null)),
-            new AtributFilteru("mc_nazev", "Název MČ", TextFieldAplikace("", null)),
-            new AtributFilteru("ulice", "Ulice", TextFieldAplikace("", null)),
-            new AtributFilteru("cp", "Číslo popisné", TextFieldAplikace("", null)),
-            new AtributFilteru("psc", "PSČ", TextFieldAplikace("", null)),
-            new AtributFilteru("mc_cislo", "Číslo MČ", TextFieldAplikace("", null))
-    );
+    public static final Map<String, AtributFilteru> FILTR_PODNIKY;
+    public static final Map<String, AtributFilteru> FILTR_PIVA;
+    public static final Map<String, AtributFilteru> FILTR_PIVA_S_CENOU;
 
-    private final Consumer<Map<String, Object>> callbackSVysledkem;
+    static {
+        Map<String, AtributFilteru> podniky = new LinkedHashMap<>();
+        podniky.put("nazev",    new AtributFilteru("Název", TextFieldAplikace("", null)));
+        podniky.put("mc_cislo", new AtributFilteru("Číslo MČ", TextFieldAplikace("", null)));
+        podniky.put("mc_nazev", new AtributFilteru("Název MČ", TextFieldAplikace("", null)));
+        podniky.put("ulice",    new AtributFilteru( "Ulice", TextFieldAplikace("", null)));
+        podniky.put("cp",       new AtributFilteru( "Číslo popisné", TextFieldAplikace("", null)));
+        podniky.put("psc",      new AtributFilteru( "PSČ", TextFieldAplikace("", null)));
+        FILTR_PODNIKY = Collections.unmodifiableMap(podniky);
 
-    public Filtr(Consumer<Map<String, Object>> callbackSVysledkem) {
-        super(new BorderPane(), 350,250 , "background");
-        this.callbackSVysledkem = callbackSVysledkem;
+        Map<String, AtributFilteru> piva = new LinkedHashMap<>();
+        piva.put("nazev",               new AtributFilteru("Název", TextFieldAplikace("", null)));
+        piva.put("pivovar",             new AtributFilteru("Název pivovaru", TextFieldAplikace("", null)));
+        piva.put("stupnovitost",        new AtributFilteru("Stupňovitost", TextFieldAplikace("", null)));
+        piva.put("obsah_alkoholu",      new AtributFilteru("Obsah alkoholu", TextFieldAplikace("", null)));
+        piva.put("typ",                 new AtributFilteru("Typ piva", TextFieldAplikace("", null)));
+        piva.put("typ_kvaseni",         new AtributFilteru("Typ kvašení", TextFieldAplikace("", null)));
+        FILTR_PIVA = Collections.unmodifiableMap(piva);
 
-        this.registrujInputy();
-        this.vytvorGUI();
+        Map<String, AtributFilteru> piva_s_cenou = new LinkedHashMap<>(piva);
+        piva_s_cenou.put("cena",  new AtributFilteru("Cena", TextFieldAplikace("", null)));
+        FILTR_PIVA_S_CENOU = Collections.unmodifiableMap(piva_s_cenou);
     }
 
-    private void registrujInputy() {
-        this.getMapaInputu().putAll(
-                Map.of(
-                        "hodnoceni",    TextFieldAplikace("", n -> {}),
-                        "cena_piva",    TextFieldAplikace("", n -> {}),
-                        "znacka_piva",  TextFieldAplikace("", n -> {})
-                )
-        );
+    private final Consumer<Map<String, String>> callbackSVysledkem;
+    private final Map<String, AtributFilteru> atributy;
+
+    public Filtr(Map<String, AtributFilteru> atributy, Consumer<Map<String, String>> callbackSVysledkem) {
+        super(new BorderPane(), 350, (atributy.size() * 40) + 100, "background");
+
+        this.callbackSVysledkem = callbackSVysledkem;
+        this.atributy = atributy;
+
+        this.vytvorGUI();
     }
 
     private void vytvorGUI() {
@@ -73,46 +80,20 @@ public class Filtr extends Obrazovka<BorderPane> {
                 )
         );
 
-        this.getPane().setCenter(
-                Sloupec(List.of(
-                        Radek(
-                                LabelAplikace("Hodnocení:\t", l -> {}),
-                                this.getMapaInputu().get("hodnoceni")
-                        ),
-
-                        Radek(
-                                LabelAplikace("Cena piva:\t", l -> {}),
-                                this.getMapaInputu().get("cena_piva")
-                        ),
-
-                        Radek(
-                                LabelAplikace("Značka piva:\t", l -> {}),
-                                this.getMapaInputu().get("znacka_piva")
-                        ),
-
-                        TlacitkoAplikace("Odeslat",
-                                tlacitko -> tlacitko.setOnMouseClicked(
-                                        onClickEvent -> this.callbackSVysledkem.accept(new Document()) //zde přijde výsledny Bson filter (filter požadován uživatelem)
-                                )
-                        )
-                    ),
-                    sloupec -> {
-                        sloupec.setPadding(new Insets(15));
-                    }
-                )
+        List<Node> nastred = new ArrayList<>();
+        this.atributy.forEach(
+                (key, val) -> nastred.add(Radek(LabelAplikace(val.getTextProZobrazeni()), val.getFiltr()))
         );
+        nastred.add(TlacitkoAplikace("Odeslat", t -> this.zpracujFiltr(), null));
+        this.getPane().setCenter(Sloupec(nastred, sl -> {}));
     }
 
-    private Map<String, Object> zpracujFiltr() {
-        String hodnoceni = this.getMapaInputu().get("hodnoceni").getText();
-        String cenaPiva = this.getMapaInputu().get("cena_piva").getText();
-        String nazevPivovaru = this.getMapaInputu().get("znacka_piva").getText();
-
-
-        return Map.of(
-                "hodnoceni", hodnoceni,
-                "cena_piva", cenaPiva,
-                "nazev_pivovaru", nazevPivovaru
+    private Map<String, String> zpracujFiltr() {
+        Map<String, String> kVraceni = new HashMap<>();
+        this.atributy.forEach(
+                (key, atrFiltru) -> kVraceni.put(key, atrFiltru.getFiltr().getText())
         );
+        System.out.println(kVraceni);
+        return kVraceni;
     }
 }
