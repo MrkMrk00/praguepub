@@ -15,13 +15,14 @@ import org.bson.types.ObjectId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Supplier;
 
 import static com.mongodb.client.model.Filters.*;
 
 public class DatabazeImpl implements Databaze {
-    private static final Logger LOGGER = LoggerFactory.getLogger(DatabazeImpl.class);
+    private static final Logger log = LoggerFactory.getLogger(DatabazeImpl.class);
 
     private final Uzivatel uzivatel;
     private final MongoDatabase db;
@@ -47,6 +48,13 @@ public class DatabazeImpl implements Databaze {
     @Override
     public Uzivatel getUzivatel() {
         return this.uzivatel;
+    }
+
+    @Override
+    public String getUzivatelskeJmeno(ObjectId idUzivatele) {
+        Document nalezenyUzivatel = this.db.getCollection("uzivatele").find(eq("_id", idUzivatele)).first();
+        if (nalezenyUzivatel == null || !nalezenyUzivatel.containsKey("userName")) return null;
+        return nalezenyUzivatel.getString("userName");
     }
 
     @Override
@@ -230,7 +238,7 @@ public class DatabazeImpl implements Databaze {
                 nahraj
         );
 
-        LOGGER.debug(kVraceni.toString());
+        log.debug(kVraceni.toString());
 
         return kVraceni;
     }

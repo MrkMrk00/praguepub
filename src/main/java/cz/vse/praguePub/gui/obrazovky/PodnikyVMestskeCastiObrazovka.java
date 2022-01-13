@@ -61,7 +61,7 @@ public class PodnikyVMestskeCastiObrazovka extends OknoSeSeznamemPodniku {
             this.nactiPodniky(pfb);
         };
 
-        this.controller.filtruj(atributy, callbackSFiltrem);
+        this.controller.zobrazFiltr(atributy, callbackSFiltrem);
     }
 
     @Override
