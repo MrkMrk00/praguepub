@@ -42,6 +42,12 @@ public interface Databaze {
     boolean odeberZOblibenych(Podnik podnik);
 
     /**
+     * @param podnik podnik, který se bude hledat v databázi
+     * @return informaci, jestli je podnik v oblíbených podnikách uživatele
+     */
+    boolean jeVOblibenych(Podnik podnik);
+
+    /**
      * @return list oblíbených podniků uživatele
      */
     List<Podnik> getOblibenePodniky();

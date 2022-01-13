@@ -187,6 +187,10 @@ public class ObrazovkyController {
     }
 
     public void zobrazInformaceOPodniku(Podnik podnik) {
-        zobrazOkno(new ZobrazitPodnik(this, podnik).getScene());
+        Stage st = new Stage();
+        st.getIcons().add(Ikona());
+        st.setScene(new ZobrazitPodnik(this, podnik, st::hide).getScene());
+        st.show();
     }
+
 }

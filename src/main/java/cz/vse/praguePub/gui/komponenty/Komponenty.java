@@ -50,6 +50,12 @@ public final class Komponenty {
         return button;
     }
 
+    public static Button TlacitkoZpet(EventHandler<MouseEvent> onClick, Consumer<Button> styluj) {
+        Button button = TlacitkoZpet(styluj);
+        button.setOnMouseClicked(onClick);
+        return button;
+    }
+
     public static HBox HorniPanel(Consumer<HBox> styluj) {
         HBox hbox = new HBox();
         hbox.getStyleClass().add("vrchniPanel");

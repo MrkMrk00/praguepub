@@ -79,6 +79,25 @@ public class DatabazeImpl implements Databaze {
     }
 
     @Override
+    public boolean jeVOblibenych(Podnik podnik) {
+        Document oblPodniky = this.db.getCollection("oblibene_podniky")
+                .find(eq("_id", this.uzivatel.get_id())).first();
+        if (oblPodniky == null || oblPodniky.isEmpty()) {
+            log.error("Nepodařilo se dostat k oblíbeným podnikům uživatele");
+            return false;
+        }
+
+        if (!oblPodniky.containsKey("podniky")) return false;
+
+        List<ObjectId> idOblibenychPodnikuUzivatele = oblPodniky.getList("podniky", ObjectId.class);
+        for (ObjectId id : idOblibenychPodnikuUzivatele) {
+            if (podnik.get_id().equals(id)) return true;
+        }
+
+        return false;
+    }
+
+    @Override
     public List<Podnik> getOblibenePodniky() {
         Document userDoc = this.db.getCollection("oblibene_podniky")
                 .find(eq("_id", this.uzivatel.get_id()))

@@ -3,8 +3,11 @@ package cz.vse.praguePub.gui.obrazovky;
 import cz.vse.praguePub.gui.ObrazovkyController;
 import cz.vse.praguePub.gui.komponenty.Tabulka;
 import cz.vse.praguePub.gui.obrazovky.abstraktniObrazovky.Obrazovka;
+import cz.vse.praguePub.logika.Databaze;
 import cz.vse.praguePub.logika.dbObjekty.Podnik;
 import cz.vse.praguePub.logika.dbObjekty.Recenze;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
@@ -18,19 +21,30 @@ import java.util.List;
 import static cz.vse.praguePub.gui.komponenty.Komponenty.*;
 
 public class ZobrazitPodnik extends Obrazovka<BorderPane> {
+
     private final ObrazovkyController controller;
     private final Podnik zobrazovanyPodnik;
     private final ObservableList<Recenze> seznamRecenzi;
+    private final Runnable tlacitkoZpetCallback;
 
-    public ZobrazitPodnik(ObrazovkyController controller, Podnik podnik) {
+    private final BooleanProperty jeVOblibenych;
+
+    public ZobrazitPodnik(ObrazovkyController controller, Podnik podnik, Runnable callback) {
         super(new BorderPane(), 700, 700, "background");
 
-        this.seznamRecenzi = FXCollections.observableArrayList();
-        this.zobrazovanyPodnik = podnik;
         this.controller = controller;
-        this.prenactiTabulku();
+        this.zobrazovanyPodnik = podnik;
+        this.tlacitkoZpetCallback = callback;
+        this.seznamRecenzi = FXCollections.observableArrayList();
+        this.jeVOblibenych = new SimpleBooleanProperty(false);
 
+        this.prenactiTabulku();
         this.vytvorGUI();
+    }
+
+    private void zjistiJeVOblibenych() {
+        boolean jeVOblibenych = this.controller.getDatabaze().jeVOblibenych(this.zobrazovanyPodnik);
+        this.jeVOblibenych.setValue(jeVOblibenych);
     }
 
     private void vytvorGUI() {
@@ -47,15 +61,31 @@ public class ZobrazitPodnik extends Obrazovka<BorderPane> {
 
                             vrchniBar.setRight(
                                     Radek(
-                                            //tlačítko ve tvaru srdíčka pro přidaní do obl.
+                                            TlacitkoAplikace(
+                                                    "srdicko sem",
+                                                    event -> {
+                                                        Databaze db = this.controller.getDatabaze();
+                                                        if (db.jeVOblibenych(this.zobrazovanyPodnik)) db.odeberZOblibenych(this.zobrazovanyPodnik);
+                                                        else db.pridejDoOblibenych(this.zobrazovanyPodnik);
+                                                        this.zjistiJeVOblibenych();
+                                                    },
+                                                    t -> {
+                                                        this.jeVOblibenych.addListener(
+                                                                (observable, oldValue, newValue) -> {
+                                                                    if (newValue) t.setText("Odeber z oblíbených");
+                                                                    else t.setText("Přidej do oblíbených");
+                                                                }
+                                                        );
+                                                    }
+                                            ),
                                             TlacitkoAplikace(
                                                     "Upravit",
                                                     event -> this.controller.zobrazUpraveniPodniku(this.zobrazovanyPodnik),
                                                     t -> HBox.setMargin(t, new Insets(6,8,0,5))),
-                                            TlacitkoZpet((t) ->{})
-                                            //tlačítko pro zpět
-
-
+                                            TlacitkoZpet(
+                                                    event -> this.tlacitkoZpetCallback.run(),
+                                                    t -> {}
+                                            )
                                     )
                             );
 
