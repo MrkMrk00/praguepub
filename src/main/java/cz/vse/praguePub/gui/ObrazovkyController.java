@@ -204,6 +204,11 @@ public class ObrazovkyController {
         zobrazOkno(new Scene(webView));
     }
 
+    public void zobrazPridejNovouRecenzi() {
+        zobrazOkno(new PridaniRecenzce().getScene());
+    }
+
+
     public void zobrazInformaceOPodniku(Podnik podnik) {
         Stage st = new Stage();
         st.getIcons().add(Ikona());
