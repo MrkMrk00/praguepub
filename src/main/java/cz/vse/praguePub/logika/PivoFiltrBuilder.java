@@ -84,13 +84,13 @@ public class PivoFiltrBuilder extends FiltrBuilder {
         if (pivovar != null && !pivovar.isBlank()) this.nazev(pivovar);
 
         double stupnovitost = NumberUtils.toDouble(atributy.get("stupnovitost"), -1);
-        if (stupnovitost != -1) this.stupnovitost(stupnovitost);
+        if (stupnovitost != -1) this.stupnovitost(stupnovitost - 0.5, stupnovitost + 0.5);
 
         String nazev = atributy.get("nazev");
         if (nazev != null && !nazev.isBlank()) this.nazev(nazev);
 
         double obsahAlkoholu = NumberUtils.toDouble(atributy.get("obsah_alkoholu"), -1);
-        if (obsahAlkoholu != -1) this.obsahAlkoholu(obsahAlkoholu);
+        if (obsahAlkoholu != -1) this.obsahAlkoholu(obsahAlkoholu - 0.5, obsahAlkoholu + 0.5);
 
         String typ = atributy.get("typ");
         if (typ != null && !typ.isBlank()) this.typ(typ);

@@ -35,6 +35,7 @@ public class VyberPivoDialog extends Obrazovka<BorderPane> {
         this.zobrazovanaPiva = FXCollections.observableArrayList();
         this.callbackSVysledkem = callbackSVysledkem;
 
+        this.zobrazovanaPiva.addAll(this.db.getPivoFilterBuilder().finalizuj());
         this.vytvorGUI();
     }
 
