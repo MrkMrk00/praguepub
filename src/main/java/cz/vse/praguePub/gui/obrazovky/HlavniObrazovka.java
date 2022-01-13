@@ -91,7 +91,7 @@ public class HlavniObrazovka extends Obrazovka<BorderPane> {
                     Button prihlasitSe = TlacitkoAplikace(
                             "Přihlásit se",
                             mouseEvent -> this.controller.zobrazPrihlaseni(),
-                            t -> HBox.setMargin(t, new Insets(6, 8, 0, 0))
+                            t -> HBox.setMargin(t, new Insets(6, 20, 0, 0))
                     );
 
                     Region separator = new Region();
