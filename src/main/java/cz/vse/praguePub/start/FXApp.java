@@ -1,7 +1,6 @@
 package cz.vse.praguePub.start;
 
 import cz.vse.praguePub.gui.ObrazovkyController;
-import cz.vse.praguePub.gui.obrazovky.ZobrazitPodnik;
 import cz.vse.praguePub.logika.Databaze;
 import cz.vse.praguePub.logika.Uzivatel;
 import cz.vse.praguePub.util.PraguePubDatabaseException;
@@ -27,9 +26,13 @@ public class FXApp extends Application {
             return;
         }
 
-        var st = new Stage();
-        st.setScene(new ZobrazitPodnik(new ObrazovkyController()).getScene());
-        st.showAndWait();
+        /*var st = new Stage();
+        st.setScene(new ZobrazitPodnik(db).getScene());
+        st.show();
+
+        var st2 = new Stage();
+        st2.setScene(new Filtr(Filtr.FILTR_PIVA_S_CENOU, null).getScene());
+        st2.show();*/
 
         new ObrazovkyController().zapniAplikaci(primaryStage);
     }
