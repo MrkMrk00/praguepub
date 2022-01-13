@@ -127,4 +127,8 @@ public class ObrazovkyController {
         zobrazOkno(new VyhledaniPodleJmena(this).getScene());
     }
 
+    public void zobrazPridejNovouRecenzi() {
+        zobrazOkno(new PridaniRecenzce().getScene());
+    }
+
 }
