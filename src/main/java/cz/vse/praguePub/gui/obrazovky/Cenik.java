@@ -44,7 +44,7 @@ public class Cenik extends Obrazovka<BorderPane> {
     }
 
     private TableView<Pivo> pripravTabulku() {
-        Tabulka<Pivo> pivoTabulka = new Tabulka<>(Pivo.PRO_TABULKU_Cenik);
+        Tabulka<Pivo> pivoTabulka = new Tabulka<>(Pivo.PRO_TABULKU_CENIK);
         return pivoTabulka.getTableView();
     }
 }

@@ -3,11 +3,13 @@ package cz.vse.praguePub.logika;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Aggregates;
 import cz.vse.praguePub.logika.dbObjekty.Pivo;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import static com.mongodb.client.model.Filters.*;
 
@@ -74,6 +76,28 @@ public class PivoFiltrBuilder extends FiltrBuilder {
 
     public PivoFiltrBuilder typKvaseni(String nazevTypuKvaseni) {
         this.pridejCustom(regex("typ", nazevTypuKvaseni));
+        return this;
+    }
+
+    public PivoFiltrBuilder parse(Map<String, String> atributy) {
+        String pivovar = atributy.get("pivovar");
+        if (pivovar != null && !pivovar.isBlank()) this.nazev(pivovar);
+
+        double stupnovitost = NumberUtils.toDouble(atributy.get("stupnovitost"), -1);
+        if (stupnovitost != -1) this.stupnovitost(stupnovitost);
+
+        String nazev = atributy.get("nazev");
+        if (nazev != null && !nazev.isBlank()) this.nazev(nazev);
+
+        double obsahAlkoholu = NumberUtils.toDouble(atributy.get("obsah_alkoholu"), -1);
+        if (obsahAlkoholu != -1) this.obsahAlkoholu(obsahAlkoholu);
+
+        String typ = atributy.get("typ");
+        if (typ != null && !typ.isBlank()) this.typ(typ);
+
+        String typKvaseni = atributy.get("typ_kvaseni");
+        if (typKvaseni != null && !typKvaseni.isBlank()) this.typKvaseni(typKvaseni);
+
         return this;
     }
 }

@@ -20,7 +20,7 @@ public class Pivo implements DBObjekt {
 
     //levý sloupec: názvy, co se zobrazí v tabulce jako nadpisy sloupců; pravý sloupec: názvy atributů instance
     //(logika tabulky bere atribut instance přes getter, tudíž atribut musí být v camelCase a metoda musí začínat "get")
-    public static final String[][] PRO_TABULKU_PivoDialog = {
+    public static final String[][] PRO_TABULKU = {
             { "Název",          "nazev"         },
             { "Název pivovaru", "nazevPivovaru" },
             { "Stupňovitost",   "stupnovitost"  },
@@ -31,7 +31,16 @@ public class Pivo implements DBObjekt {
             { "Objem",          "objem"         }
     };
 
-    public static final String [][] PRO_TABULKU_Cenik = {
+    public static final String[][] PRO_TABULKU_BEZ_CENY_A_OBJEMU = {
+            { "Název",          "nazev"         },
+            { "Název pivovaru", "nazevPivovaru" },
+            { "Stupňovitost",   "stupnovitost"  },
+            { "Obsah alkoholu", "obsahAlkoholu" },
+            { "Typ",            "typ"           },
+            { "Typ kvašení",    "typKvaseni"    }
+    };
+
+    public static final String [][] PRO_TABULKU_CENIK = {
             { "Název",          "nazev"         },
             { "Cena",           "cena"          },
             { "Objem",          "objem"         }

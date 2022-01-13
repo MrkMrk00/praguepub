@@ -1,7 +1,9 @@
 package cz.vse.praguePub.gui.obrazovky;
 
+import cz.vse.praguePub.gui.ObrazovkyController;
 import cz.vse.praguePub.gui.komponenty.Tabulka;
 import cz.vse.praguePub.gui.obrazovky.abstraktniObrazovky.Obrazovka;
+import cz.vse.praguePub.logika.Databaze;
 import cz.vse.praguePub.logika.dbObjekty.Pivo;
 import cz.vse.praguePub.logika.dbObjekty.Podnik;
 import javafx.collections.FXCollections;
@@ -10,10 +12,9 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
 
-import java.util.*;
-import java.util.function.Consumer;
+import java.util.List;
+import java.util.Map;
 
 import static cz.vse.praguePub.gui.komponenty.Komponenty.*;
 
@@ -23,14 +24,16 @@ import static cz.vse.praguePub.gui.komponenty.Komponenty.*;
 public class UpravitPodnikObrazovka extends Obrazovka<BorderPane> {
 
     private final Podnik upravovanyPodnik;
+    private final ObrazovkyController controller;
+    private final Databaze db;
     private final ObservableList<Pivo> pivaUPodniku;
-    private final Stage oknoProVyberPiva;
 
-    public UpravitPodnikObrazovka(Podnik podnik) {
+    public UpravitPodnikObrazovka(ObrazovkyController controller, Podnik podnik) {
         super(new BorderPane(), 900, 600, "background");
 
         this.upravovanyPodnik = podnik;
-        this.oknoProVyberPiva = new Stage();
+        this.controller = controller;
+        this.db = controller.getDatabaze();
         this.pivaUPodniku = FXCollections.observableArrayList();
 
         this.registrujInputy();
@@ -93,7 +96,7 @@ public class UpravitPodnikObrazovka extends Obrazovka<BorderPane> {
                     radek.setAlignment(Pos.CENTER);
                 }));
 
-        Tabulka<Pivo> tabulkaPivaUNovehoPodniku = new Tabulka<>(Pivo.PRO_TABULKU_PivoDialog);
+        Tabulka<Pivo> tabulkaPivaUNovehoPodniku = new Tabulka<>(Pivo.PRO_TABULKU);
         tabulkaPivaUNovehoPodniku.getTableView().setItems(this.pivaUPodniku);
 
         this.getPane().setBottom(
@@ -109,21 +112,7 @@ public class UpravitPodnikObrazovka extends Obrazovka<BorderPane> {
         );
     }
 
-    /**
-     * Metoda zobrazí dialog pro vybrání piva z databáze, které se do nového podniku přidá.
-     */
     private void vyberPivo() {
-        Consumer<Pivo> callbackPoVyberuPiva = pivo -> {
-            this.pivaUPodniku.add(pivo);
-            this.oknoProVyberPiva.hide();
-        };
-
-        /*this.oknoProVyberPiva.setScene(
-                new VyberPivoDialog(
-                        Databaze.get(Uzivatel.guest()).getPivaCollection(),
-                        callbackPoVyberuPiva
-                ).getScene()
-        );*/
-        this.oknoProVyberPiva.showAndWait();
+        this.controller.vyberPivo(this.pivaUPodniku::add);
     }
 }

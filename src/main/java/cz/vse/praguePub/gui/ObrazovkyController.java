@@ -5,6 +5,7 @@ import cz.vse.praguePub.gui.komponenty.AlertBuilder;
 import cz.vse.praguePub.gui.obrazovky.*;
 import cz.vse.praguePub.logika.Databaze;
 import cz.vse.praguePub.logika.Uzivatel;
+import cz.vse.praguePub.logika.dbObjekty.Pivo;
 import cz.vse.praguePub.logika.dbObjekty.Podnik;
 import cz.vse.praguePub.util.PraguePubDatabaseException;
 import javafx.scene.Scene;
@@ -145,7 +146,7 @@ public class ObrazovkyController {
      * @param podnik podnik, který chce uživatel upravit
      */
     public void zobrazUpraveniPodniku(Podnik podnik) {
-        zobrazOkno(new UpravitPodnikObrazovka(podnik).getScene());
+        zobrazOkno(new UpravitPodnikObrazovka(this, podnik).getScene());
     }
 
     /**
@@ -208,6 +209,9 @@ public class ObrazovkyController {
         zobrazOkno(new PridaniRecenzce(this,podnik).getScene());
     }
 
+    public void vyberPivo(Consumer<Pivo> callback) {
+        zobrazOkno(new VyberPivoDialog(this, callback).getScene());
+    }
 
     public void zobrazInformaceOPodniku(Podnik podnik) {
         Stage st = new Stage();

@@ -91,7 +91,7 @@ public class PridejPodnikObrazovka extends Obrazovka<BorderPane> {
                     radek.setAlignment(Pos.CENTER);
         }));
 
-        Tabulka<Pivo> tabulkaPivaUNovehoPodniku = new Tabulka<>(Pivo.PRO_TABULKU_PivoDialog);
+        Tabulka<Pivo> tabulkaPivaUNovehoPodniku = new Tabulka<>(Pivo.PRO_TABULKU);
 
 
         tabulkaPivaUNovehoPodniku.getTableView().setItems(this.pivaUPodniku);
