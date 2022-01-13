@@ -1,6 +1,5 @@
 package cz.vse.praguePub.gui.obrazovky;
 
-import cz.vse.praguePub.gui.ObrazovkyController;
 import cz.vse.praguePub.gui.komponenty.Tabulka;
 import cz.vse.praguePub.gui.obrazovky.abstraktniObrazovky.Obrazovka;
 import cz.vse.praguePub.logika.Databaze;
@@ -21,14 +20,13 @@ public class ZobrazitPodnik extends Obrazovka<BorderPane> {
 
     private final ObservableList<Recenze> seznamRecenzi;
     private final Databaze db;
-    private ObrazovkyController controller;
 
     public ZobrazitPodnik(Databaze db) {
         super(new BorderPane(), 700, 700, "background" );
 
         this.seznamRecenzi = FXCollections.observableArrayList();
         this.db = db;
-        this.controller = controller;
+
         this.vytvorGUI();
     }
 
@@ -71,7 +69,6 @@ public class ZobrazitPodnik extends Obrazovka<BorderPane> {
                                     VBox.setMargin(t, new Insets(10,0,0,20));}),
                                 TlacitkoAplikace("Přidat recenzi", (t)->{
                                     VBox.setMargin(t, new Insets(10,0,0,20));
-                                    t.setOnMouseClicked(MouseEvent -> controller.zobrazPridejNovouRecenzi());
                                 })
 
                         ), sloupec -> {}
