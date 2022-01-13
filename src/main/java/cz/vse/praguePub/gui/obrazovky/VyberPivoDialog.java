@@ -63,7 +63,7 @@ public class VyberPivoDialog extends Obrazovka<BorderPane> {
     }
 
     private TableView<Pivo> pripravTabulku() {
-        Tabulka<Pivo> pivoTabulka = new Tabulka<>(Pivo.PRO_TABULKU);
+        Tabulka<Pivo> pivoTabulka = new Tabulka<>(Pivo.PRO_TABULKU_PivoDialog);
         pivoTabulka.getTableView().setItems(this.zobrazovanaPiva);
         pivoTabulka.getTableView().setOnMouseClicked(
                 event -> {

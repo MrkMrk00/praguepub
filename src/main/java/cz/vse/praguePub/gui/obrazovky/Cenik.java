@@ -1,8 +1,11 @@
 package cz.vse.praguePub.gui.obrazovky;
 
+import cz.vse.praguePub.gui.komponenty.Tabulka;
 import cz.vse.praguePub.gui.obrazovky.abstraktniObrazovky.Obrazovka;
+import cz.vse.praguePub.logika.dbObjekty.Pivo;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TableView;
 import javafx.scene.layout.*;
 
 import static cz.vse.praguePub.gui.komponenty.Komponenty.*;
@@ -35,5 +38,13 @@ public class Cenik extends Obrazovka<BorderPane> {
 
                 })
         );
+        this.getPane().setCenter(
+                pripravTabulku()
+        );
+    }
+
+    private TableView<Pivo> pripravTabulku() {
+        Tabulka<Pivo> pivoTabulka = new Tabulka<>(Pivo.PRO_TABULKU_Cenik);
+        return pivoTabulka.getTableView();
     }
 }

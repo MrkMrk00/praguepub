@@ -13,11 +13,6 @@ public class FXApp extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-
-        var st = new Stage();
-        st.setScene(new Cenik("Hostinec v Zátiší").getScene());
-        st.showAndWait();
-
         new ObrazovkyController().zapniAplikaci(primaryStage);
     }
 }
