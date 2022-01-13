@@ -15,7 +15,7 @@ public class FXApp extends Application {
     public void start(Stage primaryStage) {
 
         var st = new Stage();
-        st.setScene(new Cenik().getScene());
+        st.setScene(new Cenik("Hostinec v Zátiší").getScene());
         st.showAndWait();
 
         new ObrazovkyController().zapniAplikaci(primaryStage);

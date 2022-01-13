@@ -9,8 +9,11 @@ import static cz.vse.praguePub.gui.komponenty.Komponenty.*;
 
 public class Cenik extends Obrazovka<BorderPane> {
 
-    public Cenik() {
+    private final String nazevPodniku;
+
+    public Cenik(String nazevPodniku) {
         super(new BorderPane(),600,600,"background");
+        this.nazevPodniku = nazevPodniku;
 
         this.vytvorGui();
     }
@@ -18,7 +21,7 @@ public class Cenik extends Obrazovka<BorderPane> {
     private void vytvorGui(){
         this.getPane().setTop(
                 HorniPanel(horniPanel -> {
-                    Label nadpisOkna = NadpisOknaLabel("Ceník");
+                    Label nadpisOkna = NadpisOknaLabel(nazevPodniku);
 
                     Region separator = new Region();
                     HBox.setHgrow(separator, Priority.ALWAYS);
