@@ -125,6 +125,10 @@ public class ObrazovkyController {
         zobrazOkno(new PridejPodnikObrazovka(this.databaze).getScene());
     }
 
+    public void zobrazPridejNovouRecenzi() {
+        zobrazOkno(new PridaniRecenzce().getScene());
+    }
+
     public void filtruj() {
 
     }

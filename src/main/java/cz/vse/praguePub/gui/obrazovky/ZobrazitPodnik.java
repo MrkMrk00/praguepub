@@ -9,6 +9,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.scene.control.TableView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -21,13 +22,14 @@ public class ZobrazitPodnik extends Obrazovka<BorderPane> {
 
     private final ObservableList<Recenze> seznamRecenzi;
     private final Databaze db;
+    private ObrazovkyController controller;
 
     public ZobrazitPodnik(ObrazovkyController controller) {
         super(new BorderPane(), 700, 700, "background" );
 
         this.seznamRecenzi = FXCollections.observableArrayList();
         this.db = controller.getDatabaze();
-
+        this.controller = controller;
         this.vytvorGUI();
     }
 
@@ -65,14 +67,17 @@ public class ZobrazitPodnik extends Obrazovka<BorderPane> {
 
         this.getPane().setLeft(
                 Sloupec(List.of(
-                                LabelAplikace("Adresa:"),
-                                TlacitkoAplikace("Ceník", (t)->{
-                                    VBox.setMargin(t, new Insets(10,0,0,20));}),
-                                TlacitkoAplikace("Přidat recenzi", (t)->{
-                                    VBox.setMargin(t, new Insets(10,0,0,20));
-                                })
+                        LabelAplikace("Adresa:"),
+                        TlacitkoAplikace("Ceník", (t)->{
+                            VBox.setMargin(t, new Insets(10,0,0,20));}),
+                        TlacitkoAplikace("Přidat recenzi", (t)->{
+                            VBox.setMargin(t, new Insets(10,0,0,20));
+                            t.setOnMouseClicked(MouseEvent -> controller.zobrazPridejNovouRecenzi());
+                        })
 
-                        ), sloupec -> {}
+                        ),
+                        sloupec -> {
+                        }
                 )
 
         );
