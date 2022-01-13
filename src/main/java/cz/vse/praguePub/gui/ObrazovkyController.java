@@ -204,8 +204,8 @@ public class ObrazovkyController {
         zobrazOkno(new Scene(webView));
     }
 
-    public void zobrazPridejNovouRecenzi() {
-        zobrazOkno(new PridaniRecenzce().getScene());
+    public void zobrazPridejNovouRecenzi(Podnik podnik) {
+        zobrazOkno(new PridaniRecenzce(this,podnik).getScene());
     }
 
 
