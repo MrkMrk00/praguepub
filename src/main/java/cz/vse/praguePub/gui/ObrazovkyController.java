@@ -24,11 +24,19 @@ import java.util.function.Consumer;
 import static cz.vse.praguePub.gui.komponenty.Komponenty.Ikona;
 import static cz.vse.praguePub.gui.komponenty.Komponenty.zobrazOkno;
 
+/**
+ * Třída, obsahující logiku oken, jejich propojování a zobrazování.
+ */
 public class ObrazovkyController {
     private static final Logger log = LoggerFactory.getLogger(ObrazovkyController.class);
+    private static final String URL_REGISTRACNIHO_SERVERU = "http://localhost:3021/";
 
     @Getter private Databaze databaze = null;
 
+    /**
+     * Konstruktor přihlásí hosta do databáze a vytvoří instanci databáze
+     * (pokud se vytvoření nezdaří, tak vyhodí chybu)
+     */
     public ObrazovkyController() {
         this.prihlasHosta();
     }
@@ -49,6 +57,7 @@ public class ObrazovkyController {
      * @param errorText text, který se zobrazí v alertu
      */
     private void nepovedenePrihlaseni(String errorText) {
+        log.error(errorText);
         new AlertBuilder(Alert.AlertType.ERROR)
                 .setTitle("PraguePub")
                 .setHeaderText("Chyba databáze")
@@ -59,6 +68,10 @@ public class ObrazovkyController {
         System.exit(0);
     }
 
+    /**
+     * Zapne aplikaci - zobrazí hlavní okno
+     * @param primaryStage stage, do které se má hlavní obrazovka zobrazit
+     */
     public void zapniAplikaci(Stage primaryStage) {
         HlavniObrazovka hlObr = new HlavniObrazovka(this);
         Scene hlScene = hlObr.getScene();
@@ -124,33 +137,56 @@ public class ObrazovkyController {
         zobrazOkno(new UpravitPodnikObrazovka(podnik).getScene());
     }
 
+    /**
+     * Zobrazí okno s podniky, která jsou v dané městské části
+     * @param cisloMeskeCasti číslo městské části
+     */
     public void zobrazPodnikyVOblasti(final int cisloMeskeCasti) {
         zobrazOkno(new PodnikyVMestskeCastiObrazovka(cisloMeskeCasti, this).getScene());
     }
 
+    /**
+     * Zobrazí okno s podniky, které byly vyhledány podle názvu
+     * @param defaultniDotaz název podniku dotazovaný z hlavního okna aplikace
+     */
     public void zobrazVyhledatPodleNazvu(String defaultniDotaz) {
-        zobrazOkno(new VyhledaniPodleJmena(this, defaultniDotaz).getScene());
+        zobrazOkno(new VyhledaniPodleJmena(
+                this,
+                defaultniDotaz == null ? "" : defaultniDotaz
+        ).getScene());
     }
 
+    /**
+     * Zobrazí okno pro přidávání nového podniku do databáze
+     */
     public void zobrazPridejNovyPodnik() {
         zobrazOkno(new PridejPodnikObrazovka(this).getScene());
     }
 
-    public void filtruj(Map<String, Filtr.AtributFilteru> atributy, Consumer<Map<String, String>> callback) {
+    /**
+     * Zobrazí okno s filtrem
+     * @param atributy atributy, podle kterých se dá objekt vyhledávat
+     *                 (jiné u {@link cz.vse.praguePub.gui.obrazovky.Filtr#FILTR_PODNIKY podniku} a u
+     *                 {@link cz.vse.praguePub.gui.obrazovky.Filtr#FILTR_PIVA piva}, ...)
+     * @param callback funkce, která se zavolá po žádosti uživatele na filtrování (tlačítko Odeslat nebo Enter)
+     */
+    public void zobrazFiltr(Map<String, Filtr.AtributFilteru> atributy, Consumer<Map<String, String>> callback) {
         Stage oknoFiltru = zobrazOkno(new Filtr(atributy, callback).getScene());
         oknoFiltru.setAlwaysOnTop(true);
         oknoFiltru.setResizable(false);
     }
 
-    public void zobrazVyhledatPodleNazvu() {
-        zobrazOkno(new VyhledaniPodleJmena(this).getScene());
-    }
-
-    public void zobrazVytvoreniUcet() {
+    /**
+     * Zobrazí WebView s adresou registračního serveru
+     */
+    public void zobrazVytvoreniUctu() {
         WebView webView = new WebView();
         WebEngine webEngine = webView.getEngine();
-        webEngine.load("http://localhost:3021/");
+        webEngine.load(URL_REGISTRACNIHO_SERVERU);
         zobrazOkno(new Scene(webView));
     }
 
+    public void zobrazInformaceOPodniku(Podnik podnik) {
+        zobrazOkno(new ZobrazitPodnik(this, podnik).getScene());
+    }
 }
