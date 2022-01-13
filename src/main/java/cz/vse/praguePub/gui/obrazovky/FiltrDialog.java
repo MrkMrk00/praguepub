@@ -16,7 +16,7 @@ import java.util.function.Consumer;
 
 import static cz.vse.praguePub.gui.komponenty.Komponenty.*;
 
-public class Filtr extends Obrazovka<BorderPane> {
+public class FiltrDialog extends Obrazovka<BorderPane> {
 
     @Data public static class AtributFilteru {
         private final String textProZobrazeni;
@@ -54,7 +54,7 @@ public class Filtr extends Obrazovka<BorderPane> {
     private final Consumer<Map<String, String>> callbackSVysledkem;
     private final Map<String, AtributFilteru> atributy;
 
-    public Filtr(Map<String, AtributFilteru> atributy, Consumer<Map<String, String>> callbackSVysledkem) {
+    public FiltrDialog(Map<String, AtributFilteru> atributy, Consumer<Map<String, String>> callbackSVysledkem) {
         super(new BorderPane(), 350, (atributy.size() * 40) + 100, "background");
 
         this.callbackSVysledkem = callbackSVysledkem;

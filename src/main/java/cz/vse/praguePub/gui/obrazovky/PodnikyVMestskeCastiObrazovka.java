@@ -6,13 +6,11 @@ import cz.vse.praguePub.gui.obrazovky.abstraktniObrazovky.OknoSeSeznamemPodniku;
 import cz.vse.praguePub.logika.Databaze;
 import cz.vse.praguePub.logika.PodnikFiltrBuilder;
 import cz.vse.praguePub.logika.dbObjekty.Podnik;
-import javafx.scene.control.Button;
-import javafx.scene.control.ContextMenu;
-import javafx.scene.control.Label;
-import javafx.scene.control.MenuItem;
+import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
+import javafx.stage.Stage;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -22,14 +20,17 @@ import static cz.vse.praguePub.gui.komponenty.Komponenty.*;
 
 public class PodnikyVMestskeCastiObrazovka extends OknoSeSeznamemPodniku {
 
+    private final Stage stage;
+
     private final int cisloMestskeCasti;
     private final ObrazovkyController controller;
     private final Databaze databaze;
 
-    public PodnikyVMestskeCastiObrazovka(int cisloMestskeCasti, ObrazovkyController controller) {
+    public PodnikyVMestskeCastiObrazovka(ObrazovkyController controller, Stage stage, int cisloMestskeCasti) {
         this.cisloMestskeCasti = cisloMestskeCasti;
         this.controller = controller;
         this.databaze = controller.getDatabaze();
+        this.stage = stage;
 
         this.nactiPodniky(null);
         super.vytvorGUI();
@@ -46,8 +47,8 @@ public class PodnikyVMestskeCastiObrazovka extends OknoSeSeznamemPodniku {
     }
 
     private void zpracujFiltr() {
-        Map<String, Filtr.AtributFilteru> atributy = new LinkedHashMap<>();
-        Filtr.FILTR_PODNIKY.forEach(
+        Map<String, FiltrDialog.AtributFilteru> atributy = new LinkedHashMap<>();
+        FiltrDialog.FILTR_PODNIKY.forEach(
                 (key, atr) -> {
                     if (!key.equals("cena") && !key.equals("mc_cislo")) atributy.put(key, atr);
                 }
@@ -65,11 +66,33 @@ public class PodnikyVMestskeCastiObrazovka extends OknoSeSeznamemPodniku {
     }
 
     @Override
-    protected ContextMenu pripravContextoveMenu(Tabulka<Podnik> tabulka) {
-        ContextMenu menu = new ContextMenu();
-            MenuItem upravPodnik = new MenuItem("Uprav podnik");
+    protected ContextMenu pripravKontextoveMenuAUpravTabulku(Tabulka<Podnik> tabulka) {
+        TableView<Podnik> tv = tabulka.getTableView();
+        Runnable zobrazInformaceOPodniku = () -> {
 
-        return new ContextMenu();
+            if (tv.getItems().isEmpty() || !this.controller.jeUzivatelPrihlasen()) return;
+
+            this.controller.zobrazInformaceOPodniku(
+                    tabulka.getTableView().getSelectionModel().getSelectedItem(),
+                    this.stage,
+                    this.getScene());
+        };
+
+        ContextMenu menu = new ContextMenu();
+            MenuItem zobrazInfo = new MenuItem("Zobraz podnik");
+            zobrazInfo.setOnAction(
+                    event -> zobrazInformaceOPodniku.run()
+            );
+
+        tabulka.getTableView().setOnMouseClicked(
+                event -> {
+                    if (event.getClickCount() == 2) zobrazInformaceOPodniku.run();
+                }
+        );
+
+        menu.getItems().add(zobrazInfo);
+
+        return menu;
     }
 
     @Override

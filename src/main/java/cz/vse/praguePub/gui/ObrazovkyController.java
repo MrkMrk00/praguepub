@@ -68,6 +68,12 @@ public class ObrazovkyController {
         System.exit(0);
     }
 
+    public boolean jeUzivatelPrihlasen() {
+        boolean vysl = this.getDatabaze().getUzivatel().isPrihlasen() && !this.getDatabaze().getUzivatel().isGuest();
+        if (!vysl) this.zobrazPrihlaseni();
+        return vysl;
+    }
+
     /**
      * Zapne aplikaci - zobrazí hlavní okno
      * @param primaryStage stage, do které se má hlavní obrazovka zobrazit
@@ -98,7 +104,10 @@ public class ObrazovkyController {
             this.zobrazPrihlaseni();
             return;
         }
-        zobrazOkno(new OblibenePodnikyObrazovka(this).getScene());
+        Stage stage = new Stage();
+        stage.getIcons().add(Ikona());
+        stage.setScene(new OblibenePodnikyObrazovka(this, stage).getScene());
+        stage.show();
     }
 
     /**
@@ -109,7 +118,7 @@ public class ObrazovkyController {
      * uživateli povede úspěšně přihlásit, tak se okno automaticky zavře.
      */
     public void zobrazPrihlaseni() {
-        final Stage prihlaseniStage = new Stage();
+        Stage prihlaseniStage = new Stage();
 
         BiFunction<String, String, Boolean> prihlas = (jmeno, heslo) -> {
             Uzivatel novyUzivatel;
@@ -124,8 +133,10 @@ public class ObrazovkyController {
         };
 
         Runnable hidePozadavek = prihlaseniStage::hide;
+        prihlaseniStage.setAlwaysOnTop(true);
+        prihlaseniStage.setResizable(false);
 
-        prihlaseniStage.setScene(new Prihlaseni(prihlas, hidePozadavek,this).getScene());
+        prihlaseniStage.setScene(new PrihlaseniDialog(prihlas, hidePozadavek,this).getScene());
         prihlaseniStage.show();
     }
 
@@ -142,7 +153,14 @@ public class ObrazovkyController {
      * @param cisloMeskeCasti číslo městské části
      */
     public void zobrazPodnikyVOblasti(final int cisloMeskeCasti) {
-        zobrazOkno(new PodnikyVMestskeCastiObrazovka(cisloMeskeCasti, this).getScene());
+        Stage st = new Stage();
+        st.getIcons().add(Ikona());
+        st.setScene(new PodnikyVMestskeCastiObrazovka(
+                this,
+                st,
+                cisloMeskeCasti
+        ).getScene());
+        st.show();
     }
 
     /**
@@ -166,12 +184,12 @@ public class ObrazovkyController {
     /**
      * Zobrazí okno s filtrem
      * @param atributy atributy, podle kterých se dá objekt vyhledávat
-     *                 (jiné u {@link cz.vse.praguePub.gui.obrazovky.Filtr#FILTR_PODNIKY podniku} a u
-     *                 {@link cz.vse.praguePub.gui.obrazovky.Filtr#FILTR_PIVA piva}, ...)
+     *                 (jiné u {@link FiltrDialog#FILTR_PODNIKY podniku} a u
+     *                 {@link FiltrDialog#FILTR_PIVA piva}, ...)
      * @param callback funkce, která se zavolá po žádosti uživatele na filtrování (tlačítko Odeslat nebo Enter)
      */
-    public void zobrazFiltr(Map<String, Filtr.AtributFilteru> atributy, Consumer<Map<String, String>> callback) {
-        Stage oknoFiltru = zobrazOkno(new Filtr(atributy, callback).getScene());
+    public void zobrazFiltr(Map<String, FiltrDialog.AtributFilteru> atributy, Consumer<Map<String, String>> callback) {
+        Stage oknoFiltru = zobrazOkno(new FiltrDialog(atributy, callback).getScene());
         oknoFiltru.setAlwaysOnTop(true);
         oknoFiltru.setResizable(false);
     }
@@ -189,8 +207,14 @@ public class ObrazovkyController {
     public void zobrazInformaceOPodniku(Podnik podnik) {
         Stage st = new Stage();
         st.getIcons().add(Ikona());
-        st.setScene(new ZobrazitPodnik(this, podnik, st::hide).getScene());
+        st.setScene(new ZobrazitPodnikObrazovka(this, podnik, st::hide).getScene());
         st.show();
+    }
+
+    public void zobrazInformaceOPodniku(Podnik podnik, Stage stage, Scene predchoziScena) {
+        Runnable zpet = () -> stage.setScene(predchoziScena);
+
+        stage.setScene(new ZobrazitPodnikObrazovka(this, podnik, zpet).getScene());
     }
 
 }

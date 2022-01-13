@@ -20,7 +20,7 @@ import java.util.function.Consumer;
 
 import static cz.vse.praguePub.gui.komponenty.Komponenty.*;
 
-public class Prihlaseni extends Obrazovka<BorderPane> {
+public class PrihlaseniDialog extends Obrazovka<BorderPane> {
 
     private final BiFunction<String, String, Boolean> jmenoHesloCallback;
     private final Runnable pozadavekNaSkrytiOkna;
@@ -35,7 +35,7 @@ public class Prihlaseni extends Obrazovka<BorderPane> {
                 .show();
     
 
-    public Prihlaseni(BiFunction<String, String, Boolean> jmenoHesloCallback, Runnable pozadavekNaSkrytiOkna, ObrazovkyController controller) {
+    public PrihlaseniDialog(BiFunction<String, String, Boolean> jmenoHesloCallback, Runnable pozadavekNaSkrytiOkna, ObrazovkyController controller) {
         super(new BorderPane(), 300, 350, "background");
         this.jmenoHesloCallback = jmenoHesloCallback;
         this.pozadavekNaSkrytiOkna = pozadavekNaSkrytiOkna;

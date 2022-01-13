@@ -6,11 +6,11 @@ import cz.vse.praguePub.gui.obrazovky.abstraktniObrazovky.Obrazovka;
 import cz.vse.praguePub.logika.Databaze;
 import cz.vse.praguePub.logika.dbObjekty.Podnik;
 import cz.vse.praguePub.logika.dbObjekty.Recenze;
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
+import javafx.scene.control.Label;
 import javafx.scene.control.TableView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
@@ -20,17 +20,21 @@ import java.util.List;
 
 import static cz.vse.praguePub.gui.komponenty.Komponenty.*;
 
-public class ZobrazitPodnik extends Obrazovka<BorderPane> {
+public class ZobrazitPodnikObrazovka extends Obrazovka<BorderPane> {
 
     private final ObrazovkyController controller;
     private final Podnik zobrazovanyPodnik;
-    private final ObservableList<Recenze> seznamRecenzi;
     private final Runnable tlacitkoZpetCallback;
-
     private final BooleanProperty jeVOblibenych;
 
-    public ZobrazitPodnik(ObrazovkyController controller, Podnik podnik, Runnable callback) {
-        super(new BorderPane(), 700, 700, "background");
+    private final StringProperty nazevPodniku = new SimpleStringProperty();
+    private final StringProperty adresaPodniku = new SimpleStringProperty();
+    private final DoubleProperty prumerneHodnoceni = new SimpleDoubleProperty();
+    private final ObservableList<Recenze> seznamRecenzi;
+
+
+    public ZobrazitPodnikObrazovka(ObrazovkyController controller, Podnik podnik, Runnable callback) {
+        super(new BorderPane(), 900, 700, "background");
 
         this.controller = controller;
         this.zobrazovanyPodnik = podnik;
@@ -38,11 +42,24 @@ public class ZobrazitPodnik extends Obrazovka<BorderPane> {
         this.seznamRecenzi = FXCollections.observableArrayList();
         this.jeVOblibenych = new SimpleBooleanProperty(false);
 
-        this.prenactiTabulku();
+        this.nactiAtributyPodniku();
         this.vytvorGUI();
     }
 
-    private void zjistiJeVOblibenych() {
+    private void nactiAtributyPodniku() {
+        this.nazevPodniku.setValue(this.zobrazovanyPodnik.getNazev());
+        this.adresaPodniku.setValue(
+                this.zobrazovanyPodnik.getAdresa_ulice() +
+                        " " +
+                        this.zobrazovanyPodnik.getAdresa_cp() +
+                        ", " +
+                        this.zobrazovanyPodnik.getAdresa_psc() +
+                        " " +
+                        this.zobrazovanyPodnik.getAdresa_mc_nazev()
+        );
+        this.prumerneHodnoceni.setValue(this.zobrazovanyPodnik.getPrumerneHodnoceni());
+        this.seznamRecenzi.clear();
+        this.seznamRecenzi.addAll(this.zobrazovanyPodnik.getRecenze());
         boolean jeVOblibenych = this.controller.getDatabaze().jeVOblibenych(this.zobrazovanyPodnik);
         this.jeVOblibenych.setValue(jeVOblibenych);
     }
@@ -51,23 +68,34 @@ public class ZobrazitPodnik extends Obrazovka<BorderPane> {
         this.getPane().setTop(
                 HorniPanel(hp -> {
                             BorderPane vrchniBar = new BorderPane();
+                            Label nadpis = NadpisOknaLabel(this.nazevPodniku.toString());
+                            nadpis.textProperty().bind(this.nazevPodniku);
+
+
                             vrchniBar.setLeft(
                                     Radek(
-                                            NadpisOknaLabel("Hostinec V Zátiší")
-
-                                            //nějakym stylem udělat hvězdičky recenze
+                                            nadpis,
+                                            LabelAplikace(
+                                                    String.valueOf(this.prumerneHodnoceni.get()),
+                                                    label -> {
+                                                        this.prumerneHodnoceni.addListener(
+                                                                (obs, oldValue, newValue) -> {
+                                                                    label.setText(newValue.toString());
+                                                                }
+                                                        );
+                                                    })
                                     )
                             );
 
                             vrchniBar.setRight(
                                     Radek(
                                             TlacitkoAplikace(
-                                                    "srdicko sem",
+                                                    this.jeVOblibenych.get() ? "Odeber z oblíbených" : "Přidej do oblíbených",
                                                     event -> {
                                                         Databaze db = this.controller.getDatabaze();
                                                         if (db.jeVOblibenych(this.zobrazovanyPodnik)) db.odeberZOblibenych(this.zobrazovanyPodnik);
                                                         else db.pridejDoOblibenych(this.zobrazovanyPodnik);
-                                                        this.zjistiJeVOblibenych();
+                                                        this.nactiAtributyPodniku();
                                                     },
                                                     t -> {
                                                         this.jeVOblibenych.addListener(
@@ -115,7 +143,15 @@ public class ZobrazitPodnik extends Obrazovka<BorderPane> {
         );
     }
 
-    private void prenactiTabulku() {
+    private TableView<Recenze> pripravTabulku() {
+        Tabulka<Recenze> recenzeTabulka = new Tabulka<>(Recenze.PRO_TABULKU);
+        recenzeTabulka.getTableView().setItems(this.seznamRecenzi);
+        this.nactiHodnotyTabulky();
+
+        return recenzeTabulka.getTableView();
+    }
+
+    private void nactiHodnotyTabulky() {
         this.seznamRecenzi.clear();
 
         for (Recenze recenze : this.zobrazovanyPodnik.getRecenze()) {
@@ -124,13 +160,5 @@ public class ZobrazitPodnik extends Obrazovka<BorderPane> {
             recenze.setUzivatelskeJmeno(jmeno);
         }
         this.seznamRecenzi.addAll(this.zobrazovanyPodnik.getRecenze());
-    }
-
-    private TableView<Recenze> pripravTabulku() {
-        Tabulka<Recenze> recenzeTabulka = new Tabulka<>(Recenze.PRO_TABULKU);
-        recenzeTabulka.getTableView().setItems(this.seznamRecenzi);
-
-
-        return recenzeTabulka.getTableView();
     }
 }

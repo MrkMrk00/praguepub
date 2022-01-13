@@ -41,7 +41,7 @@ public abstract class OknoSeSeznamemPodniku extends Obrazovka<BorderPane> {
         TableView<Podnik> tv = tab.getTableView();
         tv.setItems(zobrazovanePodniky);
 
-        ContextMenu contextMenu = this.pripravContextoveMenu(tab);
+        ContextMenu contextMenu = this.pripravKontextoveMenuAUpravTabulku(tab);
 
         tv.setRowFactory(tableView -> {
             TableRow<Podnik> tableRow = new TableRow<>();
@@ -56,7 +56,7 @@ public abstract class OknoSeSeznamemPodniku extends Obrazovka<BorderPane> {
         return tv;
     }
 
-    protected abstract ContextMenu pripravContextoveMenu(Tabulka<Podnik> tabulka);
+    protected abstract ContextMenu pripravKontextoveMenuAUpravTabulku(Tabulka<Podnik> tabulka);
 
     protected abstract HBox pripravHorniPanel();
 

@@ -65,7 +65,11 @@ public class DatabazeImpl implements Databaze {
                 new UpdateOptions().upsert(true)
         );
 
-        return (updateResult.wasAcknowledged() && updateResult.getModifiedCount() > 0);
+        boolean vysledek = (updateResult.wasAcknowledged() && updateResult.getModifiedCount() > 0);
+        if (vysledek) log.info("Úspěšně přidán podnik do oblíbených - " + podnik.getNazev());
+        else log.error("Nepodařilo se přidat podnik do oblíbených - " + podnik.getNazev());
+
+        return vysledek;
     }
 
     @Override
@@ -75,7 +79,11 @@ public class DatabazeImpl implements Databaze {
                 Updates.pull("podniky", podnik.get_id())
         );
 
-        return (updateResult.wasAcknowledged() && updateResult.getModifiedCount() > 0);
+        boolean vysledek = (updateResult.wasAcknowledged() && updateResult.getModifiedCount() > 0);
+        if (vysledek) log.info("Úspěšně odebrán podnik z oblíbených - " + podnik.getNazev());
+        else log.error("Nepodařilo se odebrat podnik z oblíbených - " + podnik.getNazev());
+
+        return vysledek;
     }
 
     @Override
