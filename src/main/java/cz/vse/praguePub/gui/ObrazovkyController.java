@@ -179,8 +179,8 @@ public class ObrazovkyController {
     /**
      * Zobrazí okno pro přidávání nového podniku do databáze
      */
-    public void zobrazPridejNovyPodnik() {
-        zobrazOkno(new PridejPodnikObrazovka(this).getScene());
+    public void zobrazPridejNovyPodnik(Integer mestskaCast) {
+        zobrazOkno(new PridejPodnikObrazovka(this, mestskaCast).getScene());
     }
 
     /**
@@ -227,11 +227,17 @@ public class ObrazovkyController {
         stage.setScene(new ZobrazitPodnikObrazovka(this, podnik, zpet).getScene());
     }
 
-    public void zadejCenuAObjem(Pivo pivo) {
+    public void zadejCenuAObjem(Pivo pivo, Runnable callback) {
         Stage st = new Stage();
+
+        Runnable callbackWrapper = () -> {
+            callback.run();
+            st.hide();
+        };
+
         st.getIcons().add(Ikona());
         st.setResizable(false);
-        st.setScene(new ZadejCenuAObjem(pivo, st::hide).getScene());
+        st.setScene(new ZadejCenuAObjem(pivo, callbackWrapper).getScene());
         st.show();
     }
 }

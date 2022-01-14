@@ -1,11 +1,10 @@
 package cz.vse.praguePub.gui.komponenty;
 
+import javafx.event.EventHandler;
 import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.DialogEvent;
 import lombok.Getter;
-
-import java.util.function.Consumer;
 
 public class AlertBuilder {
     @Getter private final Alert alert;
@@ -34,8 +33,8 @@ public class AlertBuilder {
         return this;
     }
 
-    public AlertBuilder setOnCloseRequest(Consumer<DialogEvent> consumer) {
-        this.alert.setOnCloseRequest(consumer::accept);
+    public AlertBuilder setOnCloseRequest(EventHandler<DialogEvent> eventHandler) {
+        this.alert.setOnCloseRequest(eventHandler);
         return this;
     }
 }

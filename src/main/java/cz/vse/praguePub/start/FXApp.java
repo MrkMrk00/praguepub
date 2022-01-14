@@ -22,7 +22,7 @@ public class FXApp extends Application {
             e.printStackTrace();
         }
         Stage st = new Stage();
-        st.setScene(new PridejPodnikObrazovka(con).getScene());
+        st.setScene(new PridejPodnikObrazovka(con, null).getScene());
         st.show();
         //con.zapniAplikaci(primaryStage);
     }
