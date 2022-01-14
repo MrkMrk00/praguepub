@@ -32,13 +32,25 @@ public class PridejPodnikObrazovka extends PodnikInfoObrazovka {
     }
 
     private void zobrazOpravduPokracovat(Vysledek<Podnik> vysledek) {
+        Podnik podobny = vysledek.getNajity();
+        String popisNajitehoPiva =
+                String.format("""
+                        %s
+                        %s %s, Praha %d-%s
+                        """,
+                        podobny.getNazev(),
+                        podobny.getAdresa_ulice(), podobny.getAdresa_cp(),
+                        podobny.getAdresa_mc_cislo(), podobny.getAdresa_mc_nazev()
+                );
+
+
         Optional<ButtonType> alertResultOpt = new AlertBuilder(Alert.AlertType.CONFIRMATION)
-                .setHeaderText("PraguePub")
+                .setTitle("Prague Pub")
                 .setHeaderText("Opravdu chcete pokračovat?")
                 .setContent(
                         vysledek.getZprava() + "\n"
-                                + "Pivo v databázi: "
-                                + vysledek.getNajity().toString()
+                                + "Podnik v databázi:\n"
+                                + popisNajitehoPiva
                 )
                 .getAlert().showAndWait();
 
