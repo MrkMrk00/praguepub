@@ -114,5 +114,7 @@ public class PridejPodnikObrazovka extends Obrazovka<BorderPane> {
      */
     private void vyberPivo() {
 
+        this.controller.vyberPivo(this.pivaUPodniku::add);
+
     }
 }
