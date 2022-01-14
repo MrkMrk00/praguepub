@@ -15,6 +15,7 @@ import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import javafx.stage.Stage;
 import lombok.Getter;
+import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,7 +33,7 @@ public class ObrazovkyController {
     private static final Logger log = LoggerFactory.getLogger(ObrazovkyController.class);
     private static final String URL_REGISTRACNIHO_SERVERU = "http://localhost:3021/";
 
-    @Getter private Databaze databaze = null;
+    @Getter @Setter private Databaze databaze = null;
 
     /**
      * Konstruktor přihlásí hosta do databáze a vytvoří instanci databáze
