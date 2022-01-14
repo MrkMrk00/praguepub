@@ -226,4 +226,11 @@ public class ObrazovkyController {
         stage.setScene(new ZobrazitPodnikObrazovka(this, podnik, zpet).getScene());
     }
 
+    public void zadejCenuAObjem(Pivo pivo) {
+        Stage st = new Stage();
+        st.getIcons().add(Ikona());
+        st.setResizable(false);
+        st.setScene(new ZadejCenuAObjem(pivo, st::hide).getScene());
+        st.show();
+    }
 }

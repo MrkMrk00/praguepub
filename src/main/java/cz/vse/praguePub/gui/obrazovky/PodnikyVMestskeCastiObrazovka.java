@@ -69,20 +69,27 @@ public class PodnikyVMestskeCastiObrazovka extends OknoSeSeznamemPodniku {
     protected ContextMenu pripravKontextoveMenuAUpravTabulku(Tabulka<Podnik> tabulka) {
         TableView<Podnik> tv = tabulka.getTableView();
         Runnable zobrazInformaceOPodniku = () -> {
-
             if (tv.getItems().isEmpty() || !this.controller.jeUzivatelPrihlasen()) return;
 
             this.controller.zobrazInformaceOPodniku(
-                    tabulka.getTableView().getSelectionModel().getSelectedItem(),
+                    tv.getSelectionModel().getSelectedItem(),
                     this.stage,
                     this.getScene());
         };
 
+        Runnable zobrazUpravitPodnik = () -> {
+            if (tv.getItems().isEmpty() || !this.controller.jeUzivatelPrihlasen()) return;
+            this.controller.zobrazUpraveniPodniku(
+                    tv.getSelectionModel().getSelectedItem()
+            );
+        };
+
         ContextMenu menu = new ContextMenu();
             MenuItem zobrazInfo = new MenuItem("Zobraz podnik");
-            zobrazInfo.setOnAction(
-                    event -> zobrazInformaceOPodniku.run()
-            );
+            zobrazInfo.setOnAction(event -> zobrazInformaceOPodniku.run());
+
+            MenuItem upravPodnik = new MenuItem("Uprav podnik");
+            upravPodnik.setOnAction(event -> zobrazUpravitPodnik.run());
 
         tabulka.getTableView().setOnMouseClicked(
                 event -> {
@@ -90,7 +97,7 @@ public class PodnikyVMestskeCastiObrazovka extends OknoSeSeznamemPodniku {
                 }
         );
 
-        menu.getItems().add(zobrazInfo);
+        menu.getItems().addAll(zobrazInfo, upravPodnik);
 
         return menu;
     }

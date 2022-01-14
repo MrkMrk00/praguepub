@@ -7,6 +7,7 @@ import cz.vse.praguePub.logika.Databaze;
 import cz.vse.praguePub.logika.dbObjekty.Pivo;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.layout.BorderPane;
 import org.slf4j.Logger;
@@ -67,14 +68,20 @@ public class VyberPivoDialog extends Obrazovka<BorderPane> {
 
     private TableView<Pivo> pripravTabulku() {
         Tabulka<Pivo> pivoTabulka = new Tabulka<>(Pivo.PRO_TABULKU_BEZ_CENY_A_OBJEMU);
-        pivoTabulka.getTableView().setItems(this.zobrazovanaPiva);
-        pivoTabulka.getTableView().setOnMouseClicked(
-                event -> {
-                    if (event.getClickCount() == 2) {
-                        this.callbackSVysledkem.accept(pivoTabulka.getTableView().getSelectionModel().getSelectedItem());
+        TableView<Pivo> tv = pivoTabulka.getTableView();
+        tv.setItems(this.zobrazovanaPiva);
+
+        tv.setRowFactory(tableView -> {
+            TableRow<Pivo> tableRow = new TableRow<>();
+            tableRow.setOnMouseClicked(
+                    mouseEvent -> {
+                        Pivo vybranePivo = tableRow.getItem();
+                        if (mouseEvent.getClickCount() == 2 && vybranePivo != null) this.callbackSVysledkem.accept(vybranePivo);
                     }
-                }
-        );
+            );
+            return tableRow;
+        });
+
         return pivoTabulka.getTableView();
     }
 }

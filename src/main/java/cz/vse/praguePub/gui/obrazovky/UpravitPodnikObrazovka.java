@@ -10,7 +10,10 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.control.TableRow;
+import javafx.scene.control.TableView;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
 import java.util.List;
@@ -23,10 +26,10 @@ import static cz.vse.praguePub.gui.komponenty.Komponenty.*;
  */
 public class UpravitPodnikObrazovka extends Obrazovka<BorderPane> {
 
-    private final Podnik upravovanyPodnik;
-    private final ObrazovkyController controller;
-    private final Databaze db;
-    private final ObservableList<Pivo> pivaUPodniku;
+    protected final Podnik upravovanyPodnik;
+    protected final ObrazovkyController controller;
+    protected final Databaze db;
+    protected final ObservableList<Pivo> pivaUPodniku;
 
     public UpravitPodnikObrazovka(ObrazovkyController controller, Podnik podnik) {
         super(new BorderPane(), 900, 600, "background");
@@ -56,63 +59,89 @@ public class UpravitPodnikObrazovka extends Obrazovka<BorderPane> {
         );
     }
 
-    private void vytvorGUI() {
-        this.getPane().setTop(
-                HorniPanel(
-                        horniPanel -> {
-                            horniPanel.getChildren().add(NadpisOknaLabel("Upravit podnik"));
-                            horniPanel.setAlignment(Pos.CENTER);
-                        }
-                )
+    protected HBox horniPanel() {
+        return HorniPanel(
+                horniPanel -> {
+                    horniPanel.getChildren().add(NadpisOknaLabel("Upravit podnik"));
+                    horniPanel.setAlignment(Pos.CENTER);
+                }
         );
+    }
 
-        VBox inputy = Sloupec(List.of(
-                Radek(LabelAplikace("Název podniku:"), this.getMapaInputu().get("nazev")),
-                Radek(LabelAplikace("Adresa:")),
-                Radek(
-                        Sloupec(List.of(), sloupec -> { sloupec.setFillWidth(true); sloupec.setPrefWidth(20);}),
-                        Sloupec(
-                                Radek(LabelAplikace("Číslo MČ:"), this.getMapaInputu().get("mc_cislo")),
-                                Radek(LabelAplikace("Název MČ:"), this.getMapaInputu().get("mc_nazev")),
-                                Radek(LabelAplikace("Ulice:"), this.getMapaInputu().get("ulice")),
-                                Radek(LabelAplikace("PSČ:"), this.getMapaInputu().get("psc")),
-                                Radek(LabelAplikace("Číslo popisné:"), this.getMapaInputu().get("cp"))
+    protected VBox inputy() {
+        return Sloupec(List.of(
+                        Radek(LabelAplikace("Název podniku:"), this.getMapaInputu().get("nazev")),
+                        Radek(LabelAplikace("Adresa:")),
+                        Radek(
+                                Sloupec(List.of(), sloupec -> { sloupec.setFillWidth(true); sloupec.setPrefWidth(20);}),
+                                Sloupec(
+                                        Radek(LabelAplikace("Číslo MČ:"), this.getMapaInputu().get("mc_cislo")),
+                                        Radek(LabelAplikace("Název MČ:"), this.getMapaInputu().get("mc_nazev")),
+                                        Radek(LabelAplikace("Ulice:"), this.getMapaInputu().get("ulice")),
+                                        Radek(LabelAplikace("PSČ:"), this.getMapaInputu().get("psc")),
+                                        Radek(LabelAplikace("Číslo popisné:"), this.getMapaInputu().get("cp"))
+                                )
+                        ),
+                        Radek(
+                                TlacitkoAplikace(
+                                        "+ Vlož pivo",
+                                        tlacitko -> tlacitko.setOnMouseClicked(
+                                                event -> this.controller.vyberPivo(this.pivaUPodniku::add)
+                                        )
+                                )
                         )
-                ),
-                Radek(
-                        TlacitkoAplikace("+ Vlož pivo", tlacitko -> tlacitko.setOnMouseClicked(event -> this.vyberPivo()))
-                )
                 ),
                 inputySloupec -> {
                     inputySloupec.setPadding(new Insets(20));
                     inputySloupec.setFillWidth(true);
                 }
         );
+    }
 
-
-        this.getPane().setCenter(
-                Radek(List.of(inputy), radek -> {
-                    radek.widthProperty().add(this.getPane().widthProperty());
-                    radek.setAlignment(Pos.CENTER);
-                }));
-
+    protected Tabulka<Pivo> tabulka() {
         Tabulka<Pivo> tabulkaPivaUNovehoPodniku = new Tabulka<>(Pivo.PRO_TABULKU);
-        tabulkaPivaUNovehoPodniku.getTableView().setItems(this.pivaUPodniku);
+        TableView<Pivo> tv = tabulkaPivaUNovehoPodniku.getTableView();
+        tv.setItems(this.pivaUPodniku);
 
-        this.getPane().setBottom(
-                Sloupec(
-                        List.of(
-                                LabelAplikace("Piva:"),
-                                tabulkaPivaUNovehoPodniku.getTableView()
-                        ),
-                        sloupec -> {
-                            sloupec.setAlignment(Pos.TOP_LEFT);
-                        }
-                )
+        //zobrazení výběru ceny a objemu při dvojitém kliknutí na řádek
+        tv.setRowFactory(tableView -> {
+            TableRow<Pivo> tableRow = new TableRow<>();
+            tableRow.setOnMouseClicked(
+                    mouseEvent -> {
+                        Pivo vybranePivo = tableRow.getItem();
+                        if (mouseEvent.getClickCount() == 2 && vybranePivo != null) this.controller.zadejCenuAObjem(vybranePivo);
+                    }
+            );
+            return tableRow;
+        });
+
+        return tabulkaPivaUNovehoPodniku;
+    }
+
+    protected VBox spodek() {
+        return Sloupec(
+                List.of(
+                        LabelAplikace("Piva:"),
+                        this.tabulka().getTableView()
+                ),
+                sloupec -> {
+                    sloupec.setAlignment(Pos.TOP_LEFT);
+                }
         );
     }
 
-    private void vyberPivo() {
-        this.controller.vyberPivo(this.pivaUPodniku::add);
+    private void vytvorGUI() {
+        this.getPane().setTop(this.horniPanel());
+
+        this.getPane().setCenter(
+                Radek(
+                        List.of(this.inputy()),
+                        radek -> {
+                            radek.widthProperty().add(this.getPane().widthProperty());
+                            radek.setAlignment(Pos.CENTER);
+                        }
+                )
+        );
+        this.getPane().setBottom(this.spodek());
     }
 }
