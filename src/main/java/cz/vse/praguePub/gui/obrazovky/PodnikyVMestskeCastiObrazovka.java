@@ -107,7 +107,9 @@ public class PodnikyVMestskeCastiObrazovka extends OknoSeSeznamemPodniku {
         return HorniPanel((horniPanel) -> {
             Label nazevLokace = NadpisOknaLabel("Praha " + this.cisloMestskeCasti);
 
-            Button pridatNovyPodnik = TlacitkoAplikace("Přidat nový podnik", t -> this.controller.zobrazPridejNovyPodnik(),null);
+            Button pridatNovyPodnik = TlacitkoAplikace("Přidat nový podnik", t -> {
+                if (this.controller.jeUzivatelPrihlasen()) this.controller.zobrazPridejNovyPodnik();
+            },null);
             Button filtrovat = TlacitkoAplikace("Filtr",
                     t -> this.zpracujFiltr(),
                     null
