@@ -49,7 +49,7 @@ public class PrihlaseniDialog extends Obrazovka<BorderPane> {
 
         PasswordField hesloField = new PasswordField();
         hesloField.getStyleClass().add("tlacitkoAplikace");
-        hesloField.setText("hvezdicky");
+        hesloField.setPromptText("Zadejte heslo");
         hesloField.setOnMouseClicked(e -> {
             hesloField.clear();
             hesloField.setOnMouseClicked(null);
