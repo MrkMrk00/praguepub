@@ -91,7 +91,8 @@ public final class Komponenty {
     }
 
     public static TextField TextFieldAplikace(String defaultText, Consumer<TextField> styluj) {
-        TextField textField = new TextField(defaultText);
+        TextField textField = new TextField();
+        textField.setPromptText(defaultText);
         textField.getStyleClass().add("tlacitkoAplikace");
         textField.setOnMouseClicked(
                 event -> {
@@ -105,11 +106,8 @@ public final class Komponenty {
     }
 
     public static TextField TextFieldAplikace(String defaultText, EventHandler<MouseEvent> onClick, Consumer<TextField> styluj) {
-        TextField textField = new TextField(defaultText);
-        textField.getStyleClass().add("tlacitkoAplikace");
+        TextField textField = TextFieldAplikace(defaultText, styluj);
         textField.setOnMouseClicked(onClick);
-
-        if (styluj != null) styluj.accept(textField);
         return textField;
     }
 

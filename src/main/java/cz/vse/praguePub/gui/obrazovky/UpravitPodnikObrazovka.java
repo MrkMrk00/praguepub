@@ -12,9 +12,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 
 import java.util.List;
 import java.util.Map;
@@ -49,14 +47,37 @@ public class UpravitPodnikObrazovka extends Obrazovka<BorderPane> {
     private void registrujInputy() {
         this.getMapaInputu().putAll(
                 Map.of(
-                        "nazev",    TextFieldAplikace("Název podniku", t -> {}),
-                        "mc_cislo", TextFieldAplikace("Číslo městské části", t -> {}),
-                        "mc_nazev", TextFieldAplikace("Název městské části", t -> {}),
-                        "psc",      TextFieldAplikace("Poštovní směr. číslo", t -> {}),
-                        "ulice",    TextFieldAplikace("Ulice", t -> {}),
-                        "cp",       TextFieldAplikace("Číslo popisné", t -> {})
+                        "nazev",    TextFieldAplikace("Název podniku", t -> {
+                            t.setText(this.upravovanyPodnik.getNazev());
+                            t.setOnMouseClicked(null);
+                        }),
+                        "mc_cislo", TextFieldAplikace("Číslo městské části", t -> {
+                            t.setText(Integer.toString(this.upravovanyPodnik.getAdresa_mc_cislo()));
+                            t.setOnMouseClicked(null);
+                        }),
+                        "mc_nazev", TextFieldAplikace("Název městské části", t -> {
+                            t.setText(this.upravovanyPodnik.getAdresa_mc_nazev());
+                            t.setOnMouseClicked(null);
+                        }),
+                        "psc",      TextFieldAplikace("Poštovní směr. číslo", t -> {
+                            t.setText(Integer.toString(this.upravovanyPodnik.getAdresa_psc()));
+                            t.setOnMouseClicked(null);
+                        }),
+                        "ulice",    TextFieldAplikace("Ulice", t -> {
+                            t.setText(this.upravovanyPodnik.getAdresa_ulice());
+                            t.setOnMouseClicked(null);
+                        }),
+                        "cp",       TextFieldAplikace("Číslo popisné", t -> {
+                            t.setText(this.upravovanyPodnik.getAdresa_cp());
+                            t.setOnMouseClicked(null);
+                        })
                 )
         );
+        this.pivaUPodniku.addAll(this.upravovanyPodnik.getPivniListek());
+    }
+
+    protected void odeslat() {
+        this.controller.getDatabaze().upravPodnik(this.upravovanyPodnik);
     }
 
     protected HBox horniPanel() {
@@ -69,6 +90,9 @@ public class UpravitPodnikObrazovka extends Obrazovka<BorderPane> {
     }
 
     protected VBox inputy() {
+        Region spacer = new Region();
+        HBox.setHgrow(spacer, Priority.ALWAYS);
+
         return Sloupec(List.of(
                         Radek(LabelAplikace("Název podniku:"), this.getMapaInputu().get("nazev")),
                         Radek(LabelAplikace("Adresa:")),
@@ -87,6 +111,13 @@ public class UpravitPodnikObrazovka extends Obrazovka<BorderPane> {
                                         "+ Vlož pivo",
                                         tlacitko -> tlacitko.setOnMouseClicked(
                                                 event -> this.controller.vyberPivo(this.pivaUPodniku::add)
+                                        )
+                                ),
+                                spacer,
+                                TlacitkoAplikace(
+                                        "Odeslat",
+                                        tlacitko -> tlacitko.setOnMouseClicked(
+                                                event -> this.odeslat()
                                         )
                                 )
                         )

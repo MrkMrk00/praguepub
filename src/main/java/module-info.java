@@ -1,4 +1,4 @@
-module praguePub.main {
+module cz.vse.praguePub.main {
     requires static lombok;
 
     requires org.slf4j;
@@ -15,5 +15,7 @@ module praguePub.main {
     requires org.apache.commons.lang3;
 
     exports cz.vse.praguePub.start;
-    opens cz.vse.praguePub.logika.dbObjekty;
+    exports cz.vse.praguePub.logika;
+    exports cz.vse.praguePub.logika.dbObjekty;
+    exports cz.vse.praguePub.util;
 }

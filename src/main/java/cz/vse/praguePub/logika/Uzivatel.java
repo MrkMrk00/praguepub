@@ -1,7 +1,6 @@
 package cz.vse.praguePub.logika;
 
-import com.mongodb.MongoCommandException;
-import com.mongodb.MongoSecurityException;
+import com.mongodb.MongoException;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoDatabase;
@@ -16,7 +15,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 
-import static com.mongodb.client.model.Filters.*;
+import static com.mongodb.client.model.Filters.eq;
 import static cz.vse.praguePub.util.AesUtil.fillTo16Chars;
 
 /**
@@ -161,7 +160,7 @@ public class Uzivatel {
                     .first();
 
             this.prihlasen = doc != null && !doc.isEmpty();
-        } catch ( MongoCommandException | MongoSecurityException e) {
+        } catch ( MongoException e) {
             mongoClient.close();
             this.prihlasen = false;
         }
