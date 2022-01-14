@@ -1,10 +1,6 @@
 package cz.vse.praguePub.start;
 
 import cz.vse.praguePub.gui.ObrazovkyController;
-<<<<<<< HEAD
-=======
-import cz.vse.praguePub.gui.obrazovky.Cenik;
->>>>>>> gui
 import javafx.application.Application;
 import javafx.stage.Stage;
 
