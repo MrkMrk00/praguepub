@@ -1,5 +1,6 @@
 package cz.vse.praguePub.gui.obrazovky;
 
+import cz.vse.praguePub.gui.ObrazovkyController;
 import cz.vse.praguePub.gui.komponenty.AlertBuilder;
 import cz.vse.praguePub.gui.obrazovky.abstraktniObrazovky.Obrazovka;
 import javafx.geometry.Insets;
@@ -19,10 +20,11 @@ import java.util.function.Consumer;
 
 import static cz.vse.praguePub.gui.komponenty.Komponenty.*;
 
-public class Prihlaseni extends Obrazovka<BorderPane> {
+public class PrihlaseniDialog extends Obrazovka<BorderPane> {
 
     private final BiFunction<String, String, Boolean> jmenoHesloCallback;
     private final Runnable pozadavekNaSkrytiOkna;
+    private final ObrazovkyController controller;
     
     private final Consumer<Boolean> alert = prihlaseniUspesne -> 
             new AlertBuilder(prihlaseniUspesne ? Alert.AlertType.INFORMATION : Alert.AlertType.ERROR)
@@ -33,10 +35,11 @@ public class Prihlaseni extends Obrazovka<BorderPane> {
                 .show();
     
 
-    public Prihlaseni(BiFunction<String, String, Boolean> jmenoHesloCallback, Runnable pozadavekNaSkrytiOkna) {
+    public PrihlaseniDialog(BiFunction<String, String, Boolean> jmenoHesloCallback, Runnable pozadavekNaSkrytiOkna, ObrazovkyController controller) {
         super(new BorderPane(), 300, 350, "background");
         this.jmenoHesloCallback = jmenoHesloCallback;
         this.pozadavekNaSkrytiOkna = pozadavekNaSkrytiOkna;
+        this.controller = controller;
 
         this.registrujInputy();
         this.vytvorGUI();
@@ -46,7 +49,7 @@ public class Prihlaseni extends Obrazovka<BorderPane> {
 
         PasswordField hesloField = new PasswordField();
         hesloField.getStyleClass().add("tlacitkoAplikace");
-        hesloField.setText("hvezdicky");
+        hesloField.setPromptText("Zadejte heslo");
         hesloField.setOnMouseClicked(e -> {
             hesloField.clear();
             hesloField.setOnMouseClicked(null);
@@ -75,6 +78,7 @@ public class Prihlaseni extends Obrazovka<BorderPane> {
         Hyperlink link = new Hyperlink("Vytvořit účet");
         link.setFont(Font.font("Helvetica", FontWeight.BOLD, 10));
         link.setAlignment(Pos.BASELINE_CENTER);
+        link.setOnAction(event -> {controller.zobrazVytvoreniUctu();});
 
         this.getPane().setTop(
                 Sloupec(List.of(
@@ -86,7 +90,8 @@ public class Prihlaseni extends Obrazovka<BorderPane> {
                                 TlacitkoAplikace("Přihlásit se", t -> {
                             t.setStyle("-fx-font-weight: bold;");
                             t.setOnMouseClicked(mouseEvent -> this.prihlasitUzivatele());
-                        })
+                        }),
+                        link
                 ),
                     textFieldVBox -> {
                         textFieldVBox.setSpacing(20);

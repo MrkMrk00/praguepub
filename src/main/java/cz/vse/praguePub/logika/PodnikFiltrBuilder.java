@@ -4,11 +4,13 @@ import com.mongodb.client.AggregateIterable;
 import com.mongodb.client.MongoCollection;
 import cz.vse.praguePub.logika.dbObjekty.Pivo;
 import cz.vse.praguePub.logika.dbObjekty.Podnik;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.bson.Document;
 import org.bson.types.ObjectId;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import static com.mongodb.client.model.Filters.*;
 
@@ -66,7 +68,12 @@ public class PodnikFiltrBuilder extends FiltrBuilder {
     }
 
     public PodnikFiltrBuilder cisloPopisne(String cisloPopisne) {
-        this.pridejCustom(regex("adresa.mc_nazev", "^" + cisloPopisne));
+        this.pridejCustom(eq("adresa.cp", cisloPopisne));
+        return this;
+    }
+
+    public PodnikFiltrBuilder ulice(String nazevUlice) {
+        this.pridejCustom(regex("adresa.ulice", nazevUlice, "i"));
         return this;
     }
 
@@ -97,6 +104,34 @@ public class PodnikFiltrBuilder extends FiltrBuilder {
 
     public PodnikFiltrBuilder cenaPiva(double max) {
         this.pridejCustom(elemMatch("piva", lte("cena", max)));
+        return this;
+    }
+
+    public PodnikFiltrBuilder parse(Map<String, String> mapaSFiltry) {
+        String nazev = mapaSFiltry.getOrDefault("nazev", null);
+        if (nazev != null && !nazev.isBlank()) this.nazev(nazev);
+
+        String mcCislo = mapaSFiltry.getOrDefault("mc_cislo", null);
+        int mcCisloInt = mcCislo != null && !mcCislo.isBlank() ?
+                    NumberUtils.toInt(mcCislo, -1)
+                :   -1;
+        if (mcCisloInt != -1) this.cisloMestskeCasti(mcCisloInt);
+
+        String mcNazev = mapaSFiltry.getOrDefault("mc_nazev", null);
+        if (mcNazev != null && !mcNazev.isBlank()) this.nazevMestskeCasti(mcNazev);
+
+        String ulice = mapaSFiltry.getOrDefault("ulice", null);
+        if (ulice != null && !ulice.isBlank()) this.ulice(ulice);
+
+        String cp = mapaSFiltry.getOrDefault("cp", null);
+        if (cp != null && !cp.isBlank()) this.cisloPopisne(cp);
+
+        String psc = mapaSFiltry.getOrDefault("psc", null);
+        int pscInt = psc != null && !psc.isBlank() ?
+                    NumberUtils.toInt(psc, -1)
+                :   -1;
+        if (pscInt != -1) this.psc(pscInt);
+
         return this;
     }
 }

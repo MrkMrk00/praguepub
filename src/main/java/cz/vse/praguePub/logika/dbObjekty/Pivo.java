@@ -1,5 +1,6 @@
 package cz.vse.praguePub.logika.dbObjekty;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.bson.Document;
 import org.bson.types.ObjectId;
@@ -7,16 +8,17 @@ import org.bson.types.ObjectId;
 import java.util.Map;
 
 @Data
+@AllArgsConstructor
 public class Pivo implements DBObjekt {
     private final ObjectId _id;
-    private final String nazev;
-    private final String nazevPivovaru;
-    private final double stupnovitost;
-    private final double obsahAlkoholu;
-    private final String typ;
-    private final String typKvaseni;
-    private final Double cena;
-    private final Double objem;
+    private String nazev;
+    private String nazevPivovaru;
+    private double stupnovitost;
+    private double obsahAlkoholu;
+    private String typ;
+    private String typKvaseni;
+    private Double cena;
+    private Double objem;
 
     //levý sloupec: názvy, co se zobrazí v tabulce jako nadpisy sloupců; pravý sloupec: názvy atributů instance
     //(logika tabulky bere atribut instance přes getter, tudíž atribut musí být v camelCase a metoda musí začínat "get")
@@ -27,6 +29,21 @@ public class Pivo implements DBObjekt {
             { "Obsah alkoholu", "obsahAlkoholu" },
             { "Typ",            "typ"           },
             { "Typ kvašení",    "typKvaseni"    },
+            { "Cena",           "cena"          },
+            { "Objem",          "objem"         }
+    };
+
+    public static final String[][] PRO_TABULKU_BEZ_CENY_A_OBJEMU = {
+            { "Název",          "nazev"         },
+            { "Název pivovaru", "nazevPivovaru" },
+            { "Stupňovitost",   "stupnovitost"  },
+            { "Obsah alkoholu", "obsahAlkoholu" },
+            { "Typ",            "typ"           },
+            { "Typ kvašení",    "typKvaseni"    }
+    };
+
+    public static final String [][] PRO_TABULKU_CENIK = {
+            { "Název",          "nazev"         },
             { "Cena",           "cena"          },
             { "Objem",          "objem"         }
     };

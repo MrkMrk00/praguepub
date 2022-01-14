@@ -1,8 +1,13 @@
 package cz.vse.praguePub.gui.obrazovky;
 
+import cz.vse.praguePub.gui.ObrazovkyController;
 import cz.vse.praguePub.gui.obrazovky.abstraktniObrazovky.Obrazovka;
+import cz.vse.praguePub.logika.dbObjekty.Podnik;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 
 import java.util.List;
@@ -11,11 +16,27 @@ import java.util.Map;
 import static cz.vse.praguePub.gui.komponenty.Komponenty.*;
 
 public class PridaniRecenzce extends Obrazovka<BorderPane> {
-    public PridaniRecenzce() {
+
+    private final ObrazovkyController controller;
+    private final Podnik zobrazovanyPodnik;
+
+    private final StringProperty nazevPodniku = new SimpleStringProperty();
+
+    public PridaniRecenzce(ObrazovkyController controller, Podnik podnik) {
         super(new BorderPane(), 500, 400, "background");
 
+        this.controller = controller;
+        this.zobrazovanyPodnik = podnik;
+
+
+        this.nactiAtributyPodniku();
         this.registrujInputy();
         this.vytvorGUI();
+    }
+
+    private void nactiAtributyPodniku() {
+        this.nazevPodniku.setValue(this.zobrazovanyPodnik.getNazev());
+
     }
 
     private void registrujInputy() {
@@ -30,8 +51,11 @@ public class PridaniRecenzce extends Obrazovka<BorderPane> {
         this.getPane().setTop(
                 HorniPanel(
                         horniPanel -> {
-                            horniPanel.getChildren().add(NadpisOknaLabel("tady bude nazev podniku"));
+                            Label nadpis =  NadpisOknaLabel(this.nazevPodniku.toString());
+                            nadpis.textProperty().bind(this.nazevPodniku);
+                            horniPanel.getChildren().add(nadpis);
                             horniPanel.setAlignment(Pos.BASELINE_CENTER);
+
                         }
                 )
         );

@@ -15,13 +15,14 @@ import org.bson.types.ObjectId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Supplier;
 
 import static com.mongodb.client.model.Filters.*;
 
 public class DatabazeImpl implements Databaze {
-    private static final Logger LOGGER = LoggerFactory.getLogger(DatabazeImpl.class);
+    private static final Logger log = LoggerFactory.getLogger(DatabazeImpl.class);
 
     private final Uzivatel uzivatel;
     private final MongoDatabase db;
@@ -50,6 +51,13 @@ public class DatabazeImpl implements Databaze {
     }
 
     @Override
+    public String getUzivatelskeJmeno(ObjectId idUzivatele) {
+        Document nalezenyUzivatel = this.db.getCollection("uzivatele").find(eq("_id", idUzivatele)).first();
+        if (nalezenyUzivatel == null || !nalezenyUzivatel.containsKey("userName")) return null;
+        return nalezenyUzivatel.getString("userName");
+    }
+
+    @Override
     public boolean pridejDoOblibenych(Podnik podnik) {
         UpdateResult updateResult = this.db.getCollection("oblibene_podniky").updateOne(
                 eq("_id", this.uzivatel.get_id()),
@@ -57,7 +65,11 @@ public class DatabazeImpl implements Databaze {
                 new UpdateOptions().upsert(true)
         );
 
-        return (updateResult.wasAcknowledged() && updateResult.getModifiedCount() > 0);
+        boolean vysledek = (updateResult.wasAcknowledged() && updateResult.getModifiedCount() > 0);
+        if (vysledek) log.info("Úspěšně přidán podnik do oblíbených - " + podnik.getNazev());
+        else log.error("Nepodařilo se přidat podnik do oblíbených - " + podnik.getNazev());
+
+        return vysledek;
     }
 
     @Override
@@ -67,7 +79,30 @@ public class DatabazeImpl implements Databaze {
                 Updates.pull("podniky", podnik.get_id())
         );
 
-        return (updateResult.wasAcknowledged() && updateResult.getModifiedCount() > 0);
+        boolean vysledek = (updateResult.wasAcknowledged() && updateResult.getModifiedCount() > 0);
+        if (vysledek) log.info("Úspěšně odebrán podnik z oblíbených - " + podnik.getNazev());
+        else log.error("Nepodařilo se odebrat podnik z oblíbených - " + podnik.getNazev());
+
+        return vysledek;
+    }
+
+    @Override
+    public boolean jeVOblibenych(Podnik podnik) {
+        Document oblPodniky = this.db.getCollection("oblibene_podniky")
+                .find(eq("_id", this.uzivatel.get_id())).first();
+        if (oblPodniky == null || oblPodniky.isEmpty()) {
+            log.error("Nepodařilo se dostat k oblíbeným podnikům uživatele");
+            return false;
+        }
+
+        if (!oblPodniky.containsKey("podniky")) return false;
+
+        List<ObjectId> idOblibenychPodnikuUzivatele = oblPodniky.getList("podniky", ObjectId.class);
+        for (ObjectId id : idOblibenychPodnikuUzivatele) {
+            if (podnik.get_id().equals(id)) return true;
+        }
+
+        return false;
     }
 
     @Override
@@ -230,7 +265,7 @@ public class DatabazeImpl implements Databaze {
                 nahraj
         );
 
-        LOGGER.debug(kVraceni.toString());
+        log.debug(kVraceni.toString());
 
         return kVraceni;
     }

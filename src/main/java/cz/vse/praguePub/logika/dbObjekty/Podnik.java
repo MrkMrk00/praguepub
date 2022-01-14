@@ -6,7 +6,9 @@ import lombok.Data;
 import org.bson.Document;
 import org.bson.types.ObjectId;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import static com.mongodb.client.model.Filters.eq;
@@ -23,6 +25,12 @@ public class Podnik implements DBObjekt {
     private String adresa_cp;
     private final List<Recenze> recenze;
     private final List<Pivo> pivniListek;
+
+    public Podnik() {
+        this._id = new ObjectId();
+        this.recenze = new ArrayList<>();
+        this.pivniListek = new ArrayList<>();
+    }
 
     //levý sloupec: názvy, co se zobrazí v tabulce jako nadpisy sloupců; pravý sloupec: názvy atributů instance)
     //(logika tabulky bere atribut instance přes getter, tudíž atribut musí být v camelCase a metoda musí začínat "get")
