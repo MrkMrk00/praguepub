@@ -211,7 +211,10 @@ public class ObrazovkyController {
     }
 
     public void vyberPivo(Consumer<Pivo> callback) {
-        zobrazOkno(new VyberPivoDialog(this, callback).getScene());
+        Stage st = new Stage();
+        st.getIcons().add(Ikona());
+        st.setScene(new VyberPivoDialog(this, st, callback).getScene());
+        st.show();
     }
 
     public void zobrazInformaceOPodniku(Podnik podnik) {
@@ -239,5 +242,11 @@ public class ObrazovkyController {
         st.setResizable(false);
         st.setScene(new ZadejCenuAObjem(pivo, callbackWrapper).getScene());
         st.show();
+    }
+
+    public void vytvorNovePivo(Stage stage, Scene scene, Runnable odeslatCallback) {
+        Runnable zpet = () -> stage.setScene(scene);
+
+        stage.setScene(new PridejPivoObrazovka(this, odeslatCallback, zpet).getScene());
     }
 }

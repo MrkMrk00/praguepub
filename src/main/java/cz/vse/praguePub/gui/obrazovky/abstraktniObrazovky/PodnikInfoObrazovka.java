@@ -85,7 +85,6 @@ public abstract class PodnikInfoObrazovka extends Obrazovka<BorderPane> {
                         })
                 )
         );
-        this.pivaUPodniku.addAll(this.podnik.getPivniListek());
     }
 
     private HBox inputyGUI() {

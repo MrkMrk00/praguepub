@@ -5,7 +5,6 @@ import cz.vse.praguePub.gui.komponenty.AlertBuilder;
 import cz.vse.praguePub.gui.obrazovky.abstraktniObrazovky.Obrazovka;
 import cz.vse.praguePub.logika.Vysledek;
 import cz.vse.praguePub.logika.dbObjekty.Pivo;
-import javafx.geometry.Pos;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.layout.BorderPane;
@@ -21,15 +20,23 @@ import static cz.vse.praguePub.gui.komponenty.Komponenty.*;
 public class PridejPivoObrazovka extends Obrazovka<BorderPane> {
 
     private final ObrazovkyController controller;
+    private final Runnable zpetCallback;
+    private final Runnable odeslatCallback;
     private final Pivo pivo;
 
-    public PridejPivoObrazovka(ObrazovkyController controller) {
-        super(new BorderPane(), 350, 350, "background");
+    public PridejPivoObrazovka(ObrazovkyController controller, Runnable odeslatCallback, Runnable zpetCallback) {
+        super(new BorderPane(), 600, 600, "background");
         this.controller = controller;
+        this.zpetCallback = zpetCallback;
+        this.odeslatCallback = odeslatCallback;
         this.pivo = new Pivo();
 
         this.registrujInputy();
         this.vytvorGUI();
+    }
+
+    public PridejPivoObrazovka(ObrazovkyController controller, Runnable zpetCallback) {
+        this(controller, null, zpetCallback);
     }
 
     private void registrujInputy() {
@@ -100,6 +107,7 @@ public class PridejPivoObrazovka extends Obrazovka<BorderPane> {
     private void odeslat() {
         if (!this.nastavHodnoty()) return;
         Vysledek<Pivo> vysledek = this.controller.getDatabaze().vytvorNovePivo(this.pivo);
+        if (this.odeslatCallback != null) this.odeslatCallback.run();
 
         switch (vysledek.getTypVysledku()) {
             case DB_CHYBA -> ChybaDatabazeAlert(vysledek.getZprava()).show();
@@ -111,8 +119,11 @@ public class PridejPivoObrazovka extends Obrazovka<BorderPane> {
     private void vytvorGUI() {
         HBox horniPanel = HorniPanel(
                 hp -> {
-                    hp.getChildren().add(NadpisOknaLabel("Vytvoř nové pivo"));
-                    hp.setAlignment(Pos.CENTER);
+                    hp.getChildren().addAll(
+                            NadpisOknaLabel("Vytvoř nové pivo"),
+                            Spacer(),
+                            TlacitkoZpet(mouseEvent -> this.zpetCallback.run(), t -> {})
+                    );
                 }
         );
         this.getPane().setTop(horniPanel);
