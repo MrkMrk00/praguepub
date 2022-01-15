@@ -15,6 +15,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 
 import java.util.List;
 
@@ -25,6 +26,8 @@ public class ZobrazitPodnikObrazovka extends Obrazovka<BorderPane> {
     private final ObrazovkyController controller;
     private final Podnik zobrazovanyPodnik;
     private final Runnable tlacitkoZpetCallback;
+    private final Stage stage;
+
     private final BooleanProperty jeVOblibenych;
 
     private final StringProperty nazevPodniku = new SimpleStringProperty();
@@ -33,13 +36,14 @@ public class ZobrazitPodnikObrazovka extends Obrazovka<BorderPane> {
     private final ObservableList<Recenze> seznamRecenzi;
 
 
-    public ZobrazitPodnikObrazovka(ObrazovkyController controller, Podnik podnik, Runnable callback) {
-        super(new BorderPane(), 900, 700, "background");
+    public ZobrazitPodnikObrazovka(ObrazovkyController controller, Podnik podnik, Stage stage, Runnable callback) {
+        super(new BorderPane(), 800, 600, "background");
 
         this.controller = controller;
         this.zobrazovanyPodnik = podnik;
         this.tlacitkoZpetCallback = callback;
         this.seznamRecenzi = FXCollections.observableArrayList();
+        this.stage = stage;
         this.jeVOblibenych = new SimpleBooleanProperty(false);
 
         this.nactiAtributyPodniku();
@@ -108,8 +112,8 @@ public class ZobrazitPodnikObrazovka extends Obrazovka<BorderPane> {
                                             ),
                                             TlacitkoAplikace(
                                                     "Upravit",
-                                                    event -> this.controller.zobrazUpraveniPodniku(this.zobrazovanyPodnik),
-                                                    t -> HBox.setMargin(t, new Insets(6,8,0,5))),
+                                                    event -> this.controller.zobrazUpraveniPodniku(this.zobrazovanyPodnik, this.stage, this.getScene()),
+                                                    t -> HBox.setMargin(t, new Insets(6,0,0,5))),
                                             TlacitkoZpet(
                                                     event -> this.tlacitkoZpetCallback.run(),
                                                     t -> {}
@@ -128,9 +132,9 @@ public class ZobrazitPodnikObrazovka extends Obrazovka<BorderPane> {
                 Sloupec(List.of(
                                 LabelAplikace("Adresa:"),
                                 TlacitkoAplikace("Ceník", (t)->{
-                                    VBox.setMargin(t, new Insets(10,0,0,20));}),
+                                    VBox.setMargin(t, new Insets(10,0,0,10));}),
                                 TlacitkoAplikace("Přidat recenzi", (t)->{
-                                    VBox.setMargin(t, new Insets(10,0,0,20));
+                                    VBox.setMargin(t, new Insets(10,0,0,10));
                                     t.setOnMouseClicked(MouseEvent -> controller.zobrazPridejNovouRecenzi(zobrazovanyPodnik));
                                 })
 

@@ -77,29 +77,13 @@ public class PodnikyVMestskeCastiObrazovka extends OknoSeSeznamemPodniku {
                     this.getScene());
         };
 
-        Runnable zobrazUpravitPodnik = () -> {
-            if (tv.getItems().isEmpty() || !this.controller.jeUzivatelPrihlasen()) return;
-            this.controller.zobrazUpraveniPodniku(
-                    tv.getSelectionModel().getSelectedItem()
-            );
-        };
-
-        ContextMenu menu = new ContextMenu();
-            MenuItem zobrazInfo = new MenuItem("Zobraz podnik");
-            zobrazInfo.setOnAction(event -> zobrazInformaceOPodniku.run());
-
-            MenuItem upravPodnik = new MenuItem("Uprav podnik");
-            upravPodnik.setOnAction(event -> zobrazUpravitPodnik.run());
-
         tabulka.getTableView().setOnMouseClicked(
                 event -> {
                     if (event.getClickCount() == 2) zobrazInformaceOPodniku.run();
                 }
         );
 
-        menu.getItems().addAll(zobrazInfo, upravPodnik);
-
-        return menu;
+        return null;
     }
 
     @Override
