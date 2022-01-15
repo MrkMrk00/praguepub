@@ -13,14 +13,15 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
-import javafx.scene.layout.*;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Map;
-import java.util.function.Supplier;
 
 import static cz.vse.praguePub.gui.komponenty.Komponenty.*;
 
@@ -95,12 +96,6 @@ public abstract class PodnikInfoObrazovka extends Obrazovka<BorderPane> {
                 )
         );
 
-        Supplier<Region> spacer = () -> {
-            Region spacerElem = new Region();
-            HBox.setHgrow(spacerElem, Priority.ALWAYS);
-            return spacerElem;
-        };
-
         Button odeslat = TlacitkoAplikace(
                 "Odeslat",
                 tlacitko -> tlacitko.setOnMouseClicked(
@@ -122,14 +117,14 @@ public abstract class PodnikInfoObrazovka extends Obrazovka<BorderPane> {
                                         Radek( LabelAplikace("Ulice:"),         this.getMapaInputu().get("ulice")       ),
                                         Radek( LabelAplikace("PSČ:"),           this.getMapaInputu().get("psc")         ),
                                         Radek( LabelAplikace("Číslo popisné:"), this.getMapaInputu().get("cp")          ),
-                                        Radek( pridejPivo, spacer.get(), odeslat )
+                                        Radek( pridejPivo, Spacer(), odeslat )
                                 )
                         )
                 ),
                 sloupecRoot -> {}
         );
 
-        return Radek( spacer.get(), inputy, spacer.get() );
+        return Radek( Spacer(), inputy, Spacer() );
     }
 
     private Tabulka<Pivo> tabulkaPivGUI() {

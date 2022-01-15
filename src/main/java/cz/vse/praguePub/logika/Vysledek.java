@@ -29,4 +29,8 @@ public class Vysledek<T extends DBObjekt> {
     public Vysledek<T> pokracuj() {
         return (this.pokracovat != null) ? this.pokracovat.get() : null;
     }
+
+    public Class<? extends DBObjekt> getDBObjektClass() {
+        return this.dotazovany.getClass();
+    }
 }

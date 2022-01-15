@@ -1,6 +1,7 @@
 package cz.vse.praguePub.start;
 
 import cz.vse.praguePub.gui.ObrazovkyController;
+import cz.vse.praguePub.gui.obrazovky.PridejPivoObrazovka;
 import cz.vse.praguePub.gui.obrazovky.PridejPodnikObrazovka;
 import cz.vse.praguePub.logika.Databaze;
 import cz.vse.praguePub.logika.Uzivatel;
@@ -24,6 +25,10 @@ public class FXApp extends Application {
         Stage st = new Stage();
         st.setScene(new PridejPodnikObrazovka(con, null).getScene());
         st.show();
+
+        Stage st2 = new Stage();
+        st2.setScene(new PridejPivoObrazovka(con).getScene());
+        st2.show();
         //con.zapniAplikaci(primaryStage);
     }
 }

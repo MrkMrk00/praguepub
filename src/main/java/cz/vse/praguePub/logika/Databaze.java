@@ -105,4 +105,11 @@ public interface Databaze {
      * @return výsledek s možností dalšího vstupu nebo s informací o úspěšném vložení
      */
     Vysledek<Pivo> vytvorNovePivo(Pivo pivo);
+
+    /**
+     * Vymaže pivo z databáze. <b>Pouze v případě, že není nabízeno v žádném podniku!</b>
+     * @param pivo pivo, které se má vymazat
+     * @return výsledek (vymazalo se/je nabízeno v podniku, ...)
+     */
+    Vysledek<Pivo> vymazPivo(Pivo pivo);
 }
