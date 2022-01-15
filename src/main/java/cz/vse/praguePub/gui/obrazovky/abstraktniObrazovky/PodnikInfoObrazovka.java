@@ -49,7 +49,7 @@ public abstract class PodnikInfoObrazovka extends Obrazovka<BorderPane> {
 
     protected PodnikInfoObrazovka(ObrazovkyController controller, Integer cisloMC, String horniPanelLabelText) {
         this(controller, new Podnik(), horniPanelLabelText);
-        if (cisloMC != null) this.podnik.setAdresa_mc_cislo(cisloMC);
+        if (cisloMC != null) this.getMapaInputu().get("mc_cislo").setText(String.valueOf(cisloMC));
     }
 
     /**

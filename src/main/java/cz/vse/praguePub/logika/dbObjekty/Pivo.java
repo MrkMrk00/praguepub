@@ -80,7 +80,7 @@ public class Pivo implements DBObjekt {
                 Map.of(
                         "_id", this._id,
                         "nazev", this.nazev,
-                        "nazev_pivovaru", this.nazevPivovaru,
+                        "pivovar", this.nazevPivovaru,
                         "stupnovitost", this.stupnovitost,
                         "obsah_alkoholu", this.obsahAlkoholu,
                         "typ", this.typ,
