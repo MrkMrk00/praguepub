@@ -9,7 +9,7 @@ import java.util.Map;
 
 @Data
 @AllArgsConstructor
-public class Pivo implements DBObjekt {
+public non-sealed class Pivo implements DBObjekt {
     private final ObjectId _id;
     private String nazev;
     private String nazevPivovaru;

@@ -21,7 +21,7 @@ import java.util.function.Supplier;
 
 import static com.mongodb.client.model.Filters.*;
 
-public class DatabazeImpl implements Databaze {
+public final class DatabazeImpl implements Databaze {
     private static final Logger log = LoggerFactory.getLogger(DatabazeImpl.class);
 
     private final Uzivatel uzivatel;

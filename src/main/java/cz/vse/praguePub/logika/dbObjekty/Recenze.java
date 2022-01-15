@@ -7,7 +7,7 @@ import org.bson.types.ObjectId;
 import java.util.Map;
 
 @Data
-public class Recenze implements DBObjekt {
+public non-sealed class Recenze implements DBObjekt {
     private final ObjectId uzivatel;
     private final String text;
     private final double hodnoceni;

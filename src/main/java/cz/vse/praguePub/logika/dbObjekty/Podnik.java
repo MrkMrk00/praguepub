@@ -15,7 +15,7 @@ import static com.mongodb.client.model.Filters.eq;
 
 @Data
 @AllArgsConstructor
-public class Podnik implements DBObjekt {
+public non-sealed class Podnik implements DBObjekt {
     private ObjectId _id;
     private String nazev;
     private int adresa_mc_cislo;
