@@ -1,5 +1,6 @@
 package cz.vse.praguePub.gui.komponenty;
 
+import cz.vse.praguePub.gui.ObrazovkyController;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -8,11 +9,15 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
+import java.io.InputStream;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -44,6 +49,12 @@ public final class Komponenty {
         button.setPrefSize(5,5);
         HBox.setMargin(button, new Insets(6,8,0, 5));
         if (styluj != null) styluj.accept(button);
+        return button;
+    }
+
+    public static Button TlacitkoZpet(EventHandler<MouseEvent> onClick, Consumer<Button> styluj) {
+        Button button = TlacitkoZpet(styluj);
+        button.setOnMouseClicked(onClick);
         return button;
     }
 
@@ -82,7 +93,8 @@ public final class Komponenty {
     }
 
     public static TextField TextFieldAplikace(String defaultText, Consumer<TextField> styluj) {
-        TextField textField = new TextField(defaultText);
+        TextField textField = new TextField();
+        textField.setPromptText(defaultText);
         textField.getStyleClass().add("tlacitkoAplikace");
         textField.setOnMouseClicked(
                 event -> {
@@ -96,11 +108,8 @@ public final class Komponenty {
     }
 
     public static TextField TextFieldAplikace(String defaultText, EventHandler<MouseEvent> onClick, Consumer<TextField> styluj) {
-        TextField textField = new TextField(defaultText);
-        textField.getStyleClass().add("tlacitkoAplikace");
+        TextField textField = TextFieldAplikace(defaultText, styluj);
         textField.setOnMouseClicked(onClick);
-
-        if (styluj != null) styluj.accept(textField);
         return textField;
     }
 
@@ -124,11 +133,25 @@ public final class Komponenty {
         return label;
     }
 
+    public static Image Ikona() {
+        InputStream ikonaIS = ObrazovkyController.class.getClassLoader().getResourceAsStream("favicon.png");
+        if (ikonaIS == null) return null;
+
+        return new Image(ikonaIS);
+    }
+
     public static Stage zobrazOkno(Scene scene) {
         Stage st = new Stage();
         st.setScene(scene);
+        st.getIcons().add(Ikona());
         st.show();
         return st;
+    }
+
+    public static Region Spacer() {
+        Region spacerElem = new Region();
+        HBox.setHgrow(spacerElem, Priority.ALWAYS);
+        return spacerElem;
     }
 
 }

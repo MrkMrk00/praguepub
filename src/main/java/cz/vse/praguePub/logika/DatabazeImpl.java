@@ -1,5 +1,6 @@
 package cz.vse.praguePub.logika;
 
+import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.UpdateOptions;
@@ -15,13 +16,14 @@ import org.bson.types.ObjectId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Supplier;
 
 import static com.mongodb.client.model.Filters.*;
 
-public class DatabazeImpl implements Databaze {
-    private static final Logger LOGGER = LoggerFactory.getLogger(DatabazeImpl.class);
+public final class DatabazeImpl implements Databaze {
+    private static final Logger log = LoggerFactory.getLogger(DatabazeImpl.class);
 
     private final Uzivatel uzivatel;
     private final MongoDatabase db;
@@ -50,6 +52,13 @@ public class DatabazeImpl implements Databaze {
     }
 
     @Override
+    public String getUzivatelskeJmeno(ObjectId idUzivatele) {
+        Document nalezenyUzivatel = this.db.getCollection("uzivatele").find(eq("_id", idUzivatele)).first();
+        if (nalezenyUzivatel == null || !nalezenyUzivatel.containsKey("userName")) return null;
+        return nalezenyUzivatel.getString("userName");
+    }
+
+    @Override
     public boolean pridejDoOblibenych(Podnik podnik) {
         UpdateResult updateResult = this.db.getCollection("oblibene_podniky").updateOne(
                 eq("_id", this.uzivatel.get_id()),
@@ -57,7 +66,11 @@ public class DatabazeImpl implements Databaze {
                 new UpdateOptions().upsert(true)
         );
 
-        return (updateResult.wasAcknowledged() && updateResult.getModifiedCount() > 0);
+        boolean vysledek = (updateResult.wasAcknowledged() && updateResult.getModifiedCount() > 0);
+        if (vysledek) log.info("Úspěšně přidán podnik do oblíbených - " + podnik.getNazev());
+        else log.error("Nepodařilo se přidat podnik do oblíbených - " + podnik.getNazev());
+
+        return vysledek;
     }
 
     @Override
@@ -67,7 +80,30 @@ public class DatabazeImpl implements Databaze {
                 Updates.pull("podniky", podnik.get_id())
         );
 
-        return (updateResult.wasAcknowledged() && updateResult.getModifiedCount() > 0);
+        boolean vysledek = (updateResult.wasAcknowledged() && updateResult.getModifiedCount() > 0);
+        if (vysledek) log.info("Úspěšně odebrán podnik z oblíbených - " + podnik.getNazev());
+        else log.error("Nepodařilo se odebrat podnik z oblíbených - " + podnik.getNazev());
+
+        return vysledek;
+    }
+
+    @Override
+    public boolean jeVOblibenych(Podnik podnik) {
+        Document oblPodniky = this.db.getCollection("oblibene_podniky")
+                .find(eq("_id", this.uzivatel.get_id())).first();
+        if (oblPodniky == null || oblPodniky.isEmpty()) {
+            log.error("Nepodařilo se dostat k oblíbeným podnikům uživatele");
+            return false;
+        }
+
+        if (!oblPodniky.containsKey("podniky")) return false;
+
+        List<ObjectId> idOblibenychPodnikuUzivatele = oblPodniky.getList("podniky", ObjectId.class);
+        for (ObjectId id : idOblibenychPodnikuUzivatele) {
+            if (podnik.get_id().equals(id)) return true;
+        }
+
+        return false;
     }
 
     @Override
@@ -117,7 +153,7 @@ public class DatabazeImpl implements Databaze {
         //Vyhledá podniky ve stejné městské části se stejným jménem
         var dbQueryVysledekJmeno = this.db.getCollection("podniky").find(
                 and(
-                        eq("nazev", novyPodnik.getNazev()),
+                        regex("nazev", novyPodnik.getNazev(), "i"),
                         eq("adresa.mc_cislo", novyPodnik.getAdresa_mc_cislo())
                 )
         );
@@ -126,8 +162,8 @@ public class DatabazeImpl implements Databaze {
         //Vyhledá podniky podle ulice a čísla popisného
         var dbQueryVysledekAdresa = this.db.getCollection("podniky").find(
                 and(
-                        eq("adresa.ulice", novyPodnik.getAdresa_ulice()),
-                        eq("adresa.cp", novyPodnik.getAdresa_cp()),
+                        regex("adresa.ulice", novyPodnik.getAdresa_ulice(), "i"),
+                        regex("adresa.cp", "^" + novyPodnik.getAdresa_cp(), "i"),
                         eq("adresa.mc_cislo", novyPodnik.getAdresa_mc_cislo())
                 )
         );
@@ -169,14 +205,14 @@ public class DatabazeImpl implements Databaze {
 
     @Override
     public Vysledek<Pivo> vytvorNovePivo(Pivo pivo) {
-        var dbQuery = this.db.getCollection("piva").find(
+        FindIterable<Document> dbQuery = this.db.getCollection("piva").find(
                 and(
-                        eq("nazev", pivo.getNazev()),
+                        regex("nazev", pivo.getNazev(), "i"),
                         eq("stupnovitost", pivo.getStupnovitost())
                 )
         );
         List<Pivo> nalezene = this.prevedNalezenaPivaNaInstance(dbQuery);
-        if (nalezene != null && !nalezene.isEmpty()) return
+        if (!nalezene.isEmpty()) return
                 this.PODOBNY_OBJEKT(
                         pivo,
                         nalezene.get(0),
@@ -185,6 +221,27 @@ public class DatabazeImpl implements Databaze {
                 );
 
         return (this.uploadni(pivo)) ? this.OK(pivo) : this.CHYBA(pivo);
+    }
+
+    @Override
+    public Vysledek<Pivo> vymazPivo(Pivo pivo) {
+        Document pivoDoc = this.getPivaCollection().find(eq("_id", pivo.get_id())).first();
+        if (pivoDoc == null) return this.CHYBA(pivo);
+
+        FindIterable<Document> nalezenePodnikyDoc = this.getPodnikyCollection()
+                .find(
+                        elemMatch("piva", eq("pivo", pivo.get_id()) )
+                );
+
+        List<Podnik> nalezenePodniky = this.prevedNalezenePodnikyNaInstance(nalezenePodnikyDoc);
+        if (!nalezenePodniky.isEmpty()) return new Vysledek<>(
+                pivo, pivo, TypVysledku.ZADNA_ZMENA, "Pivo je nabízeno alespoň jedním podnikem", null
+        );
+
+        DeleteResult mongoVysledek = this.getPivaCollection().deleteOne(pivo.getDocument());
+        if (!mongoVysledek.wasAcknowledged() || mongoVysledek.getDeletedCount() == 0) return this.CHYBA(pivo);
+
+        return this.OK(pivo);
     }
 
     /**
@@ -230,7 +287,7 @@ public class DatabazeImpl implements Databaze {
                 nahraj
         );
 
-        LOGGER.debug(kVraceni.toString());
+        log.debug(kVraceni.toString());
 
         return kVraceni;
     }

@@ -5,6 +5,8 @@ import cz.vse.praguePub.logika.dbObjekty.Pivo;
 import cz.vse.praguePub.logika.dbObjekty.Podnik;
 import cz.vse.praguePub.util.PraguePubDatabaseException;
 import org.bson.Document;
+import org.bson.types.ObjectId;
+
 
 import java.util.List;
 
@@ -24,6 +26,8 @@ public interface Databaze {
      */
     Uzivatel getUzivatel();
 
+    String getUzivatelskeJmeno(ObjectId idUzivatele);
+
     /**
      * Přidá podnik do arraye s oblíbenými podniky v databázi.
      * @param podnik podnik, který se má do oblíbených přidat
@@ -37,6 +41,12 @@ public interface Databaze {
      * @return boolean - podařilo se / nepodařilo se
      */
     boolean odeberZOblibenych(Podnik podnik);
+
+    /**
+     * @param podnik podnik, který se bude hledat v databázi
+     * @return informaci, jestli je podnik v oblíbených podnikách uživatele
+     */
+    boolean jeVOblibenych(Podnik podnik);
 
     /**
      * @return list oblíbených podniků uživatele
@@ -96,4 +106,11 @@ public interface Databaze {
      * @return výsledek s možností dalšího vstupu nebo s informací o úspěšném vložení
      */
     Vysledek<Pivo> vytvorNovePivo(Pivo pivo);
+
+    /**
+     * Vymaže pivo z databáze. <b>Pouze v případě, že není nabízeno v žádném podniku!</b>
+     * @param pivo pivo, které se má vymazat
+     * @return výsledek (vymazalo se/je nabízeno v podniku, ...)
+     */
+    Vysledek<Pivo> vymazPivo(Pivo pivo);
 }

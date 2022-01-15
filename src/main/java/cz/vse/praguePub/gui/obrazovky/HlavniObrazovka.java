@@ -13,7 +13,6 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.layout.*;
 
 import java.io.InputStream;
-import java.util.Map;
 
 import static cz.vse.praguePub.gui.komponenty.Komponenty.*;
 
@@ -25,19 +24,19 @@ public class HlavniObrazovka extends Obrazovka<BorderPane> {
         super(new BorderPane(), 680, 600, "background");
 
         this.controller = controller;
-        this.registrujInputy(this.getMapaInputu());
-        this.vytvorGUI(this.getPane());
+        this.registrujInputy();
+        this.vytvorGUI();
     }
 
     /**
      * Zaregistruje textové vstupy do jedné mapy pro jednodušší přístup
      * @param mapaInputu mapa, do které se instance TextField přidají
      */
-    private void registrujInputy(Map<String, TextField> mapaInputu) {
-        mapaInputu.put(
+    private void registrujInputy() {
+        this.getMapaInputu().put(
                 "vyhledat", TextFieldAplikace("Vyhledat", t -> {
                     HBox.setMargin(t, new Insets(6,0,0,5));
-
+                    t.setPrefWidth(150);
                     t.setOnKeyPressed(
                             keyEvent -> {
                                 if (keyEvent.getCode() == KeyCode.ENTER) {
@@ -78,21 +77,21 @@ public class HlavniObrazovka extends Obrazovka<BorderPane> {
      * Metoda obsahuje tvorbu GUI.
      * @param pane hlavní Parent okna
      */
-    private void vytvorGUI(BorderPane pane) {
-        pane.setTop(
+    private void vytvorGUI() {
+        this.getPane().setTop(
                 HorniPanel(hp -> {
                     Label nadpisOkna = NadpisOknaLabel("PraguePub");
                     TextField inputVyhledat = this.getMapaInputu().get("vyhledat");
                     Button oblibenePodniky = TlacitkoAplikace(
-                            "Oblibene podniky",
+                            "Oblíbené podniky",
                             e -> this.controller.zobrazOblibenePodniky(),
                             null
                     );
 
                     Button prihlasitSe = TlacitkoAplikace(
-                            "Prihlasit se",
+                            "Přihlásit se",
                             mouseEvent -> this.controller.zobrazPrihlaseni(),
-                            t -> HBox.setMargin(t, new Insets(6, 8, 0, 0))
+                            t -> HBox.setMargin(t, new Insets(6, 20, 0, 0))
                     );
 
                     Region separator = new Region();
@@ -109,8 +108,6 @@ public class HlavniObrazovka extends Obrazovka<BorderPane> {
                 })
         );
 
-        pane.setCenter(this.pripravMapu());
-
-
+        this.getPane().setCenter(this.pripravMapu());
     }
 }
