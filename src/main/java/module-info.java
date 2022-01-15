@@ -1,4 +1,4 @@
-module praguePub.main {
+module cz.vse.praguePub.main {
     requires static lombok;
 
     requires org.slf4j;
