@@ -220,8 +220,15 @@ public class ObrazovkyController {
         zobrazOkno(new Scene(webView));
     }
 
-    public void zobrazPridejNovouRecenzi(Podnik podnik) {
-        zobrazOkno(new PridaniRecenzce(this,podnik).getScene());
+    public void zobrazPridejNovouRecenzi(Podnik podnik, Runnable callback) {
+        Stage st = new Stage();
+        st.getIcons().add(Ikona());
+        Runnable callbackWrapper = () -> {
+            st.hide();
+            callback.run();
+        };
+        st.setScene(new PridaniRecenzce(this, podnik, callbackWrapper).getScene());
+        st.show();
     }
 
     public void vyberPivo(Consumer<Pivo> callback) {

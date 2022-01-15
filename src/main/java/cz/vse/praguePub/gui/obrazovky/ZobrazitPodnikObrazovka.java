@@ -36,6 +36,11 @@ public class ZobrazitPodnikObrazovka extends Obrazovka<BorderPane> {
     private final ObservableList<Recenze> seznamRecenzi;
 
 
+    private final Runnable prenacti = () -> {
+        this.nactiHodnotyTabulky();
+        this.nactiAtributyPodniku();
+    };
+
     public ZobrazitPodnikObrazovka(ObrazovkyController controller, Podnik podnik, Stage stage, Runnable callback) {
         super(new BorderPane(), 800, 600, "background");
 
@@ -135,7 +140,7 @@ public class ZobrazitPodnikObrazovka extends Obrazovka<BorderPane> {
                                     VBox.setMargin(t, new Insets(10,0,0,10));}),
                                 TlacitkoAplikace("Přidat recenzi", (t)->{
                                     VBox.setMargin(t, new Insets(10,0,0,10));
-                                    t.setOnMouseClicked(MouseEvent -> controller.zobrazPridejNovouRecenzi(zobrazovanyPodnik));
+                                    t.setOnMouseClicked(MouseEvent -> controller.zobrazPridejNovouRecenzi(this.zobrazovanyPodnik, this.prenacti));
                                 })
 
                         ), sloupec -> {}
@@ -160,7 +165,6 @@ public class ZobrazitPodnikObrazovka extends Obrazovka<BorderPane> {
         this.seznamRecenzi.clear();
 
         for (Recenze recenze : this.zobrazovanyPodnik.getRecenze()) {
-            if (recenze.getUzivatelskeJmeno() != null) break;
             String jmeno = this.controller.getDatabaze().getUzivatelskeJmeno(recenze.getUzivatel());
             recenze.setUzivatelskeJmeno(jmeno);
         }
