@@ -1,5 +1,6 @@
 package cz.vse.praguePub.logika;
 
+import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.UpdateOptions;
@@ -152,7 +153,7 @@ public final class DatabazeImpl implements Databaze {
         //Vyhledá podniky ve stejné městské části se stejným jménem
         var dbQueryVysledekJmeno = this.db.getCollection("podniky").find(
                 and(
-                        eq("nazev", novyPodnik.getNazev()),
+                        regex("nazev", novyPodnik.getNazev(), "i"),
                         eq("adresa.mc_cislo", novyPodnik.getAdresa_mc_cislo())
                 )
         );
@@ -161,8 +162,8 @@ public final class DatabazeImpl implements Databaze {
         //Vyhledá podniky podle ulice a čísla popisného
         var dbQueryVysledekAdresa = this.db.getCollection("podniky").find(
                 and(
-                        eq("adresa.ulice", novyPodnik.getAdresa_ulice()),
-                        eq("adresa.cp", novyPodnik.getAdresa_cp()),
+                        regex("adresa.ulice", novyPodnik.getAdresa_ulice(), "i"),
+                        regex("adresa.cp", "^" + novyPodnik.getAdresa_cp(), "i"),
                         eq("adresa.mc_cislo", novyPodnik.getAdresa_mc_cislo())
                 )
         );
@@ -204,14 +205,14 @@ public final class DatabazeImpl implements Databaze {
 
     @Override
     public Vysledek<Pivo> vytvorNovePivo(Pivo pivo) {
-        var dbQuery = this.db.getCollection("piva").find(
+        FindIterable<Document> dbQuery = this.db.getCollection("piva").find(
                 and(
-                        eq("nazev", pivo.getNazev()),
+                        regex("nazev", pivo.getNazev(), "i"),
                         eq("stupnovitost", pivo.getStupnovitost())
                 )
         );
         List<Pivo> nalezene = this.prevedNalezenaPivaNaInstance(dbQuery);
-        if (nalezene != null && !nalezene.isEmpty()) return
+        if (!nalezene.isEmpty()) return
                 this.PODOBNY_OBJEKT(
                         pivo,
                         nalezene.get(0),
@@ -220,6 +221,27 @@ public final class DatabazeImpl implements Databaze {
                 );
 
         return (this.uploadni(pivo)) ? this.OK(pivo) : this.CHYBA(pivo);
+    }
+
+    @Override
+    public Vysledek<Pivo> vymazPivo(Pivo pivo) {
+        Document pivoDoc = this.getPivaCollection().find(eq("_id", pivo.get_id())).first();
+        if (pivoDoc == null) return this.CHYBA(pivo);
+
+        FindIterable<Document> nalezenePodnikyDoc = this.getPodnikyCollection()
+                .find(
+                        elemMatch("piva", eq("pivo", pivo.get_id()) )
+                );
+
+        List<Podnik> nalezenePodniky = this.prevedNalezenePodnikyNaInstance(nalezenePodnikyDoc);
+        if (!nalezenePodniky.isEmpty()) return new Vysledek<>(
+                pivo, pivo, TypVysledku.ZADNA_ZMENA, "Pivo je nabízeno alespoň jedním podnikem", null
+        );
+
+        DeleteResult mongoVysledek = this.getPivaCollection().deleteOne(pivo.getDocument());
+        if (!mongoVysledek.wasAcknowledged() || mongoVysledek.getDeletedCount() == 0) return this.CHYBA(pivo);
+
+        return this.OK(pivo);
     }
 
     /**

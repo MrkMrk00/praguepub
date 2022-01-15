@@ -10,6 +10,7 @@ import javafx.collections.ObservableList;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.layout.BorderPane;
+import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,14 +25,16 @@ public class VyberPivoDialog extends Obrazovka<BorderPane> {
 
     private final ObrazovkyController controller;
     private final Databaze db;
+    private final Stage stage;
 
     private final ObservableList<Pivo> zobrazovanaPiva;
     private final Consumer<Pivo> callbackSVysledkem;
 
-    public VyberPivoDialog(ObrazovkyController controller, Consumer<Pivo> callbackSVysledkem) {
+    public VyberPivoDialog(ObrazovkyController controller, Stage stage, Consumer<Pivo> callbackSVysledkem) {
         super(new BorderPane(), 600, 600, "background");
         this.controller = controller;
         this.db = controller.getDatabaze();
+        this.stage = stage;
 
         this.zobrazovanaPiva = FXCollections.observableArrayList();
         this.callbackSVysledkem = callbackSVysledkem;
@@ -50,20 +53,31 @@ public class VyberPivoDialog extends Obrazovka<BorderPane> {
         this.controller.zobrazFiltr(FiltrDialog.FILTR_PIVA, konzumujAtributy);
     }
 
-
     private void vytvorGUI() {
+        TableView<Pivo> tabulkaTV = this.pripravTabulku();
+
         this.getPane().setTop(
                 HorniPanel(horniPanel -> horniPanel.getChildren().addAll(
                         NadpisOknaLabel("Vyber pivo"),
-                        TlacitkoAplikace("Filter",
+                        Spacer(),
+                        TlacitkoAplikace("Filtr",
                                 t -> t.setOnMouseClicked(
                                         event -> this.zahajFiltrovani()
+                                )
+                        ),
+                        TlacitkoAplikace("Vytvoř nové pivo",
+                                t -> t.setOnMouseClicked(
+                                        event -> this.controller.vytvorNovePivo(
+                                                this.stage,
+                                                this.getScene(),
+                                                tabulkaTV::refresh
+                                        )
                                 )
                         )
                 ))
         );
 
-        this.getPane().setCenter(this.pripravTabulku());
+        this.getPane().setCenter(tabulkaTV);
     }
 
     private TableView<Pivo> pripravTabulku() {

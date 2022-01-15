@@ -14,10 +14,10 @@ public class ZadejCenuAObjem extends Obrazovka<BorderPane> {
     private final Pivo upravovanePivo;
     private final Runnable zavriOkno;
 
-    public ZadejCenuAObjem(Pivo pivo, Runnable zavriOkno) {
+    public ZadejCenuAObjem(Pivo pivo, Runnable callback) {
         super(new BorderPane(), 340, 150, "background");
         this.upravovanePivo = pivo;
-        this.zavriOkno = zavriOkno;
+        this.zavriOkno = callback;
 
         this.registrujInputy();
         this.pripravGUI();

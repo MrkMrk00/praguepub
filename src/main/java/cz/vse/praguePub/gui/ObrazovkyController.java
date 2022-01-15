@@ -15,6 +15,7 @@ import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import javafx.stage.Stage;
 import lombok.Getter;
+import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,7 +35,7 @@ public class ObrazovkyController {
     private static final Logger log = LoggerFactory.getLogger(ObrazovkyController.class);
     private static final String URL_REGISTRACNIHO_SERVERU = "http://localhost:3021/";
 
-    @Getter private Databaze databaze = null;
+    @Getter @Setter private Databaze databaze = null;
 
     /**
      * Konstruktor přihlásí hosta do databáze a vytvoří instanci databáze
@@ -152,6 +153,18 @@ public class ObrazovkyController {
     }
 
     /**
+     * Zobrazí okno pro úpravu informací o podniku.
+     * @param podnik podnik, který chce uživatel upravit
+     * @param st stage, do které se má upravení podniku zobrazit
+     * @param scene scéna, která se má zobrazit po stisknutí tlačítka zpět
+     */
+    public void zobrazUpraveniPodniku(Podnik podnik, Stage st, Scene scene) {
+        st.getIcons().add(Ikona());
+        st.setScene(new UpravitPodnikObrazovka(this, podnik, () -> st.setScene(scene)).getScene());
+        st.show();
+    }
+
+    /**
      * Zobrazí okno s podniky, která jsou v dané městské části
      * @param cisloMeskeCasti číslo městské části
      */
@@ -180,8 +193,8 @@ public class ObrazovkyController {
     /**
      * Zobrazí okno pro přidávání nového podniku do databáze
      */
-    public void zobrazPridejNovyPodnik() {
-        zobrazOkno(new PridejPodnikObrazovka(this).getScene());
+    public void zobrazPridejNovyPodnik(Integer mestskaCast) {
+        zobrazOkno(new PridejPodnikObrazovka(this, mestskaCast).getScene());
     }
 
     /**
@@ -212,27 +225,42 @@ public class ObrazovkyController {
     }
 
     public void vyberPivo(Consumer<Pivo> callback) {
-        zobrazOkno(new VyberPivoDialog(this, callback).getScene());
+        Stage st = new Stage();
+        st.getIcons().add(Ikona());
+        st.setScene(new VyberPivoDialog(this, st, callback).getScene());
+        st.show();
     }
 
     public void zobrazInformaceOPodniku(Podnik podnik) {
         Stage st = new Stage();
         st.getIcons().add(Ikona());
-        st.setScene(new ZobrazitPodnikObrazovka(this, podnik, st::hide).getScene());
+        st.setScene(new ZobrazitPodnikObrazovka(this, podnik, st, st::hide).getScene());
         st.show();
     }
 
     public void zobrazInformaceOPodniku(Podnik podnik, Stage stage, Scene predchoziScena) {
         Runnable zpet = () -> stage.setScene(predchoziScena);
 
-        stage.setScene(new ZobrazitPodnikObrazovka(this, podnik, zpet).getScene());
+        stage.setScene(new ZobrazitPodnikObrazovka(this, podnik, stage, zpet).getScene());
     }
 
-    public void zadejCenuAObjem(Pivo pivo) {
+    public void zadejCenuAObjem(Pivo pivo, Runnable callback) {
         Stage st = new Stage();
+
+        Runnable callbackWrapper = () -> {
+            callback.run();
+            st.hide();
+        };
+
         st.getIcons().add(Ikona());
         st.setResizable(false);
-        st.setScene(new ZadejCenuAObjem(pivo, st::hide).getScene());
+        st.setScene(new ZadejCenuAObjem(pivo, callbackWrapper).getScene());
         st.show();
+    }
+
+    public void vytvorNovePivo(Stage stage, Scene scene, Runnable odeslatCallback) {
+        Runnable zpet = () -> stage.setScene(scene);
+
+        stage.setScene(new PridejPivoObrazovka(this, odeslatCallback, zpet).getScene());
     }
 }
