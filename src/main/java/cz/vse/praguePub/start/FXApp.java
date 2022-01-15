@@ -12,6 +12,7 @@ public class FXApp extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        new ObrazovkyController().zapniAplikaci(primaryStage);
+        ObrazovkyController con = new ObrazovkyController();
+        con.zapniAplikaci(primaryStage);
     }
 }

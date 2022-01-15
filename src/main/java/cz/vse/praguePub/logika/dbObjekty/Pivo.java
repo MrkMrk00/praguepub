@@ -20,6 +20,10 @@ public class Pivo implements DBObjekt {
     private Double cena;
     private Double objem;
 
+    public Pivo() {
+        this._id = new ObjectId();
+    }
+
     //levý sloupec: názvy, co se zobrazí v tabulce jako nadpisy sloupců; pravý sloupec: názvy atributů instance
     //(logika tabulky bere atribut instance přes getter, tudíž atribut musí být v camelCase a metoda musí začínat "get")
     public static final String[][] PRO_TABULKU = {
@@ -76,7 +80,7 @@ public class Pivo implements DBObjekt {
                 Map.of(
                         "_id", this._id,
                         "nazev", this.nazev,
-                        "nazev_pivovaru", this.nazevPivovaru,
+                        "pivovar", this.nazevPivovaru,
                         "stupnovitost", this.stupnovitost,
                         "obsah_alkoholu", this.obsahAlkoholu,
                         "typ", this.typ,

@@ -12,6 +12,8 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
@@ -144,6 +146,12 @@ public final class Komponenty {
         st.getIcons().add(Ikona());
         st.show();
         return st;
+    }
+
+    public static Region Spacer() {
+        Region spacerElem = new Region();
+        HBox.setHgrow(spacerElem, Priority.ALWAYS);
+        return spacerElem;
     }
 
 }
