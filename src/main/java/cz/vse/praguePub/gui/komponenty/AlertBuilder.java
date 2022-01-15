@@ -4,6 +4,7 @@ import cz.vse.praguePub.logika.Vysledek;
 import cz.vse.praguePub.logika.dbObjekty.DBObjekt;
 import cz.vse.praguePub.logika.dbObjekty.Pivo;
 import cz.vse.praguePub.logika.dbObjekty.Podnik;
+import cz.vse.praguePub.logika.dbObjekty.Recenze;
 import javafx.event.EventHandler;
 import javafx.scene.Node;
 import javafx.scene.control.Alert;
@@ -85,12 +86,15 @@ public class AlertBuilder {
 
     public static <T extends DBObjekt> Alert UspesneVlozenObjekt(T vlozenyObjekt) {
         String zprava = null;
-        if (Podnik.class.equals(vlozenyObjekt.getClass()))
+
+        if (vlozenyObjekt instanceof Podnik)
             zprava = String.format("Úspěšně vložen podnik %s do databáze!", ((Podnik)vlozenyObjekt).getNazev());
 
-        if (Pivo.class.equals(vlozenyObjekt.getClass()))
+        else if (vlozenyObjekt instanceof Pivo)
             zprava = String.format("Úspěšně vloženo pivo %s do databáze!", ((Pivo)vlozenyObjekt).getNazev());
 
+        else if (vlozenyObjekt instanceof Recenze)
+            zprava = "Recenze byla přidána";
 
         return new AlertBuilder(Alert.AlertType.INFORMATION)
                 .setTitle("Prague Pub")
