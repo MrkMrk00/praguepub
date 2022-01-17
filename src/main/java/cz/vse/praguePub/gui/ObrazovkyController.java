@@ -73,7 +73,9 @@ public class ObrazovkyController {
     }
 
     public boolean jeUzivatelPrihlasen() {
-        boolean vysl = this.getDatabaze().getUzivatel().isPrihlasen() && !this.getDatabaze().getUzivatel().isGuest();
+        boolean vysl = this.getDatabaze().getUzivatel() != null
+                && this.getDatabaze().getUzivatel().isPrihlasen()
+                && !this.getDatabaze().getUzivatel().isGuest();
         if (!vysl) this.zobrazPrihlaseni();
         return vysl;
     }
