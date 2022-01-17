@@ -133,7 +133,9 @@ public class ObrazovkyController {
                 return false;
             }
 
-            return this.databaze.getUzivatel().isPrihlasen();
+            boolean vysledekPrihlaseni = this.databaze.getUzivatel().isPrihlasen();
+            if (!vysledekPrihlaseni) this.prihlasHosta();
+            return vysledekPrihlaseni;
         };
 
         Runnable hidePozadavek = prihlaseniStage::hide;
