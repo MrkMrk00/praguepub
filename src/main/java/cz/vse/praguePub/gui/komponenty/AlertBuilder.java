@@ -9,25 +9,39 @@ import javafx.event.EventHandler;
 import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.DialogEvent;
+import javafx.scene.image.ImageView;
 import lombok.Getter;
 
+import static cz.vse.praguePub.gui.komponenty.Komponenty.Ikona;
+
+/**
+ * Builder class pro vytváření alertů
+ */
 public class AlertBuilder {
     @Getter private final Alert alert;
-    
+
+    /**
+     * Vytvoří instanci AlertBuilderu
+     * @param alertType typ alertu
+     */
     public AlertBuilder(Alert.AlertType alertType) {
         this.alert = new Alert(alertType);
+        ImageView iv = new ImageView(Ikona());
+        iv.setFitWidth(60);
+        iv.setFitHeight(60);
+        this.alert.setGraphic(iv);
     }
-    
+
     public AlertBuilder setTitle(String title) {
         this.alert.setTitle(title);
         return this;
     }
-    
+
     public AlertBuilder setHeaderText(String text) {
         this.alert.setHeaderText(text);
         return this;
     }
-    
+
     public AlertBuilder setContent(String text) {
         this.alert.setContentText(text);
         return this;
@@ -43,6 +57,11 @@ public class AlertBuilder {
         return this;
     }
 
+    /**
+     * Vrátí alert předpřipravený pro chybu databáze
+     * @param chybaText text chyby
+     * @return Alert
+     */
     public static Alert ChybaDatabazeAlert(String chybaText) {
         return new AlertBuilder(Alert.AlertType.ERROR)
                 .setTitle("PraguePub")
@@ -51,6 +70,11 @@ public class AlertBuilder {
                 .getAlert();
     }
 
+    /**
+     * Vrátí alert předpřipravený pro dotaz pro uživatele, jestli chce opravdu pokračovat
+     * @param vysledek výsledek operace v databázi
+     * @return Alert
+     */
     public static <T extends DBObjekt> Alert OpravduPokracovatAlert(Vysledek<T> vysledek) {
         T podobnyGen = vysledek.getNajity();
         String popis = null;
@@ -84,6 +108,11 @@ public class AlertBuilder {
                 .getAlert();
     }
 
+    /**
+     * Vrátí alert předpřipravený pro zobrazení okna s konfirmací úspěšného vložení do databáze
+     * @param vlozenyObjekt úspěšně vložený objekt
+     * @return Alert
+     */
     public static <T extends DBObjekt> Alert UspesneVlozenObjekt(T vlozenyObjekt) {
         String zprava = null;
 
