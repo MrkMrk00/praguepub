@@ -1,6 +1,5 @@
 package cz.vse.praguePub.logika;
 
-
 import lombok.ToString;
 
 /**

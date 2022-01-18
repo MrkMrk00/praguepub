@@ -9,6 +9,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class UzivatelTest {
     private static final Logger log = LoggerFactory.getLogger(UzivatelTest.class);
+
     @Test
     public void prihlaseniHosta() {
         Uzivatel host = null;
@@ -21,6 +22,7 @@ public class UzivatelTest {
         assertNotNull(host);
         assertTrue(host.isPrihlasen());
         assertTrue(host.isGuest());
+        assertDoesNotThrow(host::getPraguePubDatabaze);
     }
 
     @Test
@@ -38,5 +40,6 @@ public class UzivatelTest {
         assertNotNull(uzivatel);
         assertTrue(uzivatel.isPrihlasen());
         assertFalse(uzivatel.isGuest());
+        assertDoesNotThrow(uzivatel::getPraguePubDatabaze);
     }
 }

@@ -111,6 +111,9 @@ public class ZobrazitPodnikObrazovka extends Obrazovka<BorderPane> {
                                                                 db.odeberZOblibenych(this.zobrazovanyPodnik);
                                                             else db.pridejDoOblibenych(this.zobrazovanyPodnik);
                                                         }
+                                                        else {
+                                                            this.controller.zobrazPrihlaseni();
+                                                        }
                                                         this.nactiAtributyPodniku();
                                                     },
                                                     t -> {
