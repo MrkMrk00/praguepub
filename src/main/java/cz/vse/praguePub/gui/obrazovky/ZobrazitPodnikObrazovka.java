@@ -70,8 +70,10 @@ public class ZobrazitPodnikObrazovka extends Obrazovka<BorderPane> {
         this.prumerneHodnoceni.setValue(this.zobrazovanyPodnik.getPrumerneHodnoceni());
         this.seznamRecenzi.clear();
         this.seznamRecenzi.addAll(this.zobrazovanyPodnik.getRecenze());
-        boolean jeVOblibenych = this.controller.getDatabaze().jeVOblibenych(this.zobrazovanyPodnik);
-        this.jeVOblibenych.setValue(jeVOblibenych);
+        if(!this.controller.getDatabaze().getUzivatel().isGuest()) {
+            boolean jeVOblibenych = this.controller.getDatabaze().jeVOblibenych(this.zobrazovanyPodnik);
+            this.jeVOblibenych.setValue(jeVOblibenych);
+        }
     }
 
     private void vytvorGUI() {
@@ -103,9 +105,12 @@ public class ZobrazitPodnikObrazovka extends Obrazovka<BorderPane> {
                                             TlacitkoAplikace(
                                                     this.jeVOblibenych.get() ? "Odeber z oblíbených" : "Přidej do oblíbených",
                                                     event -> {
-                                                        Databaze db = this.controller.getDatabaze();
-                                                        if (db.jeVOblibenych(this.zobrazovanyPodnik)) db.odeberZOblibenych(this.zobrazovanyPodnik);
-                                                        else db.pridejDoOblibenych(this.zobrazovanyPodnik);
+                                                        if(!this.controller.getDatabaze().getUzivatel().isGuest()) {
+                                                            Databaze db = this.controller.getDatabaze();
+                                                            if (db.jeVOblibenych(this.zobrazovanyPodnik))
+                                                                db.odeberZOblibenych(this.zobrazovanyPodnik);
+                                                            else db.pridejDoOblibenych(this.zobrazovanyPodnik);
+                                                        }
                                                         this.nactiAtributyPodniku();
                                                     },
                                                     t -> {
@@ -117,6 +122,7 @@ public class ZobrazitPodnikObrazovka extends Obrazovka<BorderPane> {
                                                         );
                                                     }
                                             ),
+
                                             TlacitkoAplikace(
                                                     "Upravit",
                                                     event -> this.controller.zobrazUpraveniPodniku(this.zobrazovanyPodnik, this.stage, this.getScene()),
