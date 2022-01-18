@@ -137,7 +137,8 @@ public class ZobrazitPodnikObrazovka extends Obrazovka<BorderPane> {
                 Sloupec(List.of(
                                 LabelAplikace("Adresa:"),
                                 TlacitkoAplikace("Ceník", (t)->{
-                                    VBox.setMargin(t, new Insets(10,0,0,10));}),
+                                    VBox.setMargin(t, new Insets(10,0,0,10));
+                                    t.setOnMouseClicked(MouseEvent -> controller.ukazCenik());}),
                                 TlacitkoAplikace("Přidat recenzi", (t)->{
                                     VBox.setMargin(t, new Insets(10,0,0,10));
                                     t.setOnMouseClicked(MouseEvent -> controller.zobrazPridejNovouRecenzi(this.zobrazovanyPodnik, this.prenacti));
