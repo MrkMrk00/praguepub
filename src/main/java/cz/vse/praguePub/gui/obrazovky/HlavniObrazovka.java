@@ -82,6 +82,7 @@ public class HlavniObrazovka extends Obrazovka<BorderPane> {
                 HorniPanel(hp -> {
                     Label nadpisOkna = NadpisOknaLabel("PraguePub");
                     TextField inputVyhledat = this.getMapaInputu().get("vyhledat");
+                    inputVyhledat.setFocusTraversable(false);
                     Button oblibenePodniky = TlacitkoAplikace(
                             "Oblíbené podniky",
                             e -> this.controller.zobrazOblibenePodniky(),

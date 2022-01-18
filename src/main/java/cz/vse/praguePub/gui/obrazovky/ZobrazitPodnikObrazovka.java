@@ -14,6 +14,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
@@ -84,7 +85,7 @@ public class ZobrazitPodnikObrazovka extends Obrazovka<BorderPane> {
                             vrchniBar.setLeft(
                                     Radek(
                                             nadpis,
-                                            LabelAplikace(
+                                            Radek(LabelAplikace(
                                                     String.valueOf(this.prumerneHodnoceni.get()),
                                                     label -> {
                                                         this.prumerneHodnoceni.addListener(
@@ -92,7 +93,8 @@ public class ZobrazitPodnikObrazovka extends Obrazovka<BorderPane> {
                                                                     label.setText(newValue.toString());
                                                                 }
                                                         );
-                                                    })
+                                                        HBox.setMargin(label, new Insets( 6,0,0,5));
+                                                    }))
                                     )
                             );
 
@@ -135,16 +137,17 @@ public class ZobrazitPodnikObrazovka extends Obrazovka<BorderPane> {
 
         this.getPane().setLeft(
                 Sloupec(List.of(
-                                LabelAplikace("Adresa:"),
+                                Spacer(),Radek(LabelAplikace("Adresa:"),
+                                LabelAplikace(this.adresaPodniku.get(), (t)->{t.setPrefWidth(500);} )),
                                 TlacitkoAplikace("Ceník", (t)->{
                                     VBox.setMargin(t, new Insets(10,0,0,10));
                                     t.setOnMouseClicked(MouseEvent -> controller.ukazCenik(this.zobrazovanyPodnik,this.prenacti));}),
                                 TlacitkoAplikace("Přidat recenzi", (t)->{
                                     VBox.setMargin(t, new Insets(10,0,0,10));
                                     t.setOnMouseClicked(MouseEvent -> controller.zobrazPridejNovouRecenzi(this.zobrazovanyPodnik, this.prenacti));
-                                })
-
-                        ), sloupec -> {}
+                                }),
+                                Spacer()
+                        ), sloupec -> {VBox.setVgrow(sloupec, Priority.ALWAYS);}
                 )
 
         );

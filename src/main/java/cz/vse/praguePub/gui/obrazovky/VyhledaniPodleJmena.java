@@ -4,10 +4,12 @@ import cz.vse.praguePub.gui.ObrazovkyController;
 import cz.vse.praguePub.gui.komponenty.Tabulka;
 import cz.vse.praguePub.gui.obrazovky.abstraktniObrazovky.Obrazovka;
 import cz.vse.praguePub.logika.Databaze;
+import cz.vse.praguePub.logika.dbObjekty.Pivo;
 import cz.vse.praguePub.logika.dbObjekty.Podnik;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
+import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.BorderPane;
@@ -19,11 +21,12 @@ public class VyhledaniPodleJmena extends Obrazovka<BorderPane> {
 
     private final ObservableList<Podnik> seznamPodnikuProTabulku;
     private final Databaze db;
+    private final ObrazovkyController controller;
 
 
     public VyhledaniPodleJmena(ObrazovkyController controller) {
         super(new BorderPane(), 900,600, "background");
-
+        this.controller = controller;
         this.seznamPodnikuProTabulku = FXCollections.observableArrayList();
         this.db = controller.getDatabaze();
 
@@ -34,7 +37,7 @@ public class VyhledaniPodleJmena extends Obrazovka<BorderPane> {
 
     public VyhledaniPodleJmena(ObrazovkyController controller, String defaultniDotaz) {
         super(new BorderPane(), 900,600, "background");
-
+        this.controller = controller;
         this.seznamPodnikuProTabulku = FXCollections.observableArrayList();
         this.db = controller.getDatabaze();
 
@@ -97,6 +100,17 @@ public class VyhledaniPodleJmena extends Obrazovka<BorderPane> {
     private TableView<Podnik> pripravtabulku() {
         Tabulka<Podnik> oblibenePodnikyTabulka = new Tabulka<>(Podnik.PRO_TABULKU);
         oblibenePodnikyTabulka.getTableView().setItems(this.seznamPodnikuProTabulku);
+        oblibenePodnikyTabulka.getTableView().setRowFactory(tableView -> {
+            TableRow<Podnik> tableRow = new TableRow<>();
+            tableRow.setOnMouseClicked(
+                    mouseEvent -> {
+                        Podnik vybranyPodnik = tableRow.getItem();
+                        if (mouseEvent.getClickCount() == 2 && vybranyPodnik != null)
+                            this.controller.zobrazInformaceOPodniku(vybranyPodnik);
+                    }
+            );
+            return tableRow;
+        });
 
         return oblibenePodnikyTabulka.getTableView();
     }

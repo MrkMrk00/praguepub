@@ -144,8 +144,10 @@ public class ObrazovkyController {
         prihlaseniStage.setAlwaysOnTop(true);
         prihlaseniStage.setResizable(false);
 
+        prihlaseniStage.getIcons().add(Ikona());
+
         prihlaseniStage.setScene(new PrihlaseniDialog(prihlas, hidePozadavek,this).getScene());
-        prihlaseniStage.show();
+        prihlaseniStage.showAndWait();
     }
 
     /**

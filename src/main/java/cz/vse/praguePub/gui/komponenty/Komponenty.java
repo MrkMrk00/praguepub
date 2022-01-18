@@ -117,6 +117,7 @@ public final class Komponenty {
         Label label = new Label(defaultText);
         label.getStyleClass().addAll("tlacitkoAplikace", "labelAplikace");
         label.setPrefWidth(150);
+
         return label;
     }
 

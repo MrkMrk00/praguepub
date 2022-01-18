@@ -41,7 +41,9 @@ public class UpravitPodnikObrazovka extends PodnikInfoObrazovka {
 
     @Override
     protected void odeslat() {
-
+    this.nastavHodnoty();
+    this.controller.getDatabaze().upravPodnik(this.podnik);
+    this.zpetCallback.run();
     }
 }
 

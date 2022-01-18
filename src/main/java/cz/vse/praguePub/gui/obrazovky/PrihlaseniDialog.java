@@ -71,7 +71,7 @@ public class PrihlaseniDialog extends Obrazovka<BorderPane> {
         final boolean vysledekPrihlaseni = this.jmenoHesloCallback.apply(jmenoTF.getText(), hesloTF.getText());
         this.alert.accept(vysledekPrihlaseni);
         
-        if (vysledekPrihlaseni) this.pozadavekNaSkrytiOkna.run();
+        this.pozadavekNaSkrytiOkna.run();
     }
 
     private void vytvorGUI() {
