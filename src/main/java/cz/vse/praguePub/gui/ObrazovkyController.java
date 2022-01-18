@@ -165,6 +165,10 @@ public class ObrazovkyController {
      * @param scene scéna, která se má zobrazit po stisknutí tlačítka zpět
      */
     public void zobrazUpraveniPodniku(Podnik podnik, Stage st, Scene scene) {
+        if(databaze.getUzivatel().isGuest()){
+            this.zobrazPrihlaseni();
+            return;
+        }
         st.getIcons().add(Ikona());
         st.setScene(new UpravitPodnikObrazovka(this, podnik, () -> st.setScene(scene)).getScene());
         st.show();
@@ -227,6 +231,10 @@ public class ObrazovkyController {
     }
 
     public void zobrazPridejNovouRecenzi(Podnik podnik, Runnable callback) {
+        if(databaze.getUzivatel().isGuest()){
+            this.zobrazPrihlaseni();
+            return;
+        }
         Stage st = new Stage();
         st.getIcons().add(Ikona());
         Runnable callbackWrapper = () -> {
@@ -272,6 +280,10 @@ public class ObrazovkyController {
     }
 
     public void vytvorNovePivo(Stage stage, Scene scene, Runnable odeslatCallback) {
+        if(databaze.getUzivatel().isGuest()){
+            this.zobrazPrihlaseni();
+            return;
+        }
         Runnable zpet = () -> stage.setScene(scene);
 
         stage.setScene(new PridejPivoObrazovka(this, odeslatCallback, zpet).getScene());
