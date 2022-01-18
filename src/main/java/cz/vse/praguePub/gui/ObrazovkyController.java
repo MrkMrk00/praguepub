@@ -282,7 +282,7 @@ public class ObrazovkyController {
             st.hide();
             callback.run();
         };
-        st.setScene(new Cenik(podnik,callbackWrapper).getScene());
+        st.setScene(new Cenik(this,podnik,callbackWrapper).getScene());
         st.show();
 
     };
