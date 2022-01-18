@@ -275,12 +275,15 @@ public class ObrazovkyController {
         stage.setScene(new PridejPivoObrazovka(this, odeslatCallback, zpet).getScene());
     }
 
-    public void ukazCenik(){
+    public void ukazCenik(Podnik podnik, Runnable callback){
         Stage st = new Stage();
         st.getIcons().add(Ikona());
-        st.setScene(new Cenik("Nazev").getScene());
+        Runnable callbackWrapper = () -> {
+            st.hide();
+            callback.run();
+        };
+        st.setScene(new Cenik(podnik,callbackWrapper).getScene());
         st.show();
 
-
-    }
+    };
 }
