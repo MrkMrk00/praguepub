@@ -25,6 +25,11 @@ import java.util.Map;
 
 import static cz.vse.praguePub.gui.komponenty.Komponenty.*;
 
+/**
+ * Třída, která obsahuje implementaci metod zaměřující se na podrobné informace o podniku
+ * pro vytváření jednotlivých částí grafického rozhraní.
+ */
+
 public abstract class PodnikInfoObrazovka extends Obrazovka<BorderPane> {
     private static final Logger log = LoggerFactory.getLogger(PodnikInfoObrazovka.class);
 
@@ -87,6 +92,10 @@ public abstract class PodnikInfoObrazovka extends Obrazovka<BorderPane> {
         );
     }
 
+    /**
+     * Metoda, která vytváří inputy do grafického rozhraní.
+     */
+
     private HBox inputyGUI() {
         Button pridejPivo = TlacitkoAplikace(
                 "Přidej pivo",
@@ -126,6 +135,10 @@ public abstract class PodnikInfoObrazovka extends Obrazovka<BorderPane> {
         return Radek( Spacer(), inputy, Spacer() );
     }
 
+    /**
+     * Metoda, která vytváří tabulku piv do grafického rozhraní.
+     */
+
     private Tabulka<Pivo> tabulkaPivGUI() {
         Tabulka<Pivo> tabulkaPiv = new Tabulka<>(Pivo.PRO_TABULKU);
         TableView<Pivo> tv = tabulkaPiv.getTableView();
@@ -148,6 +161,10 @@ public abstract class PodnikInfoObrazovka extends Obrazovka<BorderPane> {
         return tabulkaPiv;
     }
 
+    /**
+     * Metoda, která vytváří grafické rozhraní.
+     */
+
     private void vytvorGUI() {
         HBox horniPanel = HorniPanel(
                 hp -> {
@@ -167,6 +184,10 @@ public abstract class PodnikInfoObrazovka extends Obrazovka<BorderPane> {
         );
         this.getPane().setBottom(tabulka);
     }
+
+    /**
+     * Metoda, která slouží k nastavení atributů jednotlivých instancí.
+     */
 
     protected boolean nastavHodnoty() {
         StringBuilder chybne = new StringBuilder();
@@ -221,6 +242,10 @@ public abstract class PodnikInfoObrazovka extends Obrazovka<BorderPane> {
         return false;
     }
 
+    /**
+     * Metoda, která vytváří alert při chybném nastavení hodnot.
+     */
+
     private void zobrazChybaPriNastavovani(String chybne) {
         new AlertBuilder(Alert.AlertType.ERROR)
                 .setTitle("Prague Pub")
@@ -232,6 +257,10 @@ public abstract class PodnikInfoObrazovka extends Obrazovka<BorderPane> {
                 .getAlert()
                 .show();
     }
+
+    /**
+     * Metoda, která slouží k vytvoření dalších metod odeslat v jednotlivých obrazovkách rozhraní.
+     */
 
     protected abstract void odeslat();
 }
