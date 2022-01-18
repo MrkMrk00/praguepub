@@ -30,6 +30,9 @@ public class Vysledek<T extends DBObjekt> {
         return (this.pokracovat != null) ? this.pokracovat.get() : null;
     }
 
+    /**
+     * @return class databázového objektu, který výsledek opisuje
+     */
     public Class<? extends DBObjekt> getDBObjektClass() {
         return this.dotazovany.getClass();
     }

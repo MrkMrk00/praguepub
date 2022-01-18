@@ -22,16 +22,24 @@ import java.util.function.Supplier;
 
 import static com.mongodb.client.model.Filters.*;
 
+/**
+ * Implementace databáze. Veškerá logika komunikace s databází aplikace probíhá zde.
+ */
 public final class DatabazeImpl implements Databaze {
     private static final Logger log = LoggerFactory.getLogger(DatabazeImpl.class);
 
     private final Uzivatel uzivatel;
     private final MongoDatabase db;
 
+    /**
+     * Pokusí se přihlásit do databáze aplikace
+     * @param uzivatel uživatel, který má být do databáze přihlášen
+     * @throws PraguePubDatabaseException
+     */
     DatabazeImpl(Uzivatel uzivatel) throws PraguePubDatabaseException {
         this.uzivatel = uzivatel;
-        if (uzivatel == null) {
-            throw new PraguePubDatabaseException("Nelze se připojit do databáze jako host");
+        if (uzivatel == null || !uzivatel.isPrihlasen()) {
+            throw new PraguePubDatabaseException("Nelze se připojit do databáze");
         }
         this.db = uzivatel.getPraguePubDatabaze();
     }
@@ -131,23 +139,6 @@ public final class DatabazeImpl implements Databaze {
         return new PodnikFiltrBuilder(this.getPodnikyCollection(), this.getPivaCollection());
     }
 
-    private List<Podnik> prevedNalezenePodnikyNaInstance(Iterable<Document> nalezenePodniky) {
-        List<Podnik> vratit = new ArrayList<>();
-        nalezenePodniky.forEach(podnikDoc ->
-                vratit.add(Podnik.inicializujZDokumentu(podnikDoc, this.db.getCollection("piva")))
-        );
-        return vratit;
-    }
-
-    private List<Pivo> prevedNalezenaPivaNaInstance(Iterable<Document> nalezenaPiva) {
-        List<Pivo> vratit = new ArrayList<>();
-        nalezenaPiva.forEach(pivoDoc ->
-                vratit.add(Pivo.inicializujZDokumentu(pivoDoc, null, null))
-        );
-        return vratit;
-    }
-
-
     @Override
     public Vysledek<Podnik> zalozNovyPodnik(Podnik novyPodnik) {
         //Vyhledá podniky ve stejné městské části se stejným jménem
@@ -242,6 +233,32 @@ public final class DatabazeImpl implements Databaze {
         if (!mongoVysledek.wasAcknowledged() || mongoVysledek.getDeletedCount() == 0) return this.CHYBA(pivo);
 
         return this.OK(pivo);
+    }
+
+    /**
+     * Převede nalezené podniky na instance třídy Podnik
+     * @param nalezenePodniky výsledek filtrování v databázi
+     * @return list s podniky z databáze
+     */
+    private List<Podnik> prevedNalezenePodnikyNaInstance(Iterable<Document> nalezenePodniky) {
+        List<Podnik> vratit = new ArrayList<>();
+        nalezenePodniky.forEach(podnikDoc ->
+                vratit.add(Podnik.inicializujZDokumentu(podnikDoc, this.db.getCollection("piva")))
+        );
+        return vratit;
+    }
+
+    /**
+     * Převede nalezená piva na instance třídy Pivo
+     * @param nalezenaPiva výsledek filtrování v databázi
+     * @return list s pivy z databáze
+     */
+    private List<Pivo> prevedNalezenaPivaNaInstance(Iterable<Document> nalezenaPiva) {
+        List<Pivo> vratit = new ArrayList<>();
+        nalezenaPiva.forEach(pivoDoc ->
+                vratit.add(Pivo.inicializujZDokumentu(pivoDoc, null, null))
+        );
+        return vratit;
     }
 
     /**

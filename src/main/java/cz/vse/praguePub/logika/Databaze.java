@@ -26,6 +26,11 @@ public interface Databaze {
      */
     Uzivatel getUzivatel();
 
+    /**
+     * Vrátí uživatelské jméno uživatele z databáze
+     * @param idUzivatele ObjectID uživatele
+     * @return uživatelské jméno jako String
+     */
     String getUzivatelskeJmeno(ObjectId idUzivatele);
 
     /**

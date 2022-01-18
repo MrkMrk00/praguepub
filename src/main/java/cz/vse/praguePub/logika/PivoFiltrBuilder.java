@@ -13,12 +13,23 @@ import java.util.Map;
 
 import static com.mongodb.client.model.Filters.*;
 
+/**
+ *  Třída slouží pro skládání "select" dotazů do databáze.
+ */
 public class PivoFiltrBuilder extends FiltrBuilder {
 
+    /**
+     * Vytvoří builder pro skládání dotazů pro databázi.<br>
+     * @param kolekce mongo kolekce s pivy
+     */
     public PivoFiltrBuilder(MongoCollection<Document> kolekce) {
         super(kolekce);
     }
 
+    /**
+     * Metoda vyfiltruje piva z databáze a převede je na instance třídy Pivo
+     * @return seznam piv, vyhovujících filtru
+     */
     public List<Pivo> finalizuj() {
         for (Bson filter : this.listFiltru) this.listAgregatu.add(Aggregates.match(filter));
 
@@ -29,16 +40,32 @@ public class PivoFiltrBuilder extends FiltrBuilder {
         return kVraceni;
     }
 
+    /**
+     * Filtruje piva podle regexu názvu pivovaru
+     * @param nazevPivovaru regex názvu pivovaru
+     * @return PivoFiltrBuilder
+     */
     public PivoFiltrBuilder pivovar(String nazevPivovaru) {
         this.pridejCustom(regex("pivovar", "^" + nazevPivovaru, "i"));
         return this;
     }
 
+    /**
+     * Filtuje piva podle stupňovitosti (přesné)
+     * @param stupnovitost přesná stupňovitost, kterou má pivo mít
+     * @return PivoFiltrBuilder
+     */
     public PivoFiltrBuilder stupnovitost(double stupnovitost) {
         this.pridejCustom(eq("stupnovitost", stupnovitost));
         return this;
     }
 
+    /**
+     * Filtuje piva podle stupňovitosti
+     * @param min minimální stupňovitost
+     * @param max maximální stupňovitost
+     * @return PivoFiltrBuilder
+     */
     public PivoFiltrBuilder stupnovitost(double min, double max) {
         this.pridejCustom(
                 and(
@@ -49,16 +76,32 @@ public class PivoFiltrBuilder extends FiltrBuilder {
         return this;
     }
 
+    /**
+     * Hledá piva podle regexu jejich názvu
+     * @param nazev regex názvu piva
+     * @return PivoFiltrBuilder
+     */
     public PivoFiltrBuilder nazev(String nazev) {
         this.pridejCustom(regex("nazev", "^" + nazev, "i"));
         return this;
     }
 
+    /**
+     * Filtuje piva podle obsahu alkoholu (přesné)
+     * @param obsahAlkoholu přesný obsah alkoholu, který má pivo mít
+     * @return PivoFiltrBuilder
+     */
     public PivoFiltrBuilder obsahAlkoholu(double obsahAlkoholu) {
         this.pridejCustom(eq("obsah_alkoholu", obsahAlkoholu));
         return this;
     }
 
+    /**
+     * Filtuje piva podle obsahu alkoholu
+     * @param min minimální obsah alkoholu
+     * @param max maximální obsah alkoholu
+     * @return PivoFiltrBuilder
+     */
     public PivoFiltrBuilder obsahAlkoholu(double min, double max) {
         this.pridejCustom(
                 and(
@@ -69,19 +112,34 @@ public class PivoFiltrBuilder extends FiltrBuilder {
         return this;
     }
 
+    /**
+     * Hledá piva podle regexu typu
+     * @param nazevTypu regex typu piva
+     * @return PivoFiltrBuilder
+     */
     public PivoFiltrBuilder typ(String nazevTypu) {
         this.pridejCustom(regex("typ", nazevTypu));
         return this;
     }
 
+    /**
+     * Hledá piva podle regexu typu kvašení
+     * @param nazevTypuKvaseni regex typu kvašení
+     * @return PivoFiltrBuilder
+     */
     public PivoFiltrBuilder typKvaseni(String nazevTypuKvaseni) {
         this.pridejCustom(regex("typ", nazevTypuKvaseni));
         return this;
     }
 
+    /**
+     * Metoda převede mapu s filtry do filtrů pro databázi (využíváno v gui Filtr)
+     * @param atributy mapa, která obsahuje dotazované parametry
+     * @return PivoFiltrBuilder
+     */
     public PivoFiltrBuilder parse(Map<String, String> atributy) {
         String pivovar = atributy.get("pivovar");
-        if (pivovar != null && !pivovar.isBlank()) this.nazev(pivovar);
+        if (pivovar != null && !pivovar.isBlank()) this.pivovar(pivovar);
 
         double stupnovitost = NumberUtils.toDouble(atributy.get("stupnovitost"), -1);
         if (stupnovitost != -1) this.stupnovitost(stupnovitost - 0.5, stupnovitost + 0.5);
