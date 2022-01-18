@@ -13,6 +13,10 @@ import javafx.scene.layout.HBox;
 import lombok.AccessLevel;
 import lombok.Getter;
 
+/**
+ * Třída, která obsahuje implementaci metod zaměřující se na seznamy podniků v aplikaci
+ * pro vytváření jednotlivých částí grafického rozhraní.
+ */
 
 public abstract class OknoSeSeznamemPodniku extends Obrazovka<BorderPane> {
 
@@ -35,6 +39,10 @@ public abstract class OknoSeSeznamemPodniku extends Obrazovka<BorderPane> {
         );
     }
 
+    /**
+     * Metoda, která vytváří tabulku podniků aplikace.
+     */
+
     private TableView<Podnik> pripravTabulku(ObservableList<Podnik> zobrazovanePodniky) {
         Tabulka<Podnik> tab = new Tabulka<>(Podnik.PRO_TABULKU);
 
@@ -56,7 +64,15 @@ public abstract class OknoSeSeznamemPodniku extends Obrazovka<BorderPane> {
         return tv;
     }
 
+    /**
+     * Metoda, která vytváří kontextové menu v obrazovkách grafického rozhraní a umožňuje úpravy tabulky aplikace.
+     */
+
     protected abstract ContextMenu pripravKontextoveMenuAUpravTabulku(Tabulka<Podnik> tabulka);
+
+    /**
+     * Metoda, která vytváří horní panel v obrazovkách grafického rozhraní.
+     */
 
     protected abstract HBox pripravHorniPanel();
 
