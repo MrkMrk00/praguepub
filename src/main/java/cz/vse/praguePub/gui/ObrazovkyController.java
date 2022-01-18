@@ -226,6 +226,12 @@ public class ObrazovkyController {
         zobrazOkno(new Scene(webView));
     }
 
+    /**
+     * Zobrazí okno, které umožňuje uživatli přidat novou recenzi k příslušnému podniku
+     * @param podnik podnik, který chce uživatel upravit
+     * @param callback funkce, která se zavolá po žádosti uživatele po přidání recenze (tlačítko Odeslat)
+     */
+
     public void zobrazPridejNovouRecenzi(Podnik podnik, Runnable callback) {
         Stage st = new Stage();
         st.getIcons().add(Ikona());
@@ -237,12 +243,23 @@ public class ObrazovkyController {
         st.show();
     }
 
+    /**
+     * Zobrazí okno s tabulkou piv, které je možné následně přidat k příslušnému podniku
+     * @param callback funkce, která po kliknutí na příslušné pivo umožní pivo přidat k danému podniku
+     */
+
+
     public void vyberPivo(Consumer<Pivo> callback) {
         Stage st = new Stage();
         st.getIcons().add(Ikona());
         st.setScene(new VyberPivoDialog(this, st, callback).getScene());
         st.show();
     }
+
+    /**
+     * Zobrazí okno podniku s informacemi o daném podniku včetně podrobností.
+     * @param podnik podnik, který chce uživatel upravit
+     */
 
     public void zobrazInformaceOPodniku(Podnik podnik) {
         Stage st = new Stage();
@@ -251,11 +268,24 @@ public class ObrazovkyController {
         st.show();
     }
 
+    /**
+     * Zobrazí okno podniku s informacemi o daném podniku včetně podrobností.
+     * @param podnik podnik, který chce uživatel upravit
+     * @param stage stage, o které uživatel dozví podrobnosti
+     * @param predchoziScena scéna, která se má zobrazit po stisknutí tlačítka zpět
+     */
+
     public void zobrazInformaceOPodniku(Podnik podnik, Stage stage, Scene predchoziScena) {
         Runnable zpet = () -> stage.setScene(predchoziScena);
 
         stage.setScene(new ZobrazitPodnikObrazovka(this, podnik, stage, zpet).getScene());
     }
+
+    /**
+     * Zobrazí okno podniku s informacemi o daném podniku včetně podrobností.
+     * @param pivo pivo, u kterého chceme upravit či doplnit cenu a objem
+     * @param callback funkce, která se zavolá po žádosti uživatele na změnu ceny a objemu (Enter)
+     */
 
     public void zadejCenuAObjem(Pivo pivo, Runnable callback) {
         Stage st = new Stage();
@@ -270,12 +300,24 @@ public class ObrazovkyController {
         st.setScene(new ZadejCenuAObjem(pivo, callbackWrapper).getScene());
         st.show();
     }
+    /**
+     * Zobrazí okno, které umožňuje uživatli přidat novou recenzi k příslušnému podniku
+     * @param stage stage, do které se má upravení podniku zobrazit
+     * @param scene scéna, která se má zobrazit po stisknutí tlačítka zpět
+     * @param odeslatCallback funkce, která se zavolá po žádosti uživatele tlačítkem zpět při vložení nového pivo do databáze
+     */
 
     public void vytvorNovePivo(Stage stage, Scene scene, Runnable odeslatCallback) {
         Runnable zpet = () -> stage.setScene(scene);
 
         stage.setScene(new PridejPivoObrazovka(this, odeslatCallback, zpet).getScene());
     }
+
+    /**
+     * Zobrazí okno, které umožňuje uživatli prohlédnout ceník piv v příslušném podniku.
+     * @param podnik podnik, který chce uživatel upravit
+     * @param callback funkce, která se zavolá po žádosti uživatele na stisk zpětné šipky, vrátí o obrazovku zpět
+     */
 
     public void ukazCenik(Podnik podnik, Runnable callback){
         Stage st = new Stage();
