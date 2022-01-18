@@ -45,9 +45,8 @@ public class Cenik extends Obrazovka<BorderPane> {
                     HBox.setHgrow(separator, Priority.ALWAYS);
 
                     Button upravitButton = TlacitkoAplikace("Upravit", t-> {});
-                    Button zpetButton = TlacitkoZpet(null,t-> {
-                        this.tlacitkoZpetCallback.run();
-                    });
+                    Button zpetButton = TlacitkoZpet(event -> this.tlacitkoZpetCallback.run(),
+                            t -> {});
 
                     horniPanel.getChildren().addAll(
                             Radek(nadpisOkna),separator, Radek(upravitButton,zpetButton)
