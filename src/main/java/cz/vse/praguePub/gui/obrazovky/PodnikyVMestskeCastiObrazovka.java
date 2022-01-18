@@ -69,7 +69,7 @@ public class PodnikyVMestskeCastiObrazovka extends OknoSeSeznamemPodniku {
     protected ContextMenu pripravKontextoveMenuAUpravTabulku(Tabulka<Podnik> tabulka) {
         TableView<Podnik> tv = tabulka.getTableView();
         Runnable zobrazInformaceOPodniku = () -> {
-            if (tv.getItems().isEmpty() || !this.controller.jeUzivatelPrihlasen()) return;
+            if (tv.getItems().isEmpty()) return;
 
             this.controller.zobrazInformaceOPodniku(
                     tv.getSelectionModel().getSelectedItem(),
