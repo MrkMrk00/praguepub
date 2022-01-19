@@ -1,6 +1,7 @@
 package cz.vse.praguePub.gui.obrazovky;
 
 import cz.vse.praguePub.gui.ObrazovkyController;
+import cz.vse.praguePub.gui.komponenty.AlertBuilder;
 import cz.vse.praguePub.gui.komponenty.Tabulka;
 import cz.vse.praguePub.gui.obrazovky.abstraktniObrazovky.Obrazovka;
 import cz.vse.praguePub.logika.Databaze;
@@ -10,6 +11,8 @@ import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableView;
 import javafx.scene.layout.BorderPane;
@@ -19,6 +22,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import java.util.List;
+import java.util.Optional;
 
 import static cz.vse.praguePub.gui.komponenty.Komponenty.*;
 
@@ -151,10 +155,12 @@ public class ZobrazitPodnikObrazovka extends Obrazovka<BorderPane> {
                                 TlacitkoAplikace("Ceník", (t)->{
                                     VBox.setMargin(t, new Insets(10,0,0,10));
                                     t.setOnMouseClicked(MouseEvent -> controller.ukazCenik(this.zobrazovanyPodnik,this.prenacti));}),
-                                TlacitkoAplikace("Přidat recenzi", (t)->{
+                                Radek(
+                                        TlacitkoAplikace("Přidat recenzi", (t)->{
                                     VBox.setMargin(t, new Insets(10,0,0,10));
                                     t.setOnMouseClicked(MouseEvent -> controller.zobrazPridejNovouRecenzi(this.zobrazovanyPodnik, this.prenacti));
                                 }),
+                                        TlacitkoAplikace("Odstraň podnik", mouseEvent -> this.odstranPodnik(), null)),
                                 Spacer()
                         ), sloupec -> {VBox.setVgrow(sloupec, Priority.ALWAYS);}
                 )
@@ -164,6 +170,23 @@ public class ZobrazitPodnikObrazovka extends Obrazovka<BorderPane> {
         this.getPane().setBottom(
                 pripravTabulku()
         );
+    }
+
+    private void odstranPodnik() {
+        if (!this.controller.jeUzivatelPrihlasen()) return;
+
+        Optional<ButtonType> res = new AlertBuilder(Alert.AlertType.CONFIRMATION)
+                .setTitle("Prague Pub")
+                .setHeaderText("Opravdu?")
+                .setContent("Opravdu chcete smazat podnik " + this.zobrazovanyPodnik.getNazev())
+                .getAlert()
+                .showAndWait();
+
+        if (res.isEmpty()) return;
+        if (res.get() == ButtonType.OK) {
+            this.controller.getDatabaze().vymazPodnik(this.zobrazovanyPodnik);
+            this.stage.hide();
+        }
     }
 
     private TableView<Recenze> pripravTabulku() {

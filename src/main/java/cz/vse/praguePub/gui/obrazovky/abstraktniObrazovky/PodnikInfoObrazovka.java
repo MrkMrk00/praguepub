@@ -9,10 +9,7 @@ import cz.vse.praguePub.logika.dbObjekty.Podnik;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.TableRow;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -155,6 +152,13 @@ public abstract class PodnikInfoObrazovka extends Obrazovka<BorderPane> {
                             this.controller.zadejCenuAObjem(vybranePivo, tv::refresh);
                     }
             );
+            ContextMenu cm = new ContextMenu();
+                MenuItem vymaz = new MenuItem("Odstraň pivo");
+                cm.getItems().add(vymaz);
+                vymaz.setOnAction(event -> {
+                    this.podnik.getPivniListek().remove(tv.getSelectionModel().getSelectedItem());
+                });
+            tv.setContextMenu(cm);
             return tableRow;
         });
 
